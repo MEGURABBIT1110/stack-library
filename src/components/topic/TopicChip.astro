@@ -1,0 +1,15 @@
+---
+import type { Topic } from '@/types/content';
+
+type Props = {
+  topic: Topic;
+  href?: string;
+  size?: 'sm' | 'md';
+};
+
+const { topic, href = `/topics/${topic.slug}/`, size = 'sm' } = Astro.props;
+---
+
+<a class:list={['topic-chip', `topic-chip--${size}`]} href={href}>
+  {topic.name}
+</a>

@@ -1,0 +1,20 @@
+---
+type Props = {
+  title: string;
+  description?: string;
+  href?: string;
+  linkLabel?: string;
+  eyebrow?: string;
+};
+
+const { title, description, href, linkLabel = 'VIEW ALL', eyebrow } = Astro.props;
+---
+
+<div class="section-header">
+  <div>
+    {eyebrow && <p class="section-header__eyebrow">{eyebrow}</p>}
+    <h2 class="section-header__title">{title}</h2>
+    {description && <p class="section-header__description">{description}</p>}
+  </div>
+  {href && <a class="section-header__link" href={href}>{linkLabel}</a>}
+</div>

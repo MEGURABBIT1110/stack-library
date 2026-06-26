@@ -1,0 +1,53 @@
+---
+import AppShell from '@/components/layout/AppShell.astro';
+import PageShell from '@/components/layout/PageShell.astro';
+import BookCard from '@/components/book/BookCard.astro';
+import TopicChip from '@/components/topic/TopicChip.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getTopicWithRelatedContent, getTopics } from '@/lib/queries/topics';
+import { LEARNING_STAGE_LABELS } from '@/types/content';
+
+export async function getStaticPaths() {
+  const topics = await getTopics();
+
+  return topics.map((topic) => ({
+    params: { slug: topic.slug },
+  }));
+}
+
+const slug = Astro.params.slug;
+const related = slug ? await getTopicWithRelatedContent(slug) : null;
+
+if (!related) {
+  return Astro.redirect('/topics/');
+}
+
+const { topic, books, notes } = related;
+---
+
+<BaseLayout title={`${topic.name} | 技術トピック`} description={topic.description}>
+  <AppShell currentPath="/topics/">
+    <PageShell variant="wide">
+      <section class="simple-panel">
+        <TopicChip topic={topic} size="md" />
+        <h1 class="simple-panel__title">{topic.name}</h1>
+        {topic.description && <p class="simple-panel__description">{topic.description}</p>}
+        {topic.learningStage && <p class="simple-panel__description">学習段階: {LEARNING_STAGE_LABELS[topic.learningStage]}</p>}
+        {topic.nextQuestion && <p class="simple-panel__description">次に考える問い: {topic.nextQuestion}</p>}
+      </section>
+
+      <div class="listing-grid">
+        {books.map((book) => <BookCard book={book} showTopics />)}
+        {
+          notes.map((note) => (
+            <article class="simple-panel">
+              <p class="minor-heading">関連メモ</p>
+              <h2 class="simple-panel__title"><a href={`/notes/${note.slug}/`}>{note.title}</a></h2>
+              <p class="simple-panel__description">{note.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </PageShell>
+  </AppShell>
+</BaseLayout>

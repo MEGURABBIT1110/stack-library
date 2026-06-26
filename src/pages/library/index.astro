@@ -1,0 +1,23 @@
+---
+import AppShell from '@/components/layout/AppShell.astro';
+import PageShell from '@/components/layout/PageShell.astro';
+import BookCard from '@/components/book/BookCard.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getBooks } from '@/lib/queries/books';
+
+const books = await getBooks();
+---
+
+<BaseLayout title="ライブラリ" description="技術書を複数の視点から探索するライブラリ。">
+  <AppShell currentPath={Astro.url.pathname}>
+    <PageShell variant="wide">
+      <section class="simple-panel">
+        <h1 class="simple-panel__title">ライブラリ</h1>
+        <p class="simple-panel__description">技術書を本棚ではなく、知識ノードとして探索します。</p>
+      </section>
+      <div class="listing-grid">
+        {books.map((book) => <BookCard book={book} showTopics />)}
+      </div>
+    </PageShell>
+  </AppShell>
+</BaseLayout>

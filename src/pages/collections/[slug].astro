@@ -1,0 +1,43 @@
+---
+import AppShell from '@/components/layout/AppShell.astro';
+import PageShell from '@/components/layout/PageShell.astro';
+import BookCard from '@/components/book/BookCard.astro';
+import TopicChip from '@/components/topic/TopicChip.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getCollectionBySlug, getCollections } from '@/lib/queries/collections';
+import { COLLECTION_PROGRESS_LABELS } from '@/types/content';
+
+export async function getStaticPaths() {
+  const collections = await getCollections();
+
+  return collections.map((collection) => ({
+    params: { slug: collection.slug },
+    props: { collection },
+  }));
+}
+
+const slug = Astro.params.slug;
+const collection = Astro.props.collection ?? (slug ? await getCollectionBySlug(slug) : null);
+
+if (!collection) {
+  return Astro.redirect('/collections/');
+}
+---
+
+<BaseLayout title={collection.title} description={collection.purpose}>
+  <AppShell currentPath="/collections/">
+    <PageShell variant="wide">
+      <section class="simple-panel">
+        <p class="minor-heading">{collection.progress ? COLLECTION_PROGRESS_LABELS[collection.progress] : '進捗未設定'}</p>
+        <h1 class="simple-panel__title">{collection.title}</h1>
+        <p class="simple-panel__description">{collection.purpose}</p>
+        {collection.description && <p class="simple-panel__description">{collection.description}</p>}
+        {collection.recommendedOrder && <p class="simple-panel__description">読む順番: {collection.recommendedOrder}</p>}
+        {collection.nextBook && <p class="simple-panel__description">次に読む本: <a class="text-link" href={`/books/${collection.nextBook.slug}/`}>{collection.nextBook.title}</a></p>}
+        {collection.topics && <div class="book-card__topics">{collection.topics.map((topic) => <TopicChip topic={topic} />)}</div>}
+      </section>
+
+      {collection.books && <div class="listing-grid">{collection.books.map((book) => <BookCard book={book} showTopics />)}</div>}
+    </PageShell>
+  </AppShell>
+</BaseLayout>

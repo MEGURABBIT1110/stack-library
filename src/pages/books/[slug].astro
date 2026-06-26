@@ -1,0 +1,40 @@
+---
+import AppShell from '@/components/layout/AppShell.astro';
+import PageShell from '@/components/layout/PageShell.astro';
+import TopicChip from '@/components/topic/TopicChip.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { formatAuthors } from '@/lib/format';
+import { getBookBySlug, getBooks } from '@/lib/queries/books';
+
+export async function getStaticPaths() {
+  const books = await getBooks();
+
+  return books.map((book) => ({
+    params: { slug: book.slug },
+    props: { book },
+  }));
+}
+
+const slug = Astro.params.slug;
+const book = Astro.props.book ?? (slug ? await getBookBySlug(slug) : null);
+
+if (!book) {
+  return Astro.redirect('/library/');
+}
+---
+
+<BaseLayout title={book.title} description={book.summary}>
+  <AppShell currentPath="/library/">
+    <PageShell variant="reading">
+      <article class="simple-panel">
+        <p class="minor-heading">技術書</p>
+        <h1 class="simple-panel__title">{book.title}</h1>
+        <p class="simple-panel__description">{formatAuthors(book.authors)}</p>
+        {book.summary && <p class="simple-panel__description">{book.summary}</p>}
+        {book.readingPurpose && <p class="simple-panel__description">読む目的: {book.readingPurpose}</p>}
+        {book.appliedMemo && <p class="simple-panel__description">実装接続: {book.appliedMemo}</p>}
+        {book.topics && <div class="book-card__topics">{book.topics.map((topic) => <TopicChip topic={topic} />)}</div>}
+      </article>
+    </PageShell>
+  </AppShell>
+</BaseLayout>

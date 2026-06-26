@@ -1,0 +1,71 @@
+---
+import { clampProgress, formatAuthors } from '@/lib/format';
+import type { Book } from '@/types/content';
+import ReadingStatusBadge from './ReadingStatusBadge.astro';
+import TopicChip from '@/components/topic/TopicChip.astro';
+
+type Props = {
+  book: Book;
+  variant?: 'default' | 'compact' | 'featured' | 'specimen';
+  showProgress?: boolean;
+  showTopics?: boolean;
+};
+
+const {
+  book,
+  variant = 'default',
+  showProgress = false,
+  showTopics = false,
+} = Astro.props;
+
+const progress = clampProgress(book.readingProgress);
+const coverAlt = `「${book.title}」の表紙`;
+---
+
+<article class:list={['book-card', `book-card--${variant}`]}>
+  <div class="book-card__cover">
+    {
+      book.cover ? (
+        <img src={book.cover.url} alt={coverAlt} loading="lazy" />
+      ) : (
+        <span class="book-card__cover-label" aria-hidden="true">{book.title.slice(0, 2)}</span>
+      )
+    }
+  </div>
+  <div class="book-card__body">
+    <h3 class="book-card__title">
+      <a href={`/books/${book.slug}/`}>{book.title}</a>
+    </h3>
+    {book.subtitle && <p class="book-card__subtitle">{book.subtitle}</p>}
+    <p class="book-card__authors">{formatAuthors(book.authors)}</p>
+  </div>
+  {
+    showTopics && book.topics && book.topics.length > 0 && (
+      <div class="book-card__topics" aria-label="関連技術トピック">
+        {book.topics.slice(0, 3).map((topic) => <TopicChip topic={topic} />)}
+      </div>
+    )
+  }
+  <div class="book-card__footer">
+    {
+      showProgress ? (
+        <>
+          <div class="progress-meter" aria-label={`読書進捗 ${progress}%`}>
+            <span class="progress-meter__track" aria-hidden="true">
+              <span class="progress-meter__fill" style={`width: ${progress}%`} />
+            </span>
+          </div>
+          <div class="book-card__status-row">
+            <ReadingStatusBadge status={book.status} />
+            <span>{progress}%</span>
+          </div>
+        </>
+      ) : (
+        <div class="book-card__status-row">
+          <ReadingStatusBadge status={book.status} />
+          {book.implementationValue && <span>実装接続度 {book.implementationValue}/5</span>}
+        </div>
+      )
+    }
+  </div>
+</article>

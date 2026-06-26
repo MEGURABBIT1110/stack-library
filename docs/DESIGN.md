@@ -157,6 +157,40 @@ Stack Library
 
 Figma土台がある場合はそちらを優先しつつ、実装上のCSS変数名は以下に寄せてください。
 
+### Figma実装基準
+
+2026-06-26時点のFigma叩き台では、概要ページ `01_概要ページ` を主要な実装基準にします。
+
+- 画面幅はデスクトップ `1440px`、左サイドバー `240px`、メイン領域 `1200px` を基準にする
+- メイン領域上部に `72px` のトップバーを置く
+- コンテンツ左右余白はデスクトップで `64px` を基準にする
+- セクション間は大きく取り、概要ページでは Hero から読書中カードまで約 `120px` の余白を持たせる
+- 背景には控えめなグリッドテクスチャを敷いてよいが、本文やカードの可読性を妨げない
+- Figma MCPが返すReact/Tailwindコードは構造と寸法の参照に留め、実装ではAstroコンポーネントとCSS変数へ変換する
+
+Figmaから読み取った主要カラー:
+
+```css
+:root {
+  --color-bg: #0a0a0b;
+  --color-bg-elevated: #121214;
+  --color-bg-panel: #121214;
+  --color-bg-subtle: #0a0a0b;
+
+  --color-text: #f5f5f7;
+  --color-text-muted: #a1a1aa;
+  --color-text-subtle: #71717a;
+  --color-text-inverse: #0a0a0b;
+
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+
+  --color-accent-cyan: #00b2b2;
+}
+```
+
+既存の推奨カラーと矛盾する場合は、初期実装ではFigma値を優先します。ただしアクセントは情報の強調に限定し、画面全体を単調なシアン一色にしないでください。
+
 ### 基本カラー
 
 ```css
@@ -211,11 +245,19 @@ Figma土台がある場合はそちらを優先しつつ、実装上のCSS変数
 日本語本文の読みやすさを最優先します。  
 英語の見出しだけを前提にした極端な字間・細字・小さなラベルは避けてください。
 
+Figma叩き台ではロゴや数値表示に `Instrument Serif`、UI本文に `Inter` が使われています。実装では以下の方針にします。
+
+- ロゴ、Hero見出し、メトリクス数値には `Instrument Serif` を使ってよい
+- 日本語本文とUIラベルは `Inter`, `Noto Sans JP`, system-ui の順で読みやすさを優先する
+- Webフォントが読み込めない場合も破綻しないフォントスタックを用意する
+- 日本語本文には英字見出し向けの極端な詰めや小さすぎる行高を適用しない
+
 ### 推奨CSS
 
 ```css
 :root {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-sans: "Inter", "Noto Sans JP", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-serif-display: "Instrument Serif", "Times New Roman", serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 
   --text-xs: 0.75rem;
@@ -287,10 +329,11 @@ Figma土台がある場合はそちらを優先しつつ、実装上のCSS変数
 
 ```css
 :root {
-  --radius-sm: 0.375rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+  --radius-xs: 0.125rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 
   --border-hairline: 1px solid var(--color-border);
   --border-strong: 1px solid var(--color-border-strong);
@@ -299,7 +342,7 @@ Figma土台がある場合はそちらを優先しつつ、実装上のCSS変数
 
 ### 使用方針
 
-- 角丸は使いすぎない
+- 角丸は使いすぎない。Figma叩き台のカードは `2px` を基準にした硬質な印象を優先する
 - カードはやや硬質に見せる
 - 影は暗い背景に馴染む程度
 - 罫線と背景差で階層を作る
@@ -311,6 +354,16 @@ Figma土台がある場合はそちらを優先しつつ、実装上のCSS変数
 
 技術書カードはECの商品カードではありません。  
 本の表紙を見せつつ、技術標本ラベルのようにメタデータを整理します。
+
+Figma叩き台の `specimen-card` は初期 `BookCard` の視覚基準です。
+
+- カード背景は `--color-bg-panel`
+- 境界線は `--border-hairline`
+- 角丸は `--radius-xs`
+- 内側余白は `32px`
+- 表紙またはプレースホルダーは暗い矩形で、カード内の最上部に置く
+- 書名、著者、読書状態、進捗またはシグナルを縦に整理する
+- 進捗バーを使う場合も、必ずパーセント値や状態ラベルを併記する
 
 ### BookCardに必要な印象
 

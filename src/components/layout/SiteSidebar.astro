@@ -1,0 +1,67 @@
+---
+import {
+  Archive,
+  BookOpen,
+  Hash,
+  Map,
+  Pencil,
+  Route,
+} from 'lucide-astro';
+import { SITE_NAME } from '@/lib/constants';
+
+type Props = {
+  currentPath?: string;
+};
+
+const { currentPath = '/' } = Astro.props;
+
+const navItems = [
+  { href: '/', label: '概要', icon: Archive },
+  { href: '/library/', label: 'ライブラリ', icon: BookOpen },
+  { href: '/topics/', label: '技術トピック', icon: Hash },
+  { href: '/notes/', label: '読書メモ', icon: Pencil },
+  { href: '/map/', label: '知識マップ', icon: Map },
+  { href: '/collections/', label: '学習ルート', icon: Route },
+];
+
+function isActive(href: string) {
+  if (href === '/') {
+    return currentPath === '/';
+  }
+
+  return currentPath.startsWith(href);
+}
+---
+
+<aside class="site-sidebar" aria-label="グローバルナビゲーション">
+  <div class="site-sidebar__top">
+    <a class="site-sidebar__logo" href="/" aria-label={`${SITE_NAME}の概要へ`}>
+      {SITE_NAME}
+    </a>
+    <nav class="site-sidebar__nav" aria-label="主要ページ">
+      {
+        navItems.map((item) => {
+          const Icon = item.icon;
+          const active = isActive(item.href);
+
+          return (
+            <a
+              class:list={['site-sidebar__nav-item', active && 'is-active']}
+              href={item.href}
+              aria-current={active ? 'page' : undefined}
+            >
+              <Icon class="site-sidebar__nav-icon" size={18} strokeWidth={1.75} aria-hidden="true" />
+              <span>{item.label}</span>
+            </a>
+          );
+        })
+      }
+    </nav>
+  </div>
+  <div class="site-sidebar__bottom" aria-label="ローカルプロフィール">
+    <div class="site-sidebar__profile">
+      <span class="site-sidebar__avatar" aria-hidden="true">SL</span>
+      <span>Local Archive</span>
+    </div>
+  </div>
+</aside>

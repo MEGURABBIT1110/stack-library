@@ -1,0 +1,15 @@
+---
+import { READING_STATUS_LABELS, type ReadingStatus } from '@/types/content';
+
+type Props = {
+  status: ReadingStatus;
+  size?: 'sm' | 'md';
+};
+
+const { status, size = 'sm' } = Astro.props;
+const label = READING_STATUS_LABELS[status];
+---
+
+<span class:list={['badge', 'badge--cyan', `badge--${size}`]} aria-label={`読書状態: ${label}`}>
+  {label}
+</span>

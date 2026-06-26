@@ -1,0 +1,34 @@
+---
+import AppShell from '@/components/layout/AppShell.astro';
+import PageShell from '@/components/layout/PageShell.astro';
+import TopicChip from '@/components/topic/TopicChip.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { excerpt } from '@/lib/format';
+import { getNotes } from '@/lib/queries/notes';
+import { NOTE_TYPE_LABELS } from '@/types/content';
+
+const notes = await getNotes();
+---
+
+<BaseLayout title="読書メモ" description="実装に戻るための読書メモ一覧。">
+  <AppShell currentPath={Astro.url.pathname}>
+    <PageShell variant="wide">
+      <section class="simple-panel">
+        <h1 class="simple-panel__title">読書メモ</h1>
+        <p class="simple-panel__description">感想ではなく、実装判断へ戻るための知識片を並べます。</p>
+      </section>
+      <div class="listing-grid">
+        {
+          notes.map((note) => (
+            <article class="simple-panel">
+              <p class="minor-heading">{NOTE_TYPE_LABELS[note.noteType]}</p>
+              <h2 class="simple-panel__title"><a href={`/notes/${note.slug}/`}>{note.title}</a></h2>
+              <p class="simple-panel__description">{excerpt(note.body, 120)}</p>
+              {note.topics && <div class="book-card__topics">{note.topics.map((topic) => <TopicChip topic={topic} />)}</div>}
+            </article>
+          ))
+        }
+      </div>
+    </PageShell>
+  </AppShell>
+</BaseLayout>
