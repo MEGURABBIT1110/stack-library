@@ -922,11 +922,15 @@ button {
 }
 
 .library-instrument-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   min-width: 0;
   margin: 0;
   border: 0;
   border-right: var(--border-hairline);
-  padding: 12px 24px 0;
+  padding: 14px 24px 0;
 }
 
 .library-instrument-segment:first-child {
@@ -937,9 +941,7 @@ button {
   border-right: 0;
 }
 
-.library-instrument-segment legend {
-  padding: 0;
-  margin-bottom: 6px;
+.library-instrument-segment__label {
   color: var(--color-text-subtle);
   font-size: 0.5625rem;
   font-weight: 700;

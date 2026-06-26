@@ -139,7 +139,8 @@ const getOwnershipBand = (value?: string) => {
 
           <div class="library-instrument-strip__segments">
             <fieldset class="library-instrument-segment">
-              <legend>読書状態</legend>
+              <legend class="sr-only">読書状態</legend>
+              <span class="library-instrument-segment__label" aria-hidden="true">読書状態</span>
               <div class="library-filter-pills">
                 {
                   statusFilters.map((filter) => (
@@ -153,7 +154,8 @@ const getOwnershipBand = (value?: string) => {
             </fieldset>
 
             <fieldset class="library-instrument-segment">
-              <legend>難易度</legend>
+              <legend class="sr-only">難易度</legend>
+              <span class="library-instrument-segment__label" aria-hidden="true">難易度</span>
               <div class="library-filter-pills">
                 {
                   difficultyFilters.map((filter) => (
@@ -167,7 +169,8 @@ const getOwnershipBand = (value?: string) => {
             </fieldset>
 
             <fieldset class="library-instrument-segment">
-              <legend>所有形式</legend>
+              <legend class="sr-only">所有形式</legend>
+              <span class="library-instrument-segment__label" aria-hidden="true">所有形式</span>
               <div class="library-filter-pills">
                 {
                   ownershipFilters.map((filter) => (
@@ -181,7 +184,8 @@ const getOwnershipBand = (value?: string) => {
             </fieldset>
 
             <fieldset class="library-instrument-segment">
-              <legend>実務適用度</legend>
+              <legend class="sr-only">実務適用度</legend>
+              <span class="library-instrument-segment__label" aria-hidden="true">実務適用度</span>
               <div class="library-filter-pills">
                 {
                   signalFilters.map((filter) => (
@@ -195,7 +199,8 @@ const getOwnershipBand = (value?: string) => {
             </fieldset>
 
             <fieldset class="library-instrument-segment">
-              <legend>再読価値</legend>
+              <legend class="sr-only">再読価値</legend>
+              <span class="library-instrument-segment__label" aria-hidden="true">再読価値</span>
               <div class="library-filter-pills">
                 {
                   signalFilters.map((filter) => (
