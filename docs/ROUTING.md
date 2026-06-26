@@ -165,10 +165,9 @@ MVPでは `Grid` を必須、その他は初期版または簡易版でよいで
 
 - 読書状態
 - 技術トピック
-- 難易度
+- レベル（難易度レンジ）
 - 実務適用度
 - 再読価値
-- 所有形式
 - 読了年
 
 ### URLクエリ設計
@@ -177,7 +176,7 @@ MVPでは `Grid` を必須、その他は初期版または簡易版でよいで
 
 ```txt
 /library/?q=accessibility&status=read&topic=accessibility&view=grid
-/library/?difficulty=4&practicality=5
+/library/?minDifficulty=4&practicality=5
 /library/?view=matrix
 ```
 
@@ -188,10 +187,9 @@ MVPでは `Grid` を必須、その他は初期版または簡易版でよいで
 | `q` | string | 検索語 |
 | `status` | `unread` / `reading` / `read` / `paused` / `reread` | 読書状態 |
 | `topic` | topic slug | 技術トピック |
-| `difficulty` | 1〜5 | 難易度 |
+| `minDifficulty` | 1〜5 | レベル下限 |
 | `practicality` | 1〜5 | 実務適用度 |
 | `reread` | 1〜5 | 再読価値 |
-| `ownership` | ownership type | 所有形式 |
 | `year` | YYYY | 読了年 |
 | `view` | `grid` / `table` / `board` / `matrix` | 表示モード |
 

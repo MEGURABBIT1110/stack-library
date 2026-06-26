@@ -31,35 +31,11 @@ const statusFilters = [
   { label: '未分類', value: 'unclassified' },
 ];
 
-const difficultyFilters = [
-  { label: '入門', value: 'intro' },
-  { label: '中級', value: 'intermediate' },
-  { label: '上級', value: 'advanced' },
-];
-
-const ownershipFilters = [
-  { label: '電子書籍', value: 'digital' },
-  { label: '紙', value: 'physical' },
-  { label: '両方', value: 'mixed' },
-];
-
 const signalFilters = [
   { label: '高', value: 'high' },
   { label: '中', value: 'medium' },
   { label: '低', value: 'low' },
 ];
-
-const getDifficultyBand = (value?: number) => {
-  if (!value) {
-    return '';
-  }
-
-  if (value <= 2) {
-    return 'intro';
-  }
-
-  return value === 3 ? 'intermediate' : 'advanced';
-};
 
 const getSignalBand = (value?: number) => {
   if (!value) {
@@ -71,14 +47,6 @@ const getSignalBand = (value?: number) => {
   }
 
   return value === 3 ? 'medium' : 'high';
-};
-
-const getOwnershipBand = (value?: string) => {
-  if (!value) {
-    return '';
-  }
-
-  return ['kindle', 'pdf', 'web'].includes(value) ? 'digital' : 'physical';
 };
 ---
 
@@ -154,32 +122,29 @@ const getOwnershipBand = (value?: string) => {
             </fieldset>
 
             <fieldset class="library-instrument-segment">
-              <legend class="sr-only">難易度</legend>
-              <span class="library-instrument-segment__label" aria-hidden="true">難易度</span>
-              <div class="library-filter-pills">
-                {
-                  difficultyFilters.map((filter) => (
-                    <label class="library-filter-pill">
-                      <input class="sr-only" type="checkbox" name="difficulty" value={filter.value} data-filter-label={`難易度：${filter.label}`} data-library-filter />
-                      <span>{filter.label}</span>
-                    </label>
-                  ))
-                }
-              </div>
-            </fieldset>
-
-            <fieldset class="library-instrument-segment">
-              <legend class="sr-only">所有形式</legend>
-              <span class="library-instrument-segment__label" aria-hidden="true">所有形式</span>
-              <div class="library-filter-pills">
-                {
-                  ownershipFilters.map((filter) => (
-                    <label class="library-filter-pill">
-                      <input class="sr-only" type="checkbox" name="ownership" value={filter.value} data-filter-label={filter.label} data-library-filter />
-                      <span>{filter.label}</span>
-                    </label>
-                  ))
-                }
+              <legend class="sr-only">レベル</legend>
+              <span class="library-instrument-segment__label" aria-hidden="true">レベル</span>
+              <div class="library-range-filter">
+                <div class="library-range-filter__meta" aria-hidden="true">
+                  <span>Lv.1</span>
+                  <output for="library-level-range" data-library-level-output>Lv.1以上</output>
+                  <span>Lv.5</span>
+                </div>
+                <input
+                  id="library-level-range"
+                  class="library-range-filter__control"
+                  type="range"
+                  name="level"
+                  min="1"
+                  max="5"
+                  step="1"
+                  value="1"
+                  aria-label="レベル下限"
+                  data-filter-label="レベル"
+                  data-range-default="1"
+                  data-library-filter
+                  data-library-level-range
+                />
               </div>
             </fieldset>
 
@@ -222,8 +187,7 @@ const getOwnershipBand = (value?: string) => {
                 class="library-grid__item"
                 data-library-card
                 data-status={book.status}
-                data-difficulty={getDifficultyBand(book.difficulty)}
-                data-ownership={getOwnershipBand(book.ownership)}
+                data-level={book.difficulty ?? ''}
                 data-practicality={getSignalBand(book.practicality)}
                 data-reread={getSignalBand(book.rereadValue)}
               >
@@ -253,6 +217,8 @@ const getOwnershipBand = (value?: string) => {
     const activeFilterChips = libraryPage.querySelector<HTMLElement>('[data-active-filter-chips]');
     const clearFilters = libraryPage.querySelector<HTMLButtonElement>('[data-clear-filters]');
     const viewButtons = Array.from(libraryPage.querySelectorAll<HTMLButtonElement>('[data-library-view]'));
+    const levelRange = libraryPage.querySelector<HTMLInputElement>('[data-library-level-range]');
+    const levelOutput = libraryPage.querySelector<HTMLOutputElement>('[data-library-level-output]');
 
     const getCheckedValues = (name: string) =>
       new Set(filterInputs.filter((input) => input.name === name && input.checked).map((input) => input.value));
@@ -275,7 +241,37 @@ const getOwnershipBand = (value?: string) => {
       updateActiveFilters();
     };
 
-    const getActiveFilterInputs = () => filterInputs.filter((input) => input.checked);
+    const getRangeDefault = (input: HTMLInputElement) => input.dataset.rangeDefault ?? input.min;
+
+    const isRangeFilterActive = (input: HTMLInputElement) => input.type === 'range' && input.value !== getRangeDefault(input);
+
+    const getActiveFilterInputs = () =>
+      filterInputs.filter((input) => (input.type === 'range' ? isRangeFilterActive(input) : input.checked));
+
+    const getActiveFilterLabel = (input: HTMLInputElement) => {
+      const label = input.dataset.filterLabel ?? input.value;
+
+      return input.type === 'range' ? `${label}: Lv.${input.value}以上` : label;
+    };
+
+    const updateLevelRange = () => {
+      if (!levelRange) {
+        return;
+      }
+
+      const min = Number(levelRange.min);
+      const max = Number(levelRange.max);
+      const value = Number(levelRange.value);
+      const progress = ((value - min) / (max - min)) * 100;
+
+      levelRange.style.setProperty('--range-progress', `${progress}%`);
+
+      if (levelOutput) {
+        levelOutput.textContent = `Lv.${levelRange.value}以上`;
+      }
+
+      levelRange.setAttribute('aria-valuetext', `Lv.${levelRange.value}以上`);
+    };
 
     const updateActiveFilters = () => {
       const activeInputs = getActiveFilterInputs();
@@ -291,7 +287,7 @@ const getOwnershipBand = (value?: string) => {
 
         activeInputs.forEach((input) => {
           const chip = document.createElement('button');
-          const label = input.dataset.filterLabel ?? input.value;
+          const label = getActiveFilterLabel(input);
 
           chip.className = 'library-active-filter-chip';
           chip.type = 'button';
@@ -310,22 +306,20 @@ const getOwnershipBand = (value?: string) => {
 
     const updateFilters = () => {
       const selectedStatuses = getCheckedValues('status');
-      const selectedDifficulties = getCheckedValues('difficulty');
-      const selectedOwnerships = getCheckedValues('ownership');
       const selectedPracticalities = getCheckedValues('practicality');
       const selectedRereadValues = getCheckedValues('reread');
+      const defaultLevel = Number(levelRange?.dataset.rangeDefault ?? levelRange?.min ?? '1');
+      const selectedLevel = Number(levelRange?.value ?? defaultLevel);
       let visibleCount = 0;
 
       cards.forEach((card) => {
         const statusMatches = selectedStatuses.size === 0 || selectedStatuses.has(card.dataset.status ?? '');
-        const ownershipMatches =
-          selectedOwnerships.size === 0 ||
-          selectedOwnerships.has(card.dataset.ownership ?? '') ||
-          (selectedOwnerships.has('mixed') && Boolean(card.dataset.ownership));
+        const cardLevel = Number(card.dataset.level);
+        const levelMatches =
+          selectedLevel <= defaultLevel || (Number.isFinite(cardLevel) && cardLevel >= selectedLevel);
         const isVisible =
           statusMatches &&
-          matchesFilter(selectedDifficulties, card.dataset.difficulty) &&
-          ownershipMatches &&
+          levelMatches &&
           matchesFilter(selectedPracticalities, card.dataset.practicality) &&
           matchesFilter(selectedRereadValues, card.dataset.reread);
 
@@ -369,19 +363,35 @@ const getOwnershipBand = (value?: string) => {
       );
 
       if (targetInput) {
-        targetInput.checked = false;
+        if (targetInput.type === 'range') {
+          targetInput.value = getRangeDefault(targetInput);
+          updateLevelRange();
+        } else {
+          targetInput.checked = false;
+        }
+
         updateFilters();
       }
     });
     clearFilters?.addEventListener('click', () => {
       filterInputs.forEach((input) => {
-        input.checked = false;
+        if (input.type === 'range') {
+          input.value = getRangeDefault(input);
+        } else {
+          input.checked = false;
+        }
       });
 
+      updateLevelRange();
       updateFilters();
     });
     viewButtons.forEach((button) => button.addEventListener('click', () => setView(button.dataset.libraryView ?? 'grid')));
+    levelRange?.addEventListener('input', () => {
+      updateLevelRange();
+      updateFilters();
+    });
 
+    updateLevelRange();
     setFiltersExpanded(false);
     updateFilters();
   }
