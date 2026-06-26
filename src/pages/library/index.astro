@@ -80,7 +80,7 @@ const statusFilters = [
             {
               statusFilters.map((filter) => (
                 <label class="library-filter-option">
-                  <input type="checkbox" name="status" value={filter.value} data-library-filter />
+                  <input type="checkbox" name="status" value={filter.value} data-filter-label={filter.label} data-library-filter />
                   <span>{filter.label}</span>
                 </label>
               ))
@@ -92,7 +92,7 @@ const statusFilters = [
             {
               filterTopics.map((topic) => (
                 <label class="library-filter-option">
-                  <input type="checkbox" name="topic" value={topic.slug} data-library-filter />
+                  <input type="checkbox" name="topic" value={topic.slug} data-filter-label={topicFilterLabels[topic.slug] ?? topic.name} data-library-filter />
                   <span>{topicFilterLabels[topic.slug] ?? topic.name}</span>
                 </label>
               ))
@@ -103,6 +103,19 @@ const statusFilters = [
 
       <section class="library-workbench" aria-labelledby="library-title">
         <TopBar />
+
+        <button
+          class="library-filter-summary-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="library-filter-panel"
+          aria-label="フィルターを開く"
+          data-library-filter-toggle
+        >
+          <LucideIcon name="SlidersHorizontal" size={16} strokeWidth={1.75} aria-hidden="true" />
+          <span>フィルター</span>
+          <span class="library-filter-summary-toggle__count" data-active-filter-count hidden>0</span>
+        </button>
 
         <div class="library-toolbar">
           <div>
@@ -118,6 +131,12 @@ const statusFilters = [
               <LucideIcon name="List" size={16} strokeWidth={1.75} aria-hidden="true" />
             </button>
           </div>
+        </div>
+
+        <div class="library-active-filters" data-active-filters hidden>
+          <span class="library-active-filters__label">絞り込み中:</span>
+          <div class="library-active-filters__chips" data-active-filter-chips></div>
+          <button class="library-active-filters__clear" type="button" data-clear-filters>すべてクリア</button>
         </div>
 
         <div class="library-grid" aria-label="技術書一覧" data-library-grid data-view="grid">
@@ -148,7 +167,11 @@ const statusFilters = [
     const count = libraryPage.querySelector<HTMLElement>('[data-library-count]');
     const grid = libraryPage.querySelector<HTMLElement>('[data-library-grid]');
     const filterPanel = libraryPage.querySelector<HTMLFormElement>('[data-library-filters]');
-    const filterToggle = libraryPage.querySelector<HTMLButtonElement>('[data-library-filter-toggle]');
+    const filterToggles = Array.from(libraryPage.querySelectorAll<HTMLButtonElement>('[data-library-filter-toggle]'));
+    const activeFilterCount = libraryPage.querySelector<HTMLElement>('[data-active-filter-count]');
+    const activeFilters = libraryPage.querySelector<HTMLElement>('[data-active-filters]');
+    const activeFilterChips = libraryPage.querySelector<HTMLElement>('[data-active-filter-chips]');
+    const clearFilters = libraryPage.querySelector<HTMLButtonElement>('[data-clear-filters]');
     const viewButtons = Array.from(libraryPage.querySelectorAll<HTMLButtonElement>('[data-library-view]'));
     const filterStorageKey = 'stack-library:library-filters';
 
@@ -162,15 +185,50 @@ const statusFilters = [
         filterPanel.hidden = isCollapsed;
       }
 
-      if (filterToggle) {
-        filterToggle.setAttribute('aria-expanded', String(!isCollapsed));
-        filterToggle.setAttribute('aria-label', isCollapsed ? 'フィルターを開く' : 'フィルターを畳む');
-      }
+      filterToggles.forEach((toggle) => {
+        toggle.setAttribute('aria-expanded', String(!isCollapsed));
+        toggle.setAttribute('aria-label', isCollapsed ? 'フィルターを開く' : 'フィルターを畳む');
+      });
 
       try {
         window.localStorage.setItem(filterStorageKey, isCollapsed ? 'collapsed' : 'expanded');
       } catch {
         // Storage can be unavailable in restricted browser contexts.
+      }
+
+      updateActiveFilters();
+    };
+
+    const getActiveFilterInputs = () => filterInputs.filter((input) => input.checked);
+
+    const updateActiveFilters = () => {
+      const activeInputs = getActiveFilterInputs();
+      const isCollapsed = libraryPage.dataset.filters === 'collapsed';
+
+      if (activeFilterCount) {
+        activeFilterCount.textContent = String(activeInputs.length);
+        activeFilterCount.hidden = activeInputs.length === 0;
+      }
+
+      if (activeFilterChips) {
+        activeFilterChips.replaceChildren();
+
+        activeInputs.forEach((input) => {
+          const chip = document.createElement('button');
+          const label = input.dataset.filterLabel ?? input.value;
+
+          chip.className = 'library-active-filter-chip';
+          chip.type = 'button';
+          chip.dataset.filterName = input.name;
+          chip.dataset.filterValue = input.value;
+          chip.setAttribute('aria-label', `${label} の条件を解除`);
+          chip.textContent = `${label} ×`;
+          activeFilterChips.append(chip);
+        });
+      }
+
+      if (activeFilters) {
+        activeFilters.hidden = !isCollapsed || activeInputs.length === 0;
       }
     };
 
@@ -192,6 +250,8 @@ const statusFilters = [
       if (count) {
         count.textContent = `全${visibleCount}冊`;
       }
+
+      updateActiveFilters();
     };
 
     const setView = (view: string) => {
@@ -207,7 +267,32 @@ const statusFilters = [
     };
 
     filterInputs.forEach((input) => input.addEventListener('change', updateFilters));
-    filterToggle?.addEventListener('click', () => setFiltersCollapsed(libraryPage.dataset.filters !== 'collapsed'));
+    filterToggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => setFiltersCollapsed(libraryPage.dataset.filters !== 'collapsed'));
+    });
+    activeFilterChips?.addEventListener('click', (event) => {
+      const chip = (event.target as HTMLElement).closest<HTMLButtonElement>('.library-active-filter-chip');
+
+      if (!chip) {
+        return;
+      }
+
+      const targetInput = filterInputs.find(
+        (input) => input.name === chip.dataset.filterName && input.value === chip.dataset.filterValue,
+      );
+
+      if (targetInput) {
+        targetInput.checked = false;
+        updateFilters();
+      }
+    });
+    clearFilters?.addEventListener('click', () => {
+      filterInputs.forEach((input) => {
+        input.checked = false;
+      });
+
+      updateFilters();
+    });
     viewButtons.forEach((button) => button.addEventListener('click', () => setView(button.dataset.libraryView ?? 'grid')));
 
     try {
