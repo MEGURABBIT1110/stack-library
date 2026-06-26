@@ -1,19 +1,19 @@
 ---
-import { Bell, CircleUserRound, Search } from 'lucide-astro';
+import LucideIcon from '@/components/ui/LucideIcon.astro';
 ---
 
 <header class="top-bar">
   <form class="top-bar__search" role="search" action="/library/" method="get">
     <label class="sr-only" for="global-search">書籍を検索</label>
-    <Search size={16} strokeWidth={1.75} aria-hidden="true" />
+    <LucideIcon name="Search" size={16} strokeWidth={1.75} aria-hidden="true" />
     <input id="global-search" name="q" type="search" placeholder="書籍を検索..." />
   </form>
   <div class="top-bar__actions" aria-label="補助アクション">
     <button class="icon-button" type="button" aria-label="通知">
-      <Bell size={20} strokeWidth={1.75} aria-hidden="true" />
+      <LucideIcon name="Bell" size={20} strokeWidth={1.75} aria-hidden="true" />
     </button>
     <button class="icon-button icon-button--filled" type="button" aria-label="プロフィール">
-      <CircleUserRound size={20} strokeWidth={1.75} aria-hidden="true" />
+      <LucideIcon name="CircleUserRound" size={20} strokeWidth={1.75} aria-hidden="true" />
     </button>
   </div>
 </header>
