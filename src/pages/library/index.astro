@@ -59,9 +59,22 @@ const statusFilters = [
   <AppShell currentPath={Astro.url.pathname} showTopBar={false}>
     <div class="library-page" data-library-page>
       <aside class="library-filters" aria-labelledby="library-filter-title">
-        <h2 id="library-filter-title" class="library-filters__title">FILTER</h2>
+        <div class="library-filters__header">
+          <h2 id="library-filter-title" class="library-filters__title">FILTER</h2>
+          <button
+            class="library-filters__toggle"
+            type="button"
+            aria-expanded="true"
+            aria-controls="library-filter-panel"
+            aria-label="フィルターを畳む"
+            data-library-filter-toggle
+          >
+            <LucideIcon name="PanelLeftClose" size={16} strokeWidth={1.75} class="library-filters__toggle-icon library-filters__toggle-icon--collapse" aria-hidden="true" />
+            <LucideIcon name="PanelLeftOpen" size={16} strokeWidth={1.75} class="library-filters__toggle-icon library-filters__toggle-icon--expand" aria-hidden="true" />
+          </button>
+        </div>
 
-        <form class="library-filters__form" data-library-filters>
+        <form id="library-filter-panel" class="library-filters__form" data-library-filters>
           <fieldset class="library-filter-group">
             <legend>読書状態</legend>
             {
@@ -134,10 +147,32 @@ const statusFilters = [
     const cards = Array.from(libraryPage.querySelectorAll<HTMLElement>('[data-library-card]'));
     const count = libraryPage.querySelector<HTMLElement>('[data-library-count]');
     const grid = libraryPage.querySelector<HTMLElement>('[data-library-grid]');
+    const filterPanel = libraryPage.querySelector<HTMLFormElement>('[data-library-filters]');
+    const filterToggle = libraryPage.querySelector<HTMLButtonElement>('[data-library-filter-toggle]');
     const viewButtons = Array.from(libraryPage.querySelectorAll<HTMLButtonElement>('[data-library-view]'));
+    const filterStorageKey = 'stack-library:library-filters';
 
     const getCheckedValues = (name: string) =>
       new Set(filterInputs.filter((input) => input.name === name && input.checked).map((input) => input.value));
+
+    const setFiltersCollapsed = (isCollapsed: boolean) => {
+      libraryPage.dataset.filters = isCollapsed ? 'collapsed' : 'expanded';
+
+      if (filterPanel) {
+        filterPanel.hidden = isCollapsed;
+      }
+
+      if (filterToggle) {
+        filterToggle.setAttribute('aria-expanded', String(!isCollapsed));
+        filterToggle.setAttribute('aria-label', isCollapsed ? 'フィルターを開く' : 'フィルターを畳む');
+      }
+
+      try {
+        window.localStorage.setItem(filterStorageKey, isCollapsed ? 'collapsed' : 'expanded');
+      } catch {
+        // Storage can be unavailable in restricted browser contexts.
+      }
+    };
 
     const updateFilters = () => {
       const selectedStatuses = getCheckedValues('status');
@@ -172,7 +207,15 @@ const statusFilters = [
     };
 
     filterInputs.forEach((input) => input.addEventListener('change', updateFilters));
+    filterToggle?.addEventListener('click', () => setFiltersCollapsed(libraryPage.dataset.filters !== 'collapsed'));
     viewButtons.forEach((button) => button.addEventListener('click', () => setView(button.dataset.libraryView ?? 'grid')));
+
+    try {
+      setFiltersCollapsed(window.localStorage.getItem(filterStorageKey) === 'collapsed');
+    } catch {
+      setFiltersCollapsed(false);
+    }
+
     updateFilters();
   }
 </script>

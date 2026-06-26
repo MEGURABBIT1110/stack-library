@@ -746,6 +746,7 @@ type LibraryFilters = {
 
 - 検索語で書名、著者、トピック、要約、読書目的を検索する
 - フィルター条件を組み合わせて絞り込む
+- フィルターレールは開閉できるようにし、開閉ボタンは `aria-expanded` と対象パネルの表示状態を同期する
 - 表示モードを切り替える
 - 結果件数を表示する
 - 条件解除ボタンを用意する
@@ -1113,6 +1114,7 @@ type DetailSidePanelProps = {
     ├─ AppShell(showTopBar=false)
     ├─ TopBar
     ├─ FilterPanel相当のフォーム
+    ├─ FilterPanel開閉ボタン
     ├─ ViewSwitcher相当のボタン
     └─ BookCard(variant="specimen")
 
