@@ -713,7 +713,7 @@ type Props = {
 
 `/library/` の検索、フィルター、表示切り替えを統合するReact Islandです。
 
-現行MVPの `/library/` は静的Astroページ内の軽量スクリプトで、読書状態・レベル・実務適用度・再読価値の絞り込み、件数更新、`grid` / `list` 表示切り替えを実装しています。検索、URLクエリ同期、技術トピックを含む複合フィルターが必要になった段階で `LibraryExplorer.tsx` へ切り出します。
+現行MVPの `/library/` は静的Astroページ内の軽量スクリプトで、読書状態・難易度・レベル・実務適用度・再読価値の絞り込み、件数更新、`grid` / `list` 表示切り替えを実装しています。検索、URLクエリ同期、技術トピックを含む複合フィルターが必要になった段階で `LibraryExplorer.tsx` へ切り出します。
 
 #### Props
 
@@ -734,6 +734,7 @@ type LibraryFilters = {
   query: string;
   status?: ReadingStatus;
   topicSlug?: string;
+  difficulty?: 'intro' | 'intermediate' | 'advanced';
   minDifficulty?: SignalValue;
   practicality?: SignalValue;
   rereadValue?: SignalValue;
@@ -747,8 +748,8 @@ type LibraryFilters = {
 - フィルター条件を組み合わせて絞り込む
 - Figma `64:2` に合わせ、初期表示はフィルターを閉じた状態にする
 - フィルターボタン押下時は Figma `70:2` に合わせ、ツールバー下へ横長の `instrument-strip` を表示する
-- `instrument-strip` は高さを固定し、フィルターピルを折り返さず横スクロールで扱う
-- 所有形式では絞り込まず、レベルは `Lv.1` から `Lv.5` のレンジフィルターで扱う
+- `instrument-strip` は Figma `70:2` に合わせて `140px` 高を基準にし、フィルターピルを折り返さず横スクロールで扱う
+- 所有形式では絞り込まず、難易度ピルと `Lv.1` から `Lv.5` のレベルレンジを並べて扱う
 - 開閉ボタンは `aria-expanded` と対象パネルの表示状態を同期する
 - 閉じ状態では選択中条件をチップとして表示して個別解除できるようにする
 - 表示モードを切り替える
@@ -763,6 +764,7 @@ MVPでは必須ではありませんが、可能なら以下を同期します�
 - `q`
 - `status`
 - `topic`
+- `difficulty`
 - `minDifficulty`
 - `practicality`
 - `reread`
@@ -825,6 +827,7 @@ type FilterPanelProps = {
 
 - 読書状態
 - 技術トピック
+- 難易度
 - レベル（難易度レンジ）
 - 実務適用度
 - 再読価値

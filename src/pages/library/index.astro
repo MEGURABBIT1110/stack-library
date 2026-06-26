@@ -31,11 +31,29 @@ const statusFilters = [
   { label: '未分類', value: 'unclassified' },
 ];
 
+const difficultyFilters = [
+  { label: '入門', value: 'intro' },
+  { label: '中級', value: 'intermediate' },
+  { label: '上級', value: 'advanced' },
+];
+
 const signalFilters = [
   { label: '高', value: 'high' },
   { label: '中', value: 'medium' },
   { label: '低', value: 'low' },
 ];
+
+const getDifficultyBand = (value?: number) => {
+  if (!value) {
+    return '';
+  }
+
+  if (value <= 2) {
+    return 'intro';
+  }
+
+  return value === 3 ? 'intermediate' : 'advanced';
+};
 
 const getSignalBand = (value?: number) => {
   if (!value) {
@@ -102,13 +120,12 @@ const getSignalBand = (value?: number) => {
         >
           <div class="library-instrument-strip__header">
             <h2 id="library-filter-strip-title" class="library-instrument-strip__title">FILTERS</h2>
-            <button class="library-instrument-strip__close" type="button" data-library-filter-close>× 閉じる</button>
+            <button class="library-instrument-strip__close" type="button" aria-label="フィルターを閉じる" data-library-filter-close>×</button>
           </div>
 
           <div class="library-instrument-strip__segments">
-            <fieldset class="library-instrument-segment">
-              <legend class="sr-only">読書状態</legend>
-              <span class="library-instrument-segment__label" aria-hidden="true">読書状態</span>
+            <div class="library-instrument-segment" role="group" aria-labelledby="library-status-filter-label">
+              <span id="library-status-filter-label" class="library-instrument-segment__label">読書状態</span>
               <div class="library-filter-pills">
                 {
                   statusFilters.map((filter) => (
@@ -119,11 +136,24 @@ const getSignalBand = (value?: number) => {
                   ))
                 }
               </div>
-            </fieldset>
+            </div>
 
-            <fieldset class="library-instrument-segment">
-              <legend class="sr-only">レベル</legend>
-              <span class="library-instrument-segment__label" aria-hidden="true">レベル</span>
+            <div class="library-instrument-segment" role="group" aria-labelledby="library-difficulty-filter-label">
+              <span id="library-difficulty-filter-label" class="library-instrument-segment__label">難易度</span>
+              <div class="library-filter-pills">
+                {
+                  difficultyFilters.map((filter) => (
+                    <label class="library-filter-pill">
+                      <input class="sr-only" type="checkbox" name="difficulty" value={filter.value} data-filter-label={`難易度：${filter.label}`} data-library-filter />
+                      <span>{filter.label}</span>
+                    </label>
+                  ))
+                }
+              </div>
+            </div>
+
+            <div class="library-instrument-segment" role="group" aria-labelledby="library-level-filter-label">
+              <span id="library-level-filter-label" class="library-instrument-segment__label">レベル</span>
               <div class="library-range-filter">
                 <div class="library-range-filter__meta" aria-hidden="true">
                   <span>Lv.1</span>
@@ -146,11 +176,10 @@ const getSignalBand = (value?: number) => {
                   data-library-level-range
                 />
               </div>
-            </fieldset>
+            </div>
 
-            <fieldset class="library-instrument-segment">
-              <legend class="sr-only">実務適用度</legend>
-              <span class="library-instrument-segment__label" aria-hidden="true">実務適用度</span>
+            <div class="library-instrument-segment" role="group" aria-labelledby="library-practicality-filter-label">
+              <span id="library-practicality-filter-label" class="library-instrument-segment__label">実務適用度</span>
               <div class="library-filter-pills">
                 {
                   signalFilters.map((filter) => (
@@ -161,11 +190,10 @@ const getSignalBand = (value?: number) => {
                   ))
                 }
               </div>
-            </fieldset>
+            </div>
 
-            <fieldset class="library-instrument-segment">
-              <legend class="sr-only">再読価値</legend>
-              <span class="library-instrument-segment__label" aria-hidden="true">再読価値</span>
+            <div class="library-instrument-segment" role="group" aria-labelledby="library-reread-filter-label">
+              <span id="library-reread-filter-label" class="library-instrument-segment__label">再読価値</span>
               <div class="library-filter-pills">
                 {
                   signalFilters.map((filter) => (
@@ -176,7 +204,7 @@ const getSignalBand = (value?: number) => {
                   ))
                 }
               </div>
-            </fieldset>
+            </div>
           </div>
         </form>
 
@@ -187,6 +215,7 @@ const getSignalBand = (value?: number) => {
                 class="library-grid__item"
                 data-library-card
                 data-status={book.status}
+                data-difficulty={getDifficultyBand(book.difficulty)}
                 data-level={book.difficulty ?? ''}
                 data-practicality={getSignalBand(book.practicality)}
                 data-reread={getSignalBand(book.rereadValue)}
@@ -306,6 +335,7 @@ const getSignalBand = (value?: number) => {
 
     const updateFilters = () => {
       const selectedStatuses = getCheckedValues('status');
+      const selectedDifficulties = getCheckedValues('difficulty');
       const selectedPracticalities = getCheckedValues('practicality');
       const selectedRereadValues = getCheckedValues('reread');
       const defaultLevel = Number(levelRange?.dataset.rangeDefault ?? levelRange?.min ?? '1');
@@ -319,6 +349,7 @@ const getSignalBand = (value?: number) => {
           selectedLevel <= defaultLevel || (Number.isFinite(cardLevel) && cardLevel >= selectedLevel);
         const isVisible =
           statusMatches &&
+          matchesFilter(selectedDifficulties, card.dataset.difficulty) &&
           levelMatches &&
           matchesFilter(selectedPracticalities, card.dataset.practicality) &&
           matchesFilter(selectedRereadValues, card.dataset.reread);
