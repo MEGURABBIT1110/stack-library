@@ -10,6 +10,13 @@ const author = (name: string) => ({
   name,
 });
 
+const publisher = (name: string) => ({
+  id: `publisher-${name.toLowerCase().replaceAll(' ', '-')}`,
+  createdAt: now,
+  updatedAt: now,
+  name,
+});
+
 export const mockBooks: Book[] = [
   {
     id: 'book-learning-react',
@@ -26,8 +33,10 @@ export const mockBooks: Book[] = [
     conceptDensity: 3,
     implementationValue: 4,
     readingProgress: 65,
-    readingPurpose: 'Reactの基礎を現代的なコンポーネント設計として再整理する。',
-    summary: 'Reactのコンポーネント、Hooks、データフローを実装目線で整理する技術書。',
+    readingPurpose:
+      'Reactの基礎を、現代的なコンポーネント設計として再整理するため。',
+    summary:
+      'Reactのコンポーネント、Hooks、データフローを実装目線で整理する技術書。',
     topics: [getMockTopic('react'), getMockTopic('typescript')].filter(Boolean) as Book['topics'],
     visibility: 'public',
   },
@@ -46,9 +55,15 @@ export const mockBooks: Book[] = [
     conceptDensity: 4,
     implementationValue: 5,
     readingProgress: 20,
-    readingPurpose: 'TypeScriptを使ったWebアプリの設計判断を実装へ戻すため。',
-    summary: '実践的なReact/Next.jsアプリケーション開発を型、状態管理、設計から扱う。',
-    topics: [getMockTopic('react'), getMockTopic('typescript'), getMockTopic('nextjs')].filter(Boolean) as Book['topics'],
+    readingPurpose:
+      'TypeScriptを使ったWebアプリケーションの設計判断を、実装へ戻せる形で確認するため。',
+    summary:
+      '実践的なReact/Next.jsアプリケーション開発を、状態管理や設計の観点から扱う本。',
+    topics: [
+      getMockTopic('react'),
+      getMockTopic('typescript'),
+      getMockTopic('nextjs'),
+    ].filter(Boolean) as Book['topics'],
     visibility: 'public',
   },
   {
@@ -66,8 +81,10 @@ export const mockBooks: Book[] = [
     conceptDensity: 4,
     implementationValue: 5,
     readingProgress: 90,
-    readingPurpose: 'レイアウトをコンポーネントとして捉え直し、CSS設計の判断へ戻すため。',
-    summary: 'CSSレイアウトを再利用可能なプリミティブとして整理する実践的な書籍。',
+    readingPurpose:
+      'レイアウトをページ固有の調整ではなく、再利用できる構造として捉え直すため。',
+    summary:
+      'CSSレイアウトを再利用可能なプリミティブとして整理する実践的な技術書。',
     topics: [getMockTopic('css-architecture'), getMockTopic('design-system')].filter(Boolean) as Book['topics'],
     visibility: 'public',
   },
@@ -87,8 +104,10 @@ export const mockBooks: Book[] = [
     implementationValue: 5,
     readingProgress: 100,
     appliedToWork: true,
-    appliedMemo: 'フォームUIとフォーカス状態の見直しに使った。',
-    summary: 'Web UIのアクセシビリティ設計、実装、検証の基礎を整理する。',
+    appliedMemo:
+      'フォームUIとフォーカス状態の見直しに使った。',
+    summary:
+      'Web UIにおけるアクセシビリティ設計、実装、検証の基礎を整理する本。',
     topics: [getMockTopic('accessibility'), getMockTopic('ux-engineering')].filter(Boolean) as Book['topics'],
     visibility: 'public',
   },
@@ -108,7 +127,8 @@ export const mockBooks: Book[] = [
     implementationValue: 4,
     readingProgress: 100,
     appliedToWork: true,
-    summary: 'UIの見た目を改善するための実践的な視覚設計パターン集。',
+    summary:
+      'UIの見た目を改善するための実践的な視覚設計パターン集。',
     topics: [getMockTopic('design-system'), getMockTopic('ux-engineering')].filter(Boolean) as Book['topics'],
     visibility: 'public',
   },
@@ -117,18 +137,28 @@ export const mockBooks: Book[] = [
     createdAt: now,
     updatedAt: now,
     title: 'Designing Interfaces',
+    subtitle: 'Patterns for Effective Interaction Design',
     slug: 'designing-interfaces',
     authors: [author('Jenifer Tidwell')],
-    status: 'reread',
-    ownership: 'physical',
+    publisher: publisher("O'Reilly Media"),
+    status: 'read',
+    ownership: 'kindle',
     difficulty: 3,
     practicality: 4,
-    rereadValue: 5,
-    conceptDensity: 5,
-    implementationValue: 4,
-    readingProgress: 35,
-    summary: 'UIパターンを体系的に整理し、設計意図と実装の接続点を探れる書籍。',
-    topics: [getMockTopic('ux-engineering'), getMockTopic('information-architecture')].filter(Boolean) as Book['topics'],
+    rereadValue: 4,
+    conceptDensity: 3,
+    implementationValue: 3,
+    readingProgress: 100,
+    readFinishedAt: '2024-03-01',
+    readingPurpose:
+      'UIパターンの体系的な理解と、デザインシステム設計の基礎を固めるために選んだ。特に、Webだけではなくデスクトップアプリケーションや複雑な業務システムのパターンを網羅している点が重要だった。',
+    summary:
+      'UIパターンを体系的に整理し、設計意図と実装への接続点を探れる技術書。',
+    topics: [
+      getMockTopic('accessibility'),
+      getMockTopic('design-system'),
+      getMockTopic('ux-engineering'),
+    ].filter(Boolean) as Book['topics'],
     visibility: 'public',
   },
 ];

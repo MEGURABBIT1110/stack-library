@@ -1,0 +1,31 @@
+---
+import type { SignalValue } from '@/types/content';
+
+type Props = {
+  label: string;
+  value?: SignalValue;
+  valueLabel?: string;
+  max?: 5;
+};
+
+const { label, value, valueLabel, max = 5 } = Astro.props;
+const percent = value ? `${(value / max) * 100}%` : '0%';
+const readableValue = value ? (valueLabel ?? `${value}/${max}`) : '未設定';
+---
+
+<div class="signal-meter">
+  <div class="signal-meter__row">
+    <span class="signal-meter__label">{label}</span>
+    <span class="signal-meter__value">{readableValue}</span>
+    <span
+      class="signal-meter__track"
+      role="meter"
+      aria-label={`${label}: ${readableValue}`}
+      aria-valuemin="1"
+      aria-valuemax={max}
+      aria-valuenow={value}
+    >
+      <span class="signal-meter__fill" style={`width: ${percent}`} aria-hidden="true"></span>
+    </span>
+  </div>
+</div>

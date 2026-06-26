@@ -148,7 +148,7 @@ export const READING_STATUS_LABELS: Record<ReadingStatus, string> = {
 
 export const OWNERSHIP_LABELS: Record<OwnershipType, string> = {
   physical: '紙の本',
-  kindle: 'Kindle',
+  kindle: '電子書籍',
   pdf: 'PDF',
   borrowed: '借りた本',
   web: 'Web',
@@ -156,9 +156,9 @@ export const OWNERSHIP_LABELS: Record<OwnershipType, string> = {
 
 export const LEARNING_STAGE_LABELS: Record<LearningStage, string> = {
   intro: '入門',
-  practice: '実務',
+  practice: '実践',
   'deep-dive': '深掘り',
-  research: '研究',
+  research: '調査',
   reorganize: '再整理',
 };
 
