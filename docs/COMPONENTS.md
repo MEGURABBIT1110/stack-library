@@ -713,7 +713,7 @@ type Props = {
 
 `/library/` の検索、フィルター、表示切り替えを統合するReact Islandです。
 
-現行MVPの `/library/` は静的Astroページ内の軽量スクリプトで、読書状態・技術トピックの絞り込み、件数更新、`grid` / `list` 表示切り替えを実装しています。検索、URLクエリ同期、複合シグナルフィルターが必要になった段階で `LibraryExplorer.tsx` へ切り出します。
+現行MVPの `/library/` は静的Astroページ内の軽量スクリプトで、読書状態・難易度・所有形式・実務適用度・再読価値の絞り込み、件数更新、`grid` / `list` 表示切り替えを実装しています。検索、URLクエリ同期、技術トピックを含む複合フィルターが必要になった段階で `LibraryExplorer.tsx` へ切り出します。
 
 #### Props
 
@@ -746,8 +746,10 @@ type LibraryFilters = {
 
 - 検索語で書名、著者、トピック、要約、読書目的を検索する
 - フィルター条件を組み合わせて絞り込む
-- フィルターレールは開閉できるようにし、開閉ボタンは `aria-expanded` と対象パネルの表示状態を同期する
-- 閉じ状態では一覧領域を全幅に戻し、選択中条件をチップとして表示して個別解除できるようにする
+- Figma `64:2` に合わせ、初期表示はフィルターを閉じた状態にする
+- フィルターボタン押下時は Figma `70:2` に合わせ、ツールバー下へ横長の `instrument-strip` を表示する
+- 開閉ボタンは `aria-expanded` と対象パネルの表示状態を同期する
+- 閉じ状態では選択中条件をチップとして表示して個別解除できるようにする
 - 表示モードを切り替える
 - 結果件数を表示する
 - 条件解除ボタンを用意する
@@ -1114,7 +1116,7 @@ type DetailSidePanelProps = {
   index.astro
     ├─ AppShell(showTopBar=false)
     ├─ TopBar
-    ├─ FilterPanel相当のフォーム
+    ├─ FilterPanel相当の instrument-strip
     ├─ FilterPanel開閉ボタン
     ├─ ActiveFilterChip相当の選択中条件
     ├─ ViewSwitcher相当のボタン
