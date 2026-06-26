@@ -4,16 +4,17 @@ import TopBar from './TopBar.astro';
 
 type Props = {
   currentPath?: string;
+  showTopBar?: boolean;
 };
 
-const { currentPath = '/' } = Astro.props;
+const { currentPath = '/', showTopBar = true } = Astro.props;
 ---
 
 <div class="app-shell">
   <SiteSidebar currentPath={currentPath} />
-  <div class="app-main">
-    <TopBar />
-    <main id="main-content" class="app-main__content">
+  <div class:list={['app-main', !showTopBar && 'app-main--plain']}>
+    {showTopBar && <TopBar />}
+    <main id="main-content" class:list={['app-main__content', !showTopBar && 'app-main__content--full-height']}>
       <slot />
     </main>
   </div>

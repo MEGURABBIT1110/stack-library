@@ -1,23 +1,178 @@
 ---
-import AppShell from '@/components/layout/AppShell.astro';
-import PageShell from '@/components/layout/PageShell.astro';
 import BookCard from '@/components/book/BookCard.astro';
+import AppShell from '@/components/layout/AppShell.astro';
+import TopBar from '@/components/layout/TopBar.astro';
+import LucideIcon from '@/components/ui/LucideIcon.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getBooks } from '@/lib/queries/books';
+import { getTopics } from '@/lib/queries/topics';
 
-const books = await getBooks();
+const [books, topics] = await Promise.all([getBooks(), getTopics()]);
+
+const preferredBookOrder = [
+  'designing-interfaces',
+  'every-layout',
+  'web-accessibility',
+  'refactoring-ui',
+  'learning-react',
+  'practical-react-nextjs',
+];
+
+const preferredTopicOrder = [
+  'accessibility',
+  'css-architecture',
+  'design-system',
+  'react',
+  'typescript',
+  'nextjs',
+];
+
+const topicFilterLabels: Record<string, string> = {
+  accessibility: 'Accessibility',
+  'css-architecture': 'CSS設計',
+  'design-system': 'Design System',
+  react: 'React',
+  typescript: 'TypeScript',
+  nextjs: 'Next.js',
+};
+
+const orderedBooks = [...books].sort((bookA, bookB) => {
+  const indexA = preferredBookOrder.indexOf(bookA.slug);
+  const indexB = preferredBookOrder.indexOf(bookB.slug);
+
+  return (indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA) - (indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB);
+});
+
+const filterTopics = preferredTopicOrder
+  .map((slug) => topics.find((topic) => topic.slug === slug))
+  .filter((topic) => topic !== undefined);
+
+const statusFilters = [
+  { label: '読了', value: 'read' },
+  { label: '読書中', value: 'reading' },
+  { label: '積読', value: 'unread' },
+  { label: '未分類', value: 'unclassified' },
+];
 ---
 
-<BaseLayout title="ライブラリ" description="技術書を複数の視点から探索するライブラリ。">
-  <AppShell currentPath={Astro.url.pathname}>
-    <PageShell variant="wide">
-      <section class="simple-panel">
-        <h1 class="simple-panel__title">ライブラリ</h1>
-        <p class="simple-panel__description">技術書を本棚ではなく、知識ノードとして探索します。</p>
+<BaseLayout title="ライブラリ" description="技術書を知識ノードとして探索するライブラリ。">
+  <AppShell currentPath={Astro.url.pathname} showTopBar={false}>
+    <div class="library-page" data-library-page>
+      <aside class="library-filters" aria-labelledby="library-filter-title">
+        <h2 id="library-filter-title" class="library-filters__title">FILTER</h2>
+
+        <form class="library-filters__form" data-library-filters>
+          <fieldset class="library-filter-group">
+            <legend>読書状態</legend>
+            {
+              statusFilters.map((filter) => (
+                <label class="library-filter-option">
+                  <input type="checkbox" name="status" value={filter.value} data-library-filter />
+                  <span>{filter.label}</span>
+                </label>
+              ))
+            }
+          </fieldset>
+
+          <fieldset class="library-filter-group">
+            <legend>技術トピック</legend>
+            {
+              filterTopics.map((topic) => (
+                <label class="library-filter-option">
+                  <input type="checkbox" name="topic" value={topic.slug} data-library-filter />
+                  <span>{topicFilterLabels[topic.slug] ?? topic.name}</span>
+                </label>
+              ))
+            }
+          </fieldset>
+        </form>
+      </aside>
+
+      <section class="library-workbench" aria-labelledby="library-title">
+        <TopBar />
+
+        <div class="library-toolbar">
+          <div>
+            <h1 id="library-title" class="library-toolbar__title">Library</h1>
+            <p class="library-toolbar__count" data-library-count>全{orderedBooks.length}冊</p>
+          </div>
+
+          <div class="library-view-switcher" aria-label="表示モード">
+            <button class="library-view-switcher__button is-active" type="button" aria-pressed="true" aria-label="グリッド表示" data-library-view="grid">
+              <LucideIcon name="LayoutGrid" size={16} strokeWidth={1.75} aria-hidden="true" />
+            </button>
+            <button class="library-view-switcher__button" type="button" aria-pressed="false" aria-label="リスト表示" data-library-view="list">
+              <LucideIcon name="List" size={16} strokeWidth={1.75} aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+
+        <div class="library-grid" aria-label="技術書一覧" data-library-grid data-view="grid">
+          {
+            orderedBooks.map((book) => (
+              <div
+                class="library-grid__item"
+                data-library-card
+                data-status={book.status}
+                data-topics={book.topics?.map((topic) => topic.slug).join(' ') ?? ''}
+              >
+                <BookCard book={book} variant="specimen" showTopics />
+              </div>
+            ))
+          }
+        </div>
       </section>
-      <div class="listing-grid">
-        {books.map((book) => <BookCard book={book} showTopics />)}
-      </div>
-    </PageShell>
+    </div>
   </AppShell>
 </BaseLayout>
+
+<script>
+  const libraryPage = document.querySelector<HTMLElement>('[data-library-page]');
+
+  if (libraryPage) {
+    const filterInputs = Array.from(libraryPage.querySelectorAll<HTMLInputElement>('[data-library-filter]'));
+    const cards = Array.from(libraryPage.querySelectorAll<HTMLElement>('[data-library-card]'));
+    const count = libraryPage.querySelector<HTMLElement>('[data-library-count]');
+    const grid = libraryPage.querySelector<HTMLElement>('[data-library-grid]');
+    const viewButtons = Array.from(libraryPage.querySelectorAll<HTMLButtonElement>('[data-library-view]'));
+
+    const getCheckedValues = (name: string) =>
+      new Set(filterInputs.filter((input) => input.name === name && input.checked).map((input) => input.value));
+
+    const updateFilters = () => {
+      const selectedStatuses = getCheckedValues('status');
+      const selectedTopics = getCheckedValues('topic');
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const cardTopics = (card.dataset.topics ?? '').split(' ').filter(Boolean);
+        const statusMatches = selectedStatuses.size === 0 || selectedStatuses.has(card.dataset.status ?? '');
+        const topicMatches = selectedTopics.size === 0 || cardTopics.some((topic) => selectedTopics.has(topic));
+        const isVisible = statusMatches && topicMatches;
+
+        card.hidden = !isVisible;
+        visibleCount += isVisible ? 1 : 0;
+      });
+
+      if (count) {
+        count.textContent = `全${visibleCount}冊`;
+      }
+    };
+
+    const setView = (view: string) => {
+      if (grid) {
+        grid.dataset.view = view;
+      }
+
+      viewButtons.forEach((button) => {
+        const isActive = button.dataset.libraryView === view;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+      });
+    };
+
+    filterInputs.forEach((input) => input.addEventListener('change', updateFilters));
+    viewButtons.forEach((button) => button.addEventListener('click', () => setView(button.dataset.libraryView ?? 'grid')));
+    updateFilters();
+  }
+</script>

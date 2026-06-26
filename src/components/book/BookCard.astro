@@ -1,6 +1,6 @@
 ---
 import { clampProgress, formatAuthors } from '@/lib/format';
-import type { Book } from '@/types/content';
+import type { Book, SignalValue } from '@/types/content';
 import ReadingStatusBadge from './ReadingStatusBadge.astro';
 import TopicChip from '@/components/topic/TopicChip.astro';
 
@@ -20,6 +20,30 @@ const {
 
 const progress = clampProgress(book.readingProgress);
 const coverAlt = `「${book.title}」の表紙`;
+const isSpecimen = variant === 'specimen';
+const specimenTopics = book.topics?.filter((topic) => topic.slug !== 'ux-engineering') ?? [];
+const topicCandidates = isSpecimen
+  ? (specimenTopics.length > 0 ? specimenTopics : book.topics ?? [])
+  : (book.topics ?? []);
+const visibleTopics = topicCandidates.slice(0, isSpecimen ? 2 : 3);
+const specimenTopicLabels: Record<string, string> = {
+  accessibility: 'Accessibility',
+  'css-architecture': 'CSS設計',
+  'design-system': 'Design System',
+  'ux-engineering': 'UX Engineering',
+  react: 'React',
+  typescript: 'TypeScript',
+  nextjs: 'Next.js',
+};
+const specimenStatusLabels: Partial<Record<Book['status'], string>> = {
+  unread: '積読',
+};
+
+const signals: Array<{ label: string; name: string; value?: SignalValue }> = [
+  { label: 'Lv.', name: '難易度', value: book.difficulty },
+  { label: 'Imp.', name: '実装接続度', value: book.implementationValue },
+  { label: 'Ret.', name: '再読価値', value: book.rereadValue },
+];
 ---
 
 <article class:list={['book-card', `book-card--${variant}`]}>
@@ -32,23 +56,52 @@ const coverAlt = `「${book.title}」の表紙`;
       )
     }
   </div>
+
   <div class="book-card__body">
     <h3 class="book-card__title">
       <a href={`/books/${book.slug}/`}>{book.title}</a>
     </h3>
-    {book.subtitle && <p class="book-card__subtitle">{book.subtitle}</p>}
+    {book.subtitle && !isSpecimen && <p class="book-card__subtitle">{book.subtitle}</p>}
     <p class="book-card__authors">{formatAuthors(book.authors)}</p>
   </div>
+
   {
-    showTopics && book.topics && book.topics.length > 0 && (
-      <div class="book-card__topics" aria-label="関連技術トピック">
-        {book.topics.slice(0, 3).map((topic) => <TopicChip topic={topic} />)}
+    isSpecimen ? (
+      <div class="book-card__chips" aria-label="読書状態と関連技術トピック">
+        <ReadingStatusBadge status={book.status} label={specimenStatusLabels[book.status]} />
+        {visibleTopics.map((topic) => <TopicChip topic={topic} label={specimenTopicLabels[topic.slug] ?? topic.name} />)}
       </div>
+    ) : (
+      showTopics && visibleTopics.length > 0 && (
+        <div class="book-card__topics" aria-label="関連技術トピック">
+          {visibleTopics.map((topic) => <TopicChip topic={topic} />)}
+        </div>
+      )
     )
   }
+
   <div class="book-card__footer">
     {
-      showProgress ? (
+      isSpecimen ? (
+        <div class="book-card__signals" aria-label="読書シグナル">
+          {
+            signals.map((signal) => {
+              const value = signal.value ?? 0;
+
+              return (
+                <div class="mini-signal" aria-label={`${signal.name} ${value > 0 ? `${value}/5` : '未設定'}`}>
+                  <span class="mini-signal__label" aria-hidden="true">{signal.label}</span>
+                  <span class="mini-signal__ticks" aria-hidden="true">
+                    {[1, 2, 3, 4, 5].map((step) => (
+                      <span class:list={['mini-signal__tick', step <= value && 'is-active']} />
+                    ))}
+                  </span>
+                </div>
+              );
+            })
+          }
+        </div>
+      ) : showProgress ? (
         <>
           <div class="progress-meter" aria-label={`読書進捗 ${progress}%`}>
             <span class="progress-meter__track" aria-hidden="true">

@@ -156,6 +156,7 @@ Figma叩き台のデスクトップ構造を実装するアプリシェルです
 ```ts
 type Props = {
   currentPath?: string;
+  showTopBar?: boolean;
 };
 ```
 
@@ -163,8 +164,10 @@ type Props = {
 
 - デスクトップでは `240px` の固定サイドバーと、残り幅のメイン領域に分ける
 - メイン領域上部に `72px` のトップバーを置く
+- `/library/` のように画面内でトップバー位置を制御する場合は `showTopBar={false}` を使い、ページ側で `TopBar` を配置する
 - トップバーの検索欄には `label` を持たせ、placeholderだけに依存しない
 - 背景グリッドは装飾として扱い、スクリーンリーダーに余計な情報を渡さない
+- Figma準拠の専用作業面では背景グリッドを抑制してよい
 - モバイルではサイドバーを上部ナビまたは簡略ナビへ畳む
 - ページ遷移リンクには `<a>` と `aria-current="page"` を使う
 
@@ -264,8 +267,8 @@ EC商品カードではなく、収蔵品ラベル / 技術標本ラベルとし
 ```ts
 type Props = {
   book: Book;
-  variant?: 'default' | 'compact' | 'featured';
-  showSignals?: boolean;
+  variant?: 'default' | 'compact' | 'featured' | 'specimen';
+  showProgress?: boolean;
   showTopics?: boolean;
 };
 ```
@@ -307,6 +310,8 @@ type Props = {
 - トピックチップを表示する場合はチップのリンクとカードリンクの入れ子に注意する
 - 入れ子リンクを避けるため、カード全体リンクではなくタイトルリンク方式が安全
 - Figma概要ページの読書中カードでは `variant: 'specimen'` 相当の硬質なカードを使う
+- Figmaライブラリページでは `variant="specimen"` を使い、表紙領域、状態バッジ、トピックチップ、`Lv.`, `Imp.`, `Ret.` のミニシグナルを固定密度で表示する
+- ライブラリグリッド内の `specimen` カードは幅約 `270px`、高さ約 `364px`、内側余白 `24px`、表紙領域 `160px` を目安にする
 
 ---
 
@@ -366,6 +371,7 @@ type Props = {
 type Props = {
   status: ReadingStatus;
   size?: 'sm' | 'md';
+  label?: string;
 };
 ```
 
@@ -382,6 +388,7 @@ type Props = {
 #### アクセシビリティ
 
 - ラベルテキストを必ず表示する
+- 文脈に応じて `label` で表示名を上書きしてよい。ただし意味は `status` と矛盾させない
 - 色だけで状態を表現しない
 - 装飾アイコンを使う場合は `aria-hidden="true"`
 
@@ -404,6 +411,7 @@ type Props = {
   href?: string;
   size?: 'sm' | 'md';
   interactive?: boolean;
+  label?: string;
 };
 ```
 
@@ -411,7 +419,8 @@ type Props = {
 
 - `href` がある場合は `<a>`
 - `interactive` かつ `href` がない場合は `<button>` を検討
-- 表示ラベルは `topic.name`
+- 表示ラベルは原則 `topic.name`
+- ライブラリグリッドのように情報密度を優先する場所では、`label` で `Accessibility` や `CSS設計` など短い表示名に上書きしてよい
 - `topic.colorToken` があれば補助的に使う
 
 #### アクセシビリティ
@@ -703,6 +712,8 @@ type Props = {
 #### 役割
 
 `/library/` の検索、フィルター、表示切り替えを統合するReact Islandです。
+
+現行MVPの `/library/` は静的Astroページ内の軽量スクリプトで、読書状態・技術トピックの絞り込み、件数更新、`grid` / `list` 表示切り替えを実装しています。検索、URLクエリ同期、複合シグナルフィルターが必要になった段階で `LibraryExplorer.tsx` へ切り出します。
 
 #### Props
 
@@ -1098,15 +1109,12 @@ type DetailSidePanelProps = {
 
 ```txt
 /library/
-  LibraryExplorer
-    ├─ SearchBar
-    ├─ FilterPanel
-    ├─ ViewSwitcher
-    ├─ BookGrid
-    │   └─ BookCard
-    ├─ BookTable
-    ├─ BookBoard
-    └─ BookMatrix
+  index.astro
+    ├─ AppShell(showTopBar=false)
+    ├─ TopBar
+    ├─ FilterPanel相当のフォーム
+    ├─ ViewSwitcher相当のボタン
+    └─ BookCard(variant="specimen")
 
 /books/[slug]/
   DetailLayout
