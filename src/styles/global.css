@@ -871,7 +871,9 @@ button {
 }
 
 .library-instrument-strip {
+  height: 120px;
   min-height: 120px;
+  overflow: hidden;
   border-top: var(--border-hairline);
   border-bottom: var(--border-hairline);
   background: color-mix(in srgb, var(--color-bg-panel) 46%, var(--color-bg));
@@ -917,8 +919,32 @@ button {
 
 .library-instrument-strip__segments {
   display: grid;
-  grid-template-columns: 260px repeat(4, minmax(0, 1fr));
-  min-height: 67px;
+  grid-template-columns: 260px repeat(4, 220px);
+  height: 67px;
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  scrollbar-color: color-mix(in srgb, var(--color-accent-cyan) 70%, transparent) transparent;
+  scrollbar-width: thin;
+  overscroll-behavior-x: contain;
+}
+
+.library-instrument-strip__segments::-webkit-scrollbar {
+  height: 6px;
+}
+
+.library-instrument-strip__segments::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.library-instrument-strip__segments::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-cyan) 46%, transparent);
+}
+
+.library-instrument-strip__segments::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-accent-cyan) 68%, transparent);
 }
 
 .library-instrument-segment {
@@ -950,12 +976,14 @@ button {
 
 .library-filter-pills {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 4px;
+  width: max-content;
 }
 
 .library-filter-pill {
   display: inline-flex;
+  flex: 0 0 auto;
   min-width: 0;
 }
 
@@ -1419,7 +1447,6 @@ button {
   }
 
   .library-instrument-strip__segments {
-    grid-template-columns: repeat(5, minmax(180px, 1fr));
     overflow-x: auto;
   }
 
@@ -1507,19 +1534,6 @@ button {
 
   .library-page[data-filters="expanded"] .library-grid {
     padding-top: 24px;
-  }
-
-  .library-instrument-strip {
-    min-height: auto;
-  }
-
-  .library-instrument-strip__header {
-    height: auto;
-    padding-bottom: 8px;
-  }
-
-  .library-instrument-strip__segments {
-    grid-template-columns: repeat(5, minmax(156px, 1fr));
   }
 
   .library-grid[data-view="list"] .book-card--specimen {
