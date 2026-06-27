@@ -206,6 +206,10 @@ const getSignalBand = (value?: number) => {
               </div>
             </div>
           </div>
+
+          <div class="library-instrument-strip__scrollbar" aria-hidden="true" data-library-filter-scrollbar hidden>
+            <span class="library-instrument-strip__scrollbar-thumb" data-library-filter-scrollbar-thumb></span>
+          </div>
         </form>
 
         <div class="library-grid" aria-label="技術書一覧" data-library-grid data-view="grid">
@@ -248,12 +252,76 @@ const getSignalBand = (value?: number) => {
     const viewButtons = Array.from(libraryPage.querySelectorAll<HTMLButtonElement>('[data-library-view]'));
     const levelRange = libraryPage.querySelector<HTMLInputElement>('[data-library-level-range]');
     const levelOutput = libraryPage.querySelector<HTMLOutputElement>('[data-library-level-output]');
+    const filterSegments = libraryPage.querySelector<HTMLElement>('.library-instrument-strip__segments');
+    const filterScrollbar = libraryPage.querySelector<HTMLElement>('[data-library-filter-scrollbar]');
+    const filterScrollbarThumb = libraryPage.querySelector<HTMLElement>('[data-library-filter-scrollbar-thumb]');
+    let filterScrollbarDrag:
+      | {
+          maxScroll: number;
+          maxThumbX: number;
+          pointerId: number;
+          startClientX: number;
+          startScrollLeft: number;
+        }
+      | undefined;
 
     const getCheckedValues = (name: string) =>
       new Set(filterInputs.filter((input) => input.name === name && input.checked).map((input) => input.value));
 
     const matchesFilter = (selectedValues: Set<string>, value: string | undefined) =>
       selectedValues.size === 0 || (value !== undefined && selectedValues.has(value));
+
+    const getFilterScrollbarGeometry = () => {
+      if (!filterSegments || !filterScrollbar || !filterScrollbarThumb) {
+        return undefined;
+      }
+
+      const maxScroll = Math.max(0, filterSegments.scrollWidth - filterSegments.clientWidth);
+
+      filterScrollbar.hidden = maxScroll === 0;
+
+      if (maxScroll === 0) {
+        filterScrollbarThumb.style.setProperty('--filter-scrollbar-thumb-x', '0px');
+        return undefined;
+      }
+
+      const trackWidth = filterScrollbar.clientWidth;
+      const thumbWidth = Math.min(220, trackWidth);
+      const maxThumbX = Math.max(0, trackWidth - thumbWidth);
+
+      return {
+        maxScroll,
+        maxThumbX,
+        thumbWidth,
+      };
+    };
+
+    const syncFilterScrollbar = () => {
+      if (!filterScrollbarThumb) {
+        return;
+      }
+
+      const geometry = getFilterScrollbarGeometry();
+
+      if (!geometry || !filterSegments) {
+        return;
+      }
+
+      const { maxScroll, maxThumbX, thumbWidth } = geometry;
+      const thumbX = maxScroll > 0 ? (filterSegments.scrollLeft / maxScroll) * maxThumbX : 0;
+
+      filterScrollbarThumb.style.width = `${thumbWidth}px`;
+      filterScrollbarThumb.style.setProperty('--filter-scrollbar-thumb-x', `${thumbX}px`);
+    };
+
+    const stopFilterScrollbarDrag = (pointerId: number) => {
+      if (!filterScrollbarDrag || filterScrollbarDrag.pointerId !== pointerId) {
+        return;
+      }
+
+      filterScrollbarThumb?.classList.remove('is-dragging');
+      filterScrollbarDrag = undefined;
+    };
 
     const setFiltersExpanded = (isExpanded: boolean) => {
       libraryPage.dataset.filters = isExpanded ? 'expanded' : 'collapsed';
@@ -268,6 +336,10 @@ const getSignalBand = (value?: number) => {
       });
 
       updateActiveFilters();
+
+      if (isExpanded) {
+        requestAnimationFrame(syncFilterScrollbar);
+      }
     };
 
     const getRangeDefault = (input: HTMLInputElement) => input.dataset.rangeDefault ?? input.min;
@@ -417,13 +489,59 @@ const getSignalBand = (value?: number) => {
       updateFilters();
     });
     viewButtons.forEach((button) => button.addEventListener('click', () => setView(button.dataset.libraryView ?? 'grid')));
+    filterSegments?.addEventListener('scroll', syncFilterScrollbar, { passive: true });
+    window.addEventListener('resize', syncFilterScrollbar);
+    filterScrollbarThumb?.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0 || !filterSegments || !filterScrollbarThumb) {
+        return;
+      }
+
+      const geometry = getFilterScrollbarGeometry();
+
+      if (!geometry || geometry.maxThumbX === 0) {
+        return;
+      }
+
+      event.preventDefault();
+      filterScrollbarThumb.setPointerCapture(event.pointerId);
+      filterScrollbarThumb.classList.add('is-dragging');
+      filterScrollbarDrag = {
+        maxScroll: geometry.maxScroll,
+        maxThumbX: geometry.maxThumbX,
+        pointerId: event.pointerId,
+        startClientX: event.clientX,
+        startScrollLeft: filterSegments.scrollLeft,
+      };
+    });
+    filterScrollbarThumb?.addEventListener('pointermove', (event) => {
+      if (!filterScrollbarDrag || filterScrollbarDrag.pointerId !== event.pointerId || !filterSegments) {
+        return;
+      }
+
+      const deltaX = event.clientX - filterScrollbarDrag.startClientX;
+      const scrollDelta = (deltaX / filterScrollbarDrag.maxThumbX) * filterScrollbarDrag.maxScroll;
+
+      filterSegments.scrollLeft = filterScrollbarDrag.startScrollLeft + scrollDelta;
+      syncFilterScrollbar();
+    });
+    filterScrollbarThumb?.addEventListener('pointerup', (event) => stopFilterScrollbarDrag(event.pointerId));
+    filterScrollbarThumb?.addEventListener('pointercancel', (event) => stopFilterScrollbarDrag(event.pointerId));
+    filterScrollbarThumb?.addEventListener('lostpointercapture', (event) => stopFilterScrollbarDrag(event.pointerId));
     levelRange?.addEventListener('input', () => {
       updateLevelRange();
       updateFilters();
     });
 
+    if (filterSegments && filterScrollbar && 'ResizeObserver' in window) {
+      const filterScrollbarObserver = new ResizeObserver(syncFilterScrollbar);
+
+      filterScrollbarObserver.observe(filterSegments);
+      filterScrollbarObserver.observe(filterScrollbar);
+    }
+
     updateLevelRange();
     setFiltersExpanded(false);
     updateFilters();
+    syncFilterScrollbar();
   }
 </script>
