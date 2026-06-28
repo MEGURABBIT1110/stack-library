@@ -1,0 +1,168 @@
+---
+import type { SignalValue } from '@/types/content';
+
+type Props = {
+  difficulty?: SignalValue;
+  practicality?: SignalValue;
+  rereadValue?: SignalValue;
+  conceptDensity?: SignalValue;
+  class?: string;
+  ariaLabel?: string;
+};
+
+const {
+  difficulty,
+  practicality,
+  rereadValue,
+  conceptDensity,
+  class: className,
+  ariaLabel = '読書シグナル',
+} = Astro.props;
+
+const standardLabels: Record<SignalValue, string> = {
+  1: '低',
+  2: 'やや低',
+  3: '中',
+  4: '高',
+  5: '非常に高',
+};
+
+const difficultyLabels: Record<SignalValue, string> = {
+  1: '入門',
+  2: '初級',
+  3: '中級',
+  4: '上級',
+  5: '高難度',
+};
+
+const formatSignal = (value?: SignalValue, labels = standardLabels) => (
+  value ? labels[value] : '未設定'
+);
+
+const getDotCount = (value?: SignalValue) => (
+  value ? Math.max(1, Math.ceil((value / 5) * 3)) : 0
+);
+
+const stats = [
+  {
+    label: 'DIFFICULTY',
+    name: '難易度',
+    value: formatSignal(difficulty, difficultyLabels),
+    dotCount: getDotCount(difficulty),
+  },
+  {
+    label: 'PRACTICAL USE',
+    name: '実務適用度',
+    value: formatSignal(practicality),
+    dotCount: getDotCount(practicality),
+  },
+  {
+    label: 'RE-READ VALUE',
+    name: '再読価値',
+    value: formatSignal(rereadValue),
+    dotCount: getDotCount(rereadValue),
+  },
+  {
+    label: 'DENSITY',
+    name: '概念密度',
+    value: formatSignal(conceptDensity),
+    dotCount: getDotCount(conceptDensity),
+  },
+];
+---
+
+<section class:list={['book-signal-stats', className]} aria-label={ariaLabel}>
+  {
+    stats.map((stat) => (
+      <div class="book-signal-stats__item" aria-label={`${stat.name}: ${stat.value}`}>
+        <span class="book-signal-stats__label">{stat.label}</span>
+        <span class="book-signal-stats__dots" aria-hidden="true">
+          {[0, 1, 2].map((dotIndex) => (
+            <span class:list={['book-signal-stats__dot', dotIndex < stat.dotCount && 'is-active']}></span>
+          ))}
+        </span>
+        <span class="book-signal-stats__value">{stat.value}</span>
+      </div>
+    ))
+  }
+</section>
+
+<style>
+  .book-signal-stats {
+    display: grid;
+    height: 65px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .book-signal-stats__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .book-signal-stats__item:not(:last-child)::after {
+    position: absolute;
+    top: 18px;
+    right: 0;
+    width: 1px;
+    height: 28px;
+    border-radius: 999px;
+    background: #222;
+    content: "";
+  }
+
+  .book-signal-stats__label {
+    overflow: hidden;
+    max-width: 100%;
+    color: #666;
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    line-height: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .book-signal-stats__dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .book-signal-stats__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .book-signal-stats__dot.is-active {
+    background: var(--color-accent-cyan);
+  }
+
+  .book-signal-stats__value {
+    overflow: hidden;
+    max-width: 100%;
+    color: var(--color-text);
+    font-size: 1.25rem;
+    font-weight: 500;
+    line-height: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .book-signal-stats {
+      height: auto;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px 0;
+    }
+
+    .book-signal-stats__item:nth-child(2n)::after {
+      display: none;
+    }
+  }
+</style>
