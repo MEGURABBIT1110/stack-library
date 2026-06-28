@@ -52,6 +52,7 @@ Codex はこの設計に従って、AstroコンポーネントとReact Islandを
 src/components/
   book/
     BookCard.astro
+    BookSignalStats.astro
     BookSignalPanel.astro
     ReadingStatusBadge.astro
   topic/
@@ -319,7 +320,9 @@ type Props = {
 
 #### 役割
 
-技術書詳細ページで、技術書向け評価シグナルをまとめて表示します。
+技術書向け評価シグナルを縦方向のパネルとしてまとめて表示します。
+
+現行の `/books/[slug]/` Figma準拠画面では上部の主表示に `BookSignalStats.astro` を使い、このコンポーネントは詳細パネル、別画面、または縦型シグナル表示が必要な場所で使います。
 
 #### Props
 
@@ -343,7 +346,7 @@ type Props = {
 
 #### Figma実装メモ
 
-- `03_書籍詳細ページ` の `ANALYTICAL SIGNALS` パネルに対応する
+- 旧Figma案の `ANALYTICAL SIGNALS` パネルに対応する
 - パネル背景は `--color-bg-panel`、境界線は `--border-hairline`、角丸は `--radius-xs`
 - 各行はシグナル名、テキスト値、メーターの3要素で構成する
 - 難易度は `中級` のような段階ラベル、その他は `高` / `中` などの読みやすいラベルを併記する
@@ -356,6 +359,52 @@ type Props = {
 
 - 各シグナル名と数値を必ず表示する
 - メーターのみで値を伝えない
+
+---
+
+### `BookSignalStats.astro`
+
+#### 役割
+
+書籍詳細ページの上部で、読書シグナルを横並びのステータス行として表示します。
+
+Figma `03_書籍詳細ページ` の `stats-row` に対応する、現行詳細ページの主シグナル表示です。
+
+#### Props
+
+```ts
+type Props = {
+  difficulty?: SignalValue;
+  practicality?: SignalValue;
+  rereadValue?: SignalValue;
+  conceptDensity?: SignalValue;
+  class?: string;
+  ariaLabel?: string;
+};
+```
+
+#### 表示するシグナル
+
+- `DIFFICULTY` / 難易度
+- `PRACTICAL USE` / 実務適用度
+- `RE-READ VALUE` / 再読価値
+- `DENSITY` / 概念密度
+
+#### Figma実装メモ
+
+- 行全体は `692px × 65px` を基準にする
+- デスクトップでは4列横並び、モバイルでは2列に落とす
+- 各項目はラベル、3ドット、テキスト値で構成する
+- 項目間の縦線は `#222`、高さ `28px` を基準にする
+- ラベルは `10px`, `letter-spacing: 1.2px`, `#666` を基準にする
+- 値は `20px`, `font-weight: 500`, 白テキストを基準にする
+- 縦方向の調整は子要素の margin ではなく、コンポーネント内の `gap: 6px` と中央揃えで行う
+
+#### アクセシビリティ
+
+- `aria-label` で各シグナルの日本語名と値を読めるようにする
+- ドットは装飾として `aria-hidden="true"` にする
+- 色やドット数だけで状態を伝えない
 
 ---
 
@@ -1125,13 +1174,11 @@ type DetailSidePanelProps = {
     └─ BookCard(variant="specimen")
 
 /books/[slug]/
-  DetailLayout
-    ├─ ReadingStatusBadge
-    ├─ BookSignalPanel
-    │   └─ SignalMeter
-    ├─ TopicChip
-    ├─ NoteCard
-    └─ BookCard
+  book-detail-frame
+    ├─ SiteSidebar
+    ├─ BookSignalStats
+    ├─ note-block相当のコードコメント風本文
+    └─ related-book-card相当の関連書籍リンク
 
 /topics/[slug]/
   DetailLayout
@@ -1232,21 +1279,22 @@ import styles from './BookCard.module.css';
 6. `ReadingStatusBadge.astro`
 7. `TopicChip.astro`
 8. `BookCard.astro`
-9. `BookSignalPanel.astro`
-10. `TopicCard.astro`
-11. `NoteCard.astro`
-12. `CollectionCard.astro`
-13. `EmptyState.astro`
-14. `SearchBar.tsx`
-15. `FilterPanel.tsx`
-16. `ViewSwitcher.tsx`
-17. `LibraryExplorer.tsx`
-18. `BookTable.tsx`
-19. `BookBoard.tsx`
-20. `BookMatrix.tsx`
-21. `KnowledgeNode.tsx`
-22. `DetailSidePanel.tsx`
-23. `KnowledgeMap.tsx`
+9. `BookSignalStats.astro`
+10. `BookSignalPanel.astro`
+11. `TopicCard.astro`
+12. `NoteCard.astro`
+13. `CollectionCard.astro`
+14. `EmptyState.astro`
+15. `SearchBar.tsx`
+16. `FilterPanel.tsx`
+17. `ViewSwitcher.tsx`
+18. `LibraryExplorer.tsx`
+19. `BookTable.tsx`
+20. `BookBoard.tsx`
+21. `BookMatrix.tsx`
+22. `KnowledgeNode.tsx`
+23. `DetailSidePanel.tsx`
+24. `KnowledgeMap.tsx`
 
 ---
 
@@ -1256,6 +1304,7 @@ import styles from './BookCard.module.css';
 
 - [ ] `BookCard` が表紙なしでも破綻しない
 - [ ] `BookCard` が読書状態、トピック、シグナルを表示できる
+- [ ] `BookSignalStats` が4つの読書シグナルをテキスト値つきで表示できる
 - [ ] `SignalMeter` が未設定値を安全に表示できる
 - [ ] `ReadingStatusBadge` がテキストラベルを持つ
 - [ ] `TopicChip` からトピック詳細へ遷移できる

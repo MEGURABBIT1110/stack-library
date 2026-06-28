@@ -236,9 +236,6 @@ MVPでは `Grid` を必須、その他は初期版または簡易版でよいで
 - 表紙
 - 著者
 - 出版社
-- 出版日
-- 読書状態
-- 所有形式
 - 読了日
 - 関連技術トピック
 - シグナル欄
@@ -246,14 +243,9 @@ MVPでは `Grid` を必須、その他は初期版または簡易版でよいで
   - 実務適用度
   - 再読価値
   - 概念密度
-  - 実装接続度
 - なぜ読んだか
 - 重要な気づき
-- 実装メモ
-- 推し章
-- 関連トピック
 - 関連する技術書
-- 関連メモ
 
 ### 静的生成
 
@@ -278,14 +270,11 @@ export async function getStaticPaths() {
 
 ### 使用コンポーネント
 
-- `DetailLayout`
-- `BookSignalPanel`
-- `ReadingStatusBadge`
-- `TopicChip`
-- `SignalMeter`
-- `NoteCard`
-- `BookCard`
-- `EmptyState`
+- `SiteSidebar`
+- `BookSignalStats`
+- 書籍詳細専用の `book-detail-frame` レイアウト
+- コードコメント風の本文ブロック
+- 関連書籍リンクカード
 
 ### 実装メモ
 
@@ -293,6 +282,10 @@ export async function getStaticPaths() {
 - `readingPurpose`, `appliedMemo`, `favoriteChapter`, `relatedNotes` を重視する
 - 関連トピックへのリンクを必ず表示する
 - 画像がない場合の表紙プレースホルダーを用意する
+- デスクトップでは `240px / 380px / 1fr` の3カラムを基準にする
+- 表紙は `300px × 424px` を基準にし、書籍パネル側は必要に応じて縦スクロールできるようにする
+- 本文はカード枠を増やさず、`// why i read this`, `// insight 01`, `// related books` のような小さなラベルで構造化する
+- 関連本は同じトピックを持つ本から逆引きし、著者名と接続トピックを併記する
 
 ### SEO
 

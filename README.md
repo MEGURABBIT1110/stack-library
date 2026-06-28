@@ -114,6 +114,7 @@ src/
   components/
     book/
       BookCard.astro
+      BookSignalStats.astro
       BookSignalPanel.astro
       ReadingStatusBadge.astro
     topic/
@@ -400,14 +401,15 @@ Codex は以下の順で実装すると破綻しにくいです。
 8. `BookCard.astro`
 9. `TopicChip.astro`
 10. `SignalMeter.astro`
-11. `/library/` 一覧ページ
-12. `/books/[slug]/` 詳細ページ
-13. `/topics/` と `/topics/[slug]/`
-14. `/notes/` と `/notes/[slug]/`
-15. `/collections/` と `/collections/[slug]/`
-16. `/` 概要ページ
-17. 検索 / フィルター / 表示切り替え
-18. `/map/` 知識マップ初期版
+11. `BookSignalStats.astro`
+12. `/library/` 一覧ページ
+13. `/books/[slug]/` 詳細ページ
+14. `/topics/` と `/topics/[slug]/`
+15. `/notes/` と `/notes/[slug]/`
+16. `/collections/` と `/collections/[slug]/`
+17. `/` 概要ページ
+18. 検索 / フィルター / 表示切り替え
+19. `/map/` 知識マップ初期版
 
 ---
 

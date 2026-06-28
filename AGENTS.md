@@ -22,6 +22,8 @@
 4. `docs/ROUTING.md`
 5. `docs/COMPONENTS.md`
 
+進捗確認、次の実装優先度の判断、MVPの残タスク確認が必要な場合は `docs/MVP_STATUS.md` も参照してください。
+
 特に、画面・UI・コンポーネントを触る場合は `docs/DESIGN.md` と `docs/COMPONENTS.md` を必ず確認してください。
 
 microCMS、型定義、データ取得、モックデータを触る場合は `docs/CONTENT_MODEL.md` を必ず確認してください。
@@ -89,9 +91,12 @@ UIは日本語ファーストで設計してください。
 
 実装時は、既存ドキュメントの思想と矛盾する変更を避けてください。
 
+MVPの到達度、完了済み範囲、残タスクが変わる実装をした場合は、必要に応じて `docs/MVP_STATUS.md` を更新してください。
+
 新しい画面・コンポーネント・データモデルを追加する場合は、必要に応じて以下のドキュメントも更新してください。
 
 - `README.md`
+- `docs/MVP_STATUS.md`
 - `docs/DESIGN.md`
 - `docs/CONTENT_MODEL.md`
 - `docs/ROUTING.md`
