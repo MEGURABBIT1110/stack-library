@@ -84,17 +84,19 @@ APIキーはクライアントへ公開しません。
 
 ```txt
 MICROCMS_SERVICE_DOMAIN=
-MICROCMS_READ_API_KEY=
-MICROCMS_WRITE_API_KEY=
+MICROCMS_API_KEY=
 ```
 
 `NEXT_PUBLIC_` で始まる microCMS APIキーは作りません。
 
-推奨:
+Hobbyプランでは作成可能なAPIキーが1本のため、読み取りと登録で同じキーを使用します。
 
-- 一覧・詳細取得用の read key
-- 登録用の write key
-- write key は `books` API への登録に必要な権限だけに絞る
+推奨権限:
+
+- デフォルト権限はすべて無効
+- `books` APIの個別権限で `GET` と `POST` のみ有効
+- `PUT`、`PATCH`、`DELETE` は対応機能を実装するまで無効
+- APIキーはServer ComponentとServer Actionからだけ利用する
 
 ## バリデーション
 
@@ -103,7 +105,6 @@ Server Action 側で最低限以下を検証します。
 - `title` が空でない
 - `authors` が空でない
 - `readingStatus` が許可された値である
-- `ownershipFormat` が許可された値である
 - URL項目がURLとして妥当である
 - 日付項目が日付として妥当である
 

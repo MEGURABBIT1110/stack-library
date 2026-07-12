@@ -7,7 +7,7 @@ Stack Library MVP の microCMS コンテンツモデル定義です。
 ## 基本方針
 
 - 技術書を蔵書アイテムとして管理する
-- 一般的な読書レビューではなく、所有状態、読書状態、技術領域、参照しやすさを優先する
+- 一般的な読書レビューではなく、読書状態、技術領域、参照しやすさを優先する
 - Book Detail のURLは slug ではなく microCMS の `contentId` を使用する
 - Book Form から Next.js Server Action 経由で `books` API に登録する
 - microCMS APIキーはサーバー側のみで扱う
@@ -20,7 +20,7 @@ Stack Library MVP の microCMS コンテンツモデル定義です。
 | API種別 | リスト形式 |
 | 詳細URLキー | `contentId` |
 | 作成経路 | `/books/new` の Server Action |
-| 一覧取得 | `/books` |
+| 一覧取得 | `/` |
 | 詳細取得 | `/books/[contentId]` |
 
 ## フィールド定義
@@ -31,19 +31,22 @@ Stack Library MVP の microCMS コンテンツモデル定義です。
 | `title` | テキストフィールド | 必須 | 書名 | `string` | ○ | ○ | ○ |
 | `subtitle` | テキストフィールド | 任意 | 副題、版情報の補助 | `string \| undefined` | △ | ○ | ○ |
 | `authors` | テキストエリア | 必須 | 著者名。MVPでは改行区切りで入力し、Next.js側で配列化する | `string[]` | ○ | ○ | ○ |
-| `publisher` | テキストフィールド | 任意 | 出版社 | `string \| undefined` | △ | ○ | ○ |
-| `publishedDate` | 日付 | 任意 | 出版日 | `string \| undefined` | △ | ○ | ○ |
-| `isbn` | テキストフィールド | 任意 | ISBN。重複確認や外部連携の将来拡張に使える | `string \| undefined` | - | ○ | ○ |
-| `coverImageUrl` | テキストフィールド | 任意 | 表紙画像URL。MVPではmicroCMS画像アップロードではなくURL入力にする | `string \| undefined` | ○ | ○ | ○ |
-| `readingStatus` | セレクトフィールド | 必須 | 積読、読書中、読了、参照用などの状態 | `ReadingStatus` | ○ | ○ | ○ |
-| `ownershipFormat` | セレクトフィールド | 必須 | 紙、電子、PDFなどの所有形式 | `OwnershipFormat` | ○ | ○ | ○ |
-| `shelfLocation` | テキストフィールド | 任意 | 本棚、Kindle、会社、保管場所など | `string \| undefined` | △ | ○ | ○ |
+| `publication.publisher` | カスタム内テキスト | 任意 | 出版社 | `string \| undefined` | △ | ○ | ○ |
+| `publication.release_date` | カスタム内日付 | 任意 | 出版日 | `string \| undefined` | △ | ○ | ○ |
+| `publication.pages` | カスタム内数値 | 任意 | 総ページ数 | `number \| undefined` | - | ○ | ○ |
+| `publication.edition` | カスタム内数値 | 任意 | 版 | `number \| undefined` | - | ○ | ○ |
+| `publication.language` | カスタム内セレクト | 任意 | 言語 | `string[]` | - | ○ | ○ |
+| `publication.isbn` | カスタム内テキスト | 任意 | ISBN | `string \| undefined` | - | ○ | ○ |
+| `cover` | 画像 | 任意 | 書影。画面側ではURLへ正規化する | `MicroCMSImage \| undefined` | ○ | ○ | ○ |
+| `reading.status` | カスタム内セレクト | 必須 | 積読、読書中、読了、参照用、中断 | `string[]` | ○ | ○ | ○ |
+| `reading.rating` | カスタム内数値 | 任意 | 5段階評価 | `number \| undefined` | - | ○ | ○ |
+| `reading.favorite` | カスタム内真偽値 | 任意 | お気に入り | `boolean` | △ | ○ | ○ |
 | `technicalAreas` | 複数選択 | 任意 | 技術領域による軽い分類。topicsとは別物として扱う | `TechnicalArea[]` | ○ | ○ | ○ |
 | `level` | セレクトフィールド | 任意 | 入門、中級、上級、リファレンスなどの目安 | `BookLevel \| undefined` | △ | ○ | ○ |
-| `acquiredDate` | 日付 | 任意 | 購入日、入手日 | `string \| undefined` | - | ○ | ○ |
-| `summary` | テキストエリア | 任意 | 本の概要。レビューではなく蔵書としての説明 | `string \| undefined` | △ | ○ | ○ |
-| `usageMemo` | テキストエリア | 任意 | 実務で参照する場面、手元に置く理由 | `string \| undefined` | - | ○ | ○ |
-| `sourceUrl` | テキストフィールド | 任意 | 購入先、公式ページ、出版社ページなど | `string \| undefined` | - | ○ | ○ |
+| `keywords` | テキストエリア | 任意 | 自由な検索語。改行区切り | `string[]` | △ | ○ | ○ |
+| `description` | テキストエリア | 任意 | 本の概要。画面側では `summary` として扱う | `string \| undefined` | △ | ○ | ○ |
+| `readingPurpose` | テキストエリア | 任意 | 購入理由、読みたい理由、読む前に解決したいこと | `string \| undefined` | - | ○ | ○ |
+| `usageMemo` | テキストエリア | 任意 | 読後または参照時に、実務で活用する場面を残すメモ | `string \| undefined` | - | ○ | ○ |
 | `createdAt` | システムフィールド | 自動 | 登録日時 | `string` | - | ○ | - |
 | `updatedAt` | システムフィールド | 自動 | 更新日時 | `string` | - | ○ | - |
 
@@ -60,15 +63,6 @@ Stack Library MVP の microCMS コンテンツモデル定義です。
 | `finished` | 読了 | 読み終えた |
 | `reference` | 参照用 | 通読よりも辞書・実務参照として使う |
 | `paused` | 中断 | 一時的に止めている |
-
-### `ownershipFormat`
-
-| 値 | 表示ラベル |
-|---|---|
-| `paper` | 紙 |
-| `ebook` | 電子 |
-| `pdf` | PDF |
-| `other` | その他 |
 
 ### `technicalAreas`
 
@@ -104,107 +98,12 @@ MVPでは固定の複数選択として扱います。
 
 microCMSから取得する生データと、画面で扱う正規化後の型を分けます。
 
-```ts
-export type ReadingStatus =
-  | 'tsundoku'
-  | 'reading'
-  | 'finished'
-  | 'reference'
-  | 'paused';
+型定義の正本は `src/types/book.ts` とします。
 
-export type OwnershipFormat =
-  | 'paper'
-  | 'ebook'
-  | 'pdf'
-  | 'other';
-
-export type TechnicalArea =
-  | 'frontend'
-  | 'backend'
-  | 'mobile'
-  | 'infrastructure'
-  | 'database'
-  | 'architecture'
-  | 'security'
-  | 'ai'
-  | 'data'
-  | 'design'
-  | 'language'
-  | 'testing'
-  | 'devops';
-
-export type BookLevel =
-  | 'intro'
-  | 'basic'
-  | 'intermediate'
-  | 'advanced'
-  | 'reference';
-
-export type MicroCMSBook = {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt?: string;
-  revisedAt?: string;
-  title: string;
-  subtitle?: string;
-  authors: string;
-  publisher?: string;
-  publishedDate?: string;
-  isbn?: string;
-  coverImageUrl?: string;
-  readingStatus: ReadingStatus;
-  ownershipFormat: OwnershipFormat;
-  shelfLocation?: string;
-  technicalAreas?: TechnicalArea[];
-  level?: BookLevel;
-  acquiredDate?: string;
-  summary?: string;
-  usageMemo?: string;
-  sourceUrl?: string;
-};
-
-export type Book = {
-  contentId: string;
-  createdAt: string;
-  updatedAt: string;
-  title: string;
-  subtitle?: string;
-  authors: string[];
-  publisher?: string;
-  publishedDate?: string;
-  isbn?: string;
-  coverImageUrl?: string;
-  readingStatus: ReadingStatus;
-  ownershipFormat: OwnershipFormat;
-  shelfLocation?: string;
-  technicalAreas: TechnicalArea[];
-  level?: BookLevel;
-  acquiredDate?: string;
-  summary?: string;
-  usageMemo?: string;
-  sourceUrl?: string;
-};
-
-export type BookFormInput = {
-  title: string;
-  subtitle?: string;
-  authors: string;
-  publisher?: string;
-  publishedDate?: string;
-  isbn?: string;
-  coverImageUrl?: string;
-  readingStatus: ReadingStatus;
-  ownershipFormat: OwnershipFormat;
-  shelfLocation?: string;
-  technicalAreas?: TechnicalArea[];
-  level?: BookLevel;
-  acquiredDate?: string;
-  summary?: string;
-  usageMemo?: string;
-  sourceUrl?: string;
-};
-```
+- `MicroCMSBook`: `cover`、`publication`、`reading` を含むmicroCMSの生レスポンス
+- `Book`: 一覧・詳細画面が利用する正規化後の型
+- セレクト値はmicroCMSの日本語表示値からアプリ内部の英語IDへ変換する
+- `authors` と `keywords` は改行区切り文字列から配列へ変換する
 
 `MicroCMSBook.id` は microCMS のコンテンツIDです。画面側では `contentId` として扱い、`/books/[contentId]` に使用します。
 
@@ -221,12 +120,11 @@ export type BookFormInput = {
 - `publisher`
 - `coverImageUrl`
 - `readingStatus`
-- `ownershipFormat`
 - `technicalAreas`
 - `level`
 - `summary`
 
-絞り込みは `/books` 内の状態として扱います。積読専用ページは作りません。
+絞り込みは `/` 内の状態として扱います。積読専用ページは作りません。
 
 ### Book Detail
 
@@ -243,16 +141,14 @@ Detailではレビューではなく、蔵書としての情報、参照用途�
 - `authors`
 - `publisher`
 - `publishedDate`
+- `pageCount`
 - `isbn`
 - `coverImageUrl`
 - `readingStatus`
-- `ownershipFormat`
-- `shelfLocation`
 - `technicalAreas`
 - `level`
-- `acquiredDate`
 - `summary`
+- `readingPurpose`
 - `usageMemo`
-- `sourceUrl`
 
 フォーム送信は Next.js Server Action で受け、サーバー側でバリデーションしたうえで microCMS に登録します。

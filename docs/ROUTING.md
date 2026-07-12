@@ -27,7 +27,6 @@ Stack Library MVP のルーティング定義です。
 - 出版社
 - 表紙画像URLがある場合の表紙
 - 読書状態
-- 所有形式
 - 技術領域
 - レベル
 - 概要の短い抜粋
@@ -43,14 +42,13 @@ Stack Library MVP のルーティング定義です。
 | `q` | string | 書名、著者、出版社、概要の検索 |
 | `status` | `tsundoku` / `reading` / `finished` / `reference` / `paused` | 読書状態で絞り込み |
 | `area` | `technicalAreas` の値 | 技術領域で絞り込み |
-| `format` | `paper` / `ebook` / `pdf` / `other` | 所有形式で絞り込み |
 | `level` | `intro` / `basic` / `intermediate` / `advanced` / `reference` | レベルで絞り込み |
 
 例:
 
 ```txt
 /?status=tsundoku
-/?area=frontend&format=paper
+/?area=frontend
 /?q=typescript
 ```
 
@@ -78,11 +76,8 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 - ISBN
 - 表紙画像
 - 読書状態
-- 所有形式
-- 保管場所
 - 技術領域
 - レベル
-- 入手日
 - 概要
 - 実務での参照メモ
 - 購入先、公式ページなどのURL
@@ -111,7 +106,6 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 - `title`
 - `authors`
 - `readingStatus`
-- `ownershipFormat`
 
 ## MVPで作らないルート
 
