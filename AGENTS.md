@@ -4,27 +4,17 @@
 
 このリポジトリは「Stack Library / 技術書ライブラリ」の実装リポジトリです。
 
-一般的な読書管理サービスではなく、技術書・技術トピック・読書メモ・実装への気づき・学習ルートを再構成する個人用ナレッジアーカイブとして実装してください。
-
-中心思想は以下です。
-
-- 本棚ではなく、技術知の標本室
-- 読書記録ではなく、実装に戻れる知識地図
-- 技術書を単なる本ではなく、知識ノードとして扱う
+一般的な読書記録サービスではなく、技術書の蔵書管理を中心に実装してください。
+topics、notes、knowledge map、学習ルートはMVP後の拡張です。
 
 ## Required reading order
 
 作業前に、必要に応じて以下を読んでください。
 
 1. `README.md`
-2. `docs/DESIGN.md`
+2. `docs/ARCHITECTURE.md`
 3. `docs/CONTENT_MODEL.md`
 4. `docs/ROUTING.md`
-5. `docs/COMPONENTS.md`
-
-進捗確認、次の実装優先度の判断、MVPの残タスク確認が必要な場合は `docs/MVP_STATUS.md` も参照してください。
-
-特に、画面・UI・コンポーネントを触る場合は `docs/DESIGN.md` と `docs/COMPONENTS.md` を必ず確認してください。
 
 microCMS、型定義、データ取得、モックデータを触る場合は `docs/CONTENT_MODEL.md` を必ず確認してください。
 
@@ -32,12 +22,22 @@ microCMS、型定義、データ取得、モックデータを触る場合は `d
 
 ## Implementation stack
 
-- Astro を第一候補とする
+- Next.js App Router を使う
 - microCMS をコンテンツ管理に使う
 - TypeScript を使う
-- 必要な部分だけ React Island として実装する
-- 最初からNext.js前提にしない
+- Book FormからNext.js Server Action経由でmicroCMSへ登録する
+- microCMSのAPIキーはサーバー側だけで扱う
 - ログイン、管理画面、AI推薦、外部サービス連携はMVPでは実装しない
+
+## MVP
+
+MVPは以下の3画面に限定します。
+
+1. Book List: `/books`
+2. Book Detail: `/books/[contentId]`
+3. Book Form: `/books/new`
+
+積読などの絞り込みはBook Listの状態として扱います。サイドバーは使用しません。
 
 ## Design principles
 
@@ -67,13 +67,12 @@ UIは日本語ファーストで設計してください。
 
 迷った場合は以下を優先してください。
 
-1. 技術書を単なる本ではなく、知識ノードとして扱えているか
+1. 技術書の蔵書を探し、確認し、登録できるか
 2. 日本語で自然に読めるUIになっているか
 3. Booklog / Notion / SaaSテンプレートのコピーに見えないか
-4. 実装に戻れる情報設計になっているか
-5. 再読価値、実務適用度、概念密度、実装接続度を扱えているか
-6. 静かで精密なデザインになっているか
-7. アクセシビリティを犠牲にしていないか
+4. 技術書に必要な書誌情報と所蔵情報を扱えているか
+5. 静かで精密なデザインになっているか
+6. アクセシビリティを犠牲にしていないか
 
 ## Accessibility
 
@@ -91,15 +90,11 @@ UIは日本語ファーストで設計してください。
 
 実装時は、既存ドキュメントの思想と矛盾する変更を避けてください。
 
-MVPの到達度、完了済み範囲、残タスクが変わる実装をした場合は、必要に応じて `docs/MVP_STATUS.md` を更新してください。
-
 新しい画面・コンポーネント・データモデルを追加する場合は、必要に応じて以下のドキュメントも更新してください。
 
 - `README.md`
-- `docs/MVP_STATUS.md`
-- `docs/DESIGN.md`
+- `docs/ARCHITECTURE.md`
 - `docs/CONTENT_MODEL.md`
 - `docs/ROUTING.md`
-- `docs/COMPONENTS.md`
 
 大きな方針変更が必要な場合は、実装前に理由を説明してください。
