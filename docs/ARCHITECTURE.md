@@ -22,8 +22,8 @@ Stack Library MVP のアーキテクチャ方針です。
 
 ```txt
 app/
+  page.tsx
   books/
-    page.tsx
     new/
       page.tsx
     [contentId]/
@@ -51,9 +51,9 @@ components/
 
 ### Book List
 
-`/books` はサーバー側で microCMS から `books` を取得します。
+`/` はサーバー側で microCMS から `books` を取得します。
 
-絞り込みは `/books` の検索パラメータとして扱います。積読などの状態は独立ページではなく、同一画面の表示状態です。
+絞り込みは `/` の検索パラメータとして扱います。積読などの状態は独立ページではなく、同一画面の表示状態です。
 
 ### Book Detail
 
@@ -72,7 +72,7 @@ Book Form
   -> Server Action
   -> 入力値を検証
   -> microCMS books API にPOST
-  -> 成功時に /books/[contentId] または /books へ遷移
+  -> 成功時に /books/[contentId] または / へ遷移
   -> 失敗時にフォームへエラーを返す
 ```
 

@@ -33,7 +33,7 @@ microCMS、型定義、データ取得、モックデータを触る場合は `d
 
 MVPは以下の3画面に限定します。
 
-1. Book List: `/books`
+1. Book List: `/`
 2. Book Detail: `/books/[contentId]`
 3. Book Form: `/books/new`
 

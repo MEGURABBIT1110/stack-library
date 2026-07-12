@@ -8,13 +8,13 @@ Stack Library MVP のルーティング定義です。
 
 | URL | 画面 | 役割 |
 |---|---|---|
-| `/books` | Book List | 技術書の蔵書一覧。検索、状態別絞り込み、技術領域絞り込みをこの画面内で扱う |
+| `/` | Book List | 技術書の蔵書一覧。検索、状態別絞り込み、技術領域絞り込みをこの画面内で扱う |
 | `/books/[contentId]` | Book Detail | microCMS の `contentId` を使った技術書詳細 |
 | `/books/new` | Book Form | 技術書の新規登録フォーム |
 
-`/` はMVP画面として数えません。実装時は `/books` へリダイレクトするか、最小限の入口ページにします。
+`/` をMVPの入口兼Book Listとして扱います。`/books` の一覧ルートは作りません。
 
-## Book List: `/books`
+## Book List: `/`
 
 ### 目的
 
@@ -49,9 +49,9 @@ Stack Library MVP のルーティング定義です。
 例:
 
 ```txt
-/books?status=tsundoku
-/books?area=frontend&format=paper
-/books?q=typescript
+/?status=tsundoku
+/?area=frontend&format=paper
+/?q=typescript
 ```
 
 ## Book Detail: `/books/[contentId]`
@@ -100,7 +100,7 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 - ブラウザから microCMS API を直接呼ばない
 - APIキーはサーバー側の環境変数だけで扱う
 - 送信前にサーバー側で入力値を検証する
-- 登録成功後は `/books/[contentId]` または `/books` に遷移する
+- 登録成功後は `/books/[contentId]` または `/` に遷移する
 
 ### フォーム項目
 
@@ -119,7 +119,8 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 
 | ルート案 | 現在の扱い |
 |---|---|
-| `/tsundoku` | 作らない。`/books?status=tsundoku` で扱う |
+| `/books` | 作らない。Book Listは `/` で扱う |
+| `/tsundoku` | 作らない。`/?status=tsundoku` で扱う |
 | `/topics` | 作らない |
 | `/topics/[slug]` | 作らない |
 | `/notes` | 作らない |
