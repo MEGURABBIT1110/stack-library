@@ -352,6 +352,10 @@ html[data-theme="dark"] .theme-switch__button--dark {
   white-space: nowrap;
 }
 
+.status-summary__item[data-active] dd {
+  color: currentColor;
+}
+
 .status-summary__item[data-active][data-status="tsundoku"] {
   background: var(--color-status-tsundoku-soft);
   color: var(--color-status-tsundoku);
@@ -1193,7 +1197,7 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
   }
 
   .book-card__copy {
-    padding: 12px 0 0;
+    padding: 12px 18px 0;
   }
 
   .book-card h3,
@@ -1204,10 +1208,6 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
 
   .book-card {
     padding: 0 0 12px;
-  }
-
-  .book-card__copy {
-    padding-inline: 0;
   }
 
   .book-cover--shelf {
