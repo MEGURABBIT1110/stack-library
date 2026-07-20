@@ -1,43 +1,16 @@
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import { AppShell } from "@/components/app-shell";
+import { BookDetailIdentity } from "@/components/book-detail-identity";
+import { BookTextSection } from "@/components/book-text-section";
 import { ConnectionError } from "@/components/connection-error";
-import { getBook } from "@/lib/books/queries";
+import { LibraryHeader } from "@/components/library-header";
+import { ScrollContextBar } from "@/components/scroll-context-bar";
+import { formatArchiveNumber } from "@/lib/books/labels";
+import { getBook, getBooks } from "@/lib/books/queries";
 
 type BookDetailPageProps = { params: Promise<{ contentId: string }> };
-
-const statusLabels = {
-  tsundoku: "積読",
-  reading: "読書中",
-  finished: "読了",
-  reference: "参照用",
-  paused: "中断",
-} as const;
-
-const technicalAreaLabels = {
-  frontend: "フロントエンド",
-  backend: "バックエンド",
-  mobile: "モバイル",
-  infrastructure: "インフラ",
-  database: "データベース",
-  architecture: "アーキテクチャ",
-  security: "セキュリティ",
-  ai: "AI",
-  data: "データ",
-  design: "デザイン",
-  language: "プログラミング言語",
-  testing: "テスト",
-  devops: "DevOps",
-} as const;
-
-const levelLabels = {
-  intro: "入門",
-  basic: "基礎",
-  intermediate: "中級",
-  advanced: "上級",
-  reference: "リファレンス",
-} as const;
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +19,9 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   let result;
 
   try {
-    result = { book: await getBook(contentId) };
+    const book = await getBook(contentId);
+    const books = await getBooks().catch(() => undefined);
+    result = { book, books };
   } catch (error) {
     if (typeof error === "object" && error !== null && "status" in error && error.status === 404) {
       notFound();
@@ -54,43 +29,75 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
     result = { error };
   }
 
-  if ("error" in result) return <ConnectionError error={result.error} />;
-  const { book } = result;
+  if ("error" in result) {
+    return (
+      <AppShell
+        header={<LibraryHeader books={[]} variant="record" />}
+        variant="message"
+      >
+        <ConnectionError error={result.error} />
+      </AppShell>
+    );
+  }
+  const { book, books } = result;
+  const archiveIndex = books?.findIndex((item) => item.contentId === book.contentId) ?? -1;
+  const archiveNumber = archiveIndex >= 0 ? formatArchiveNumber(archiveIndex) : "----";
+  const contextBook = {
+    authors: book.authors,
+    coverImageHeight: book.coverImageHeight,
+    coverImageUrl: book.coverImageUrl,
+    coverImageWidth: book.coverImageWidth,
+    readingStatus: book.readingStatus,
+    title: book.title,
+  };
 
   return (
-    <main>
-      <nav aria-label="パンくずリスト">
-        <Link href="/">技術書の本棚</Link> / {book.title}
+    <AppShell
+      contextBar={
+        <ScrollContextBar
+          book={contextBook}
+          kind="record"
+          observeId="book-record-title"
+        />
+      }
+      header={<LibraryHeader books={books} variant="record" />}
+      variant="record"
+    >
+      <nav aria-label="蔵書一覧へ戻る" className="back-navigation">
+        <Link aria-label="蔵書一覧へ戻る" href="/">
+          <span aria-hidden="true" className="back-arrow" />
+          蔵書一覧へ
+        </Link>
       </nav>
-      {book.coverImageUrl && (
-        <Image
-          src={book.coverImageUrl}
-          alt={`${book.title}の書影`}
-          width={180}
-          height={252}
-          priority
-          style={{ height: "252px", objectFit: "contain", width: "180px" }}
+      <BookDetailIdentity archiveNumber={archiveNumber} book={book} />
+      {book.summary && (
+        <BookTextSection
+          code="ABSTRACT / SUMMARY"
+          heading="概要"
+          text={book.summary}
+          variant="summary"
         />
       )}
-      <h1>{book.title}</h1>
-      {book.subtitle && <p>{book.subtitle}</p>}
-      <dl>
-        <dt>著者</dt><dd>{book.authors.join("、") || "不明"}</dd>
-        <dt>読書状態</dt><dd>{statusLabels[book.readingStatus]}</dd>
-        {book.publisher && <><dt>出版社</dt><dd>{book.publisher}</dd></>}
-        {book.publishedDate && <><dt>出版日</dt><dd>{book.publishedDate}</dd></>}
-        {book.edition !== undefined && <><dt>版</dt><dd>{book.edition}</dd></>}
-        {book.pageCount !== undefined && <><dt>ページ数</dt><dd>{book.pageCount}</dd></>}
-        {book.isbn && <><dt>ISBN</dt><dd>{book.isbn}</dd></>}
-        {book.languages.length > 0 && <><dt>言語</dt><dd>{book.languages.join("、")}</dd></>}
-        {book.technicalAreas.length > 0 && <><dt>技術分野</dt><dd>{book.technicalAreas.map((area) => technicalAreaLabels[area]).join("、")}</dd></>}
-        {book.level && <><dt>難易度</dt><dd>{levelLabels[book.level]}</dd></>}
-        {book.keywords.length > 0 && <><dt>キーワード</dt><dd>{book.keywords.join("、")}</dd></>}
-        <dt>登録日</dt><dd>{book.createdAt}</dd>
-        {book.readingPurpose && <><dt>読む目的</dt><dd>{book.readingPurpose}</dd></>}
-        {book.usageMemo && <><dt>実務での参照メモ</dt><dd>{book.usageMemo}</dd></>}
-      </dl>
-      {book.summary && <section><h2>概要</h2><p>{book.summary}</p></section>}
-    </main>
+      {(book.readingPurpose || book.usageMemo) && (
+        <div className="book-notes">
+          {book.readingPurpose && (
+            <BookTextSection
+              code="READING / PURPOSE"
+              heading="この本を読む目的"
+              text={book.readingPurpose}
+              variant="note"
+            />
+          )}
+          {book.usageMemo && (
+            <BookTextSection
+              code="PRACTICE / REFERENCE"
+              heading="実務での参照メモ"
+              text={book.usageMemo}
+              variant="note"
+            />
+          )}
+        </div>
+      )}
+    </AppShell>
   );
 }

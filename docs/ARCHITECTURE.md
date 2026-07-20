@@ -12,40 +12,49 @@ Stack Library MVP のアーキテクチャ方針です。
 | 登録処理 | Next.js Server Action |
 | データモデル | `books` APIのみ |
 | APIキー | サーバー側だけで利用 |
-| MVP画面 | Book List / Book Detail / Book Form |
+| 実装済み画面 | Book List / Book Detail |
+| 将来実装 | Book Form |
 
 旧Astro構成、旧6画面構成、サイドバー付き構成、knowledge map中心の構成は現在のMVPでは採用しません。
 
-## 想定ディレクトリ
+## 現在の主要ディレクトリ
 
-実装フェーズでは、以下のような構成を想定します。
+表示用コンポーネントとデータ取得を分離します。
 
 ```txt
-app/
-  page.tsx
-  books/
-    new/
-      page.tsx
-    [contentId]/
-      page.tsx
-    actions.ts
-lib/
-  microcms/
-    client.ts
-  books/
-    queries.ts
-    normalize.ts
-types/
-  book.ts
-components/
-  books/
-    BookList.tsx
-    BookListItem.tsx
-    BookDetail.tsx
-    BookForm.tsx
+src/
+  app/
+    globals.css
+    layout.tsx
+    page.tsx
+    books/[contentId]/page.tsx
+  components/
+    app-shell.tsx
+    library-header.tsx
+    library-metrics.tsx
+    book-list.tsx
+    book-card.tsx
+    book-detail-identity.tsx
+    scroll-context-bar.tsx
+    theme-switch.tsx
+  lib/
+    microcms/client.ts
+    books/queries.ts
+    books/normalize.ts
+    books/labels.ts
+  types/book.ts
 ```
 
-この構成は実装前の案です。実装時に Next.js の導入と合わせて確定します。
+ページとmicroCMS取得はServer Componentのまま維持します。Client Componentは、ブラウザ状態が必要なTheme Switchと、`IntersectionObserver`を使うContext Barに限定します。
+
+## 表示基盤
+
+- 主要コンテンツの最大幅は1200px
+- ページレベルのレスポンシブ境界は1024pxのみ
+- Desktop / Mobileで別DOMを作らず、同じコンポーネントをCSSで再配置
+- 320pxなど狭い領域への対応は、Shelf TileとBook Identity自身のcontainer queryで扱う
+- Light / Darkの差はsemantic CSS variablesで切り替え、余白や構造は変えない
+- Footerは固定せず通常フローに置き、Page Shellの余剰高をMainが吸収する
 
 ## データ取得
 
@@ -122,4 +131,4 @@ Server Action 側で最低限以下を検証します。
 - 読書レビュー投稿
 - AI推薦
 
-表紙はMVPでは `coverImageUrl` のURL入力で扱います。microCMSの画像アップロードやメディア管理は将来拡張とします。
+書影はmicroCMS Assetsの画像フィールドを利用します。画面側ではURLと固有の幅・高さを正規化し、固定比率へ変形せず最大枠内に収めます。

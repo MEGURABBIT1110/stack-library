@@ -37,7 +37,7 @@ Stack Library MVP の microCMS コンテンツモデル定義です。
 | `publication.edition` | カスタム内数値 | 任意 | 版 | `number \| undefined` | - | ○ | ○ |
 | `publication.language` | カスタム内セレクト | 任意 | 言語 | `string[]` | - | ○ | ○ |
 | `publication.isbn` | カスタム内テキスト | 任意 | ISBN | `string \| undefined` | - | ○ | ○ |
-| `cover` | 画像 | 任意 | 書影。画面側ではURLへ正規化する | `MicroCMSImage \| undefined` | ○ | ○ | ○ |
+| `cover` | 画像 | 任意 | 書影。画面側ではURL、幅、高さへ正規化する | `MicroCMSImage \| undefined` | ○ | ○ | ○ |
 | `reading.status` | カスタム内セレクト | 必須 | 積読、読書中、読了、参照用、中断 | `string[]` | ○ | ○ | ○ |
 | `reading.rating` | カスタム内数値 | 任意 | 5段階評価 | `number \| undefined` | - | ○ | ○ |
 | `reading.favorite` | カスタム内真偽値 | 任意 | お気に入り | `boolean` | △ | ○ | ○ |
@@ -104,6 +104,7 @@ microCMSから取得する生データと、画面で扱う正規化後の型を
 - `Book`: 一覧・詳細画面が利用する正規化後の型
 - セレクト値はmicroCMSの日本語表示値からアプリ内部の英語IDへ変換する
 - `authors` と `keywords` は改行区切り文字列から配列へ変換する
+- `cover.url`、`cover.width`、`cover.height` は `coverImageUrl`、`coverImageWidth`、`coverImageHeight` へ変換する
 
 `MicroCMSBook.id` は microCMS のコンテンツIDです。画面側では `contentId` として扱い、`/books/[contentId]` に使用します。
 
@@ -119,6 +120,8 @@ microCMSから取得する生データと、画面で扱う正規化後の型を
 - `authors`
 - `publisher`
 - `coverImageUrl`
+- `coverImageWidth`
+- `coverImageHeight`
 - `readingStatus`
 - `technicalAreas`
 - `level`

@@ -6,7 +6,8 @@ export function ConnectionError({ error }: ConnectionErrorProps) {
   const isConfigurationError = error instanceof MicroCMSConfigurationError;
 
   return (
-    <main>
+    <section className="message-state" role="alert">
+      <p className="section-code">CONNECTION / ERROR</p>
       <h1>蔵書データを読み込めませんでした</h1>
       {isConfigurationError ? (
         <>
@@ -20,6 +21,6 @@ export function ConnectionError({ error }: ConnectionErrorProps) {
           <p>サービスドメイン、APIキー、books APIの公開状態を確認してください。</p>
         </>
       )}
-    </main>
+    </section>
   );
 }
