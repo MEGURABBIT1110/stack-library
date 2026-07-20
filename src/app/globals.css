@@ -922,7 +922,7 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
   visibility: hidden;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, -6px) scale(0.985);
+  transform: translate(-50%, -6px);
   transform-origin: top center;
   transition: visibility 0s linear 180ms, opacity 180ms ease, transform 180ms ease;
 }
@@ -931,7 +931,7 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
-  transform: translate(-50%, 0) scale(1);
+  transform: translate(-50%, 0);
   transition-delay: 0s;
 }
 
