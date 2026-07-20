@@ -43,7 +43,6 @@ export function ScrollContextBar(props: ScrollContextBarProps) {
 
   return (
     <div
-      aria-hidden={!visible}
       className={`scroll-context${visible ? " scroll-context--visible" : ""}`}
       data-kind={props.kind}
       inert={!visible}
