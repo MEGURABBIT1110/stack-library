@@ -1,5 +1,9 @@
+import { AppShell } from "@/components/app-shell";
 import { BookList } from "@/components/book-list";
 import { ConnectionError } from "@/components/connection-error";
+import { LibraryHeader } from "@/components/library-header";
+import { LibraryStatusSummary } from "@/components/library-status-summary";
+import { ScrollContextBar } from "@/components/scroll-context-bar";
 import { getBooks } from "@/lib/books/queries";
 
 export const dynamic = "force-dynamic";
@@ -12,13 +16,27 @@ export default async function HomePage() {
     result = { error };
   }
 
-  if ("error" in result) return <ConnectionError error={result.error} />;
+  if ("error" in result) {
+    return (
+      <AppShell
+        header={
+          <LibraryHeader books={[]} titleAsHeading={false} variant="library" />
+        }
+        variant="message"
+      >
+        <ConnectionError error={result.error} />
+      </AppShell>
+    );
+  }
 
   return (
-    <main>
-      <h1>技術書の本棚</h1>
-      <p>持っている本を探し、読書状態を確認できます。</p>
+    <AppShell
+      contextBar={<ScrollContextBar kind="library" observeId="library-masthead" />}
+      header={<LibraryHeader books={result.books} variant="library" />}
+      variant="library"
+    >
+      <LibraryStatusSummary books={result.books} />
       <BookList books={result.books} />
-    </main>
+    </AppShell>
   );
 }

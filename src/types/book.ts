@@ -77,6 +77,8 @@ export type Book = {
   title: string;
   subtitle?: string;
   coverImageUrl?: string;
+  coverImageWidth?: number;
+  coverImageHeight?: number;
   authors: string[];
   isbn?: string;
   publisher?: string;

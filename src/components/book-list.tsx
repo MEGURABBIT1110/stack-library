@@ -1,64 +1,67 @@
-import Link from "next/link";
-import Image from "next/image";
+import { BookCard } from "@/components/book-card";
+import {
+  formatArchiveNumber,
+  formatCount,
+  READING_STATUS_DEFINITIONS,
+} from "@/lib/books/labels";
+import type { Book, ReadingStatus } from "@/types/book";
 
-import type { Book } from "@/types/book";
-
-const statusLabels = {
-  tsundoku: "積読",
-  reading: "読書中",
-  finished: "読了",
-  reference: "参照用",
-  paused: "中断",
-} as const;
-
-const technicalAreaLabels = {
-  frontend: "フロントエンド",
-  backend: "バックエンド",
-  mobile: "モバイル",
-  infrastructure: "インフラ",
-  database: "データベース",
-  architecture: "アーキテクチャ",
-  security: "セキュリティ",
-  ai: "AI",
-  data: "データ",
-  design: "デザイン",
-  language: "プログラミング言語",
-  testing: "テスト",
-  devops: "DevOps",
-} as const;
+const shelfDescriptions: Record<ReadingStatus, string> = {
+  tsundoku: "これから読む本",
+  reading: "いま手に取っている本",
+  finished: "読み終えた本",
+  reference: "繰り返し参照する本",
+  paused: "いったん閉じている本",
+};
 
 export function BookList({ books }: { books: Book[] }) {
-  if (books.length === 0) return <p>登録されている技術書はありません。</p>;
+  if (books.length === 0) {
+    return (
+      <section className="empty-state">
+        <p className="section-code">SHELF / EMPTY</p>
+        <h2>まだ本は登録されていません</h2>
+        <p>microCMSに技術書を登録すると、読書状態ごとの棚に表示されます。</p>
+      </section>
+    );
+  }
+
+  const indexedBooks = new Map(
+    books.map((book, index) => [book.contentId, formatArchiveNumber(index)]),
+  );
+  const priorityBookIds = new Set(books.slice(0, 2).map((book) => book.contentId));
 
   return (
-    <ul>
-      {books.map((book) => (
-        <li key={book.contentId}>
-          <article>
-            {book.coverImageUrl && (
-              <Image
-                src={book.coverImageUrl}
-                alt={`${book.title}の書影`}
-                width={120}
-                height={168}
-                style={{ height: "168px", objectFit: "contain", width: "120px" }}
-              />
-            )}
-            <h2>
-              <Link href={`/books/${book.contentId}`}>{book.title}</Link>
-            </h2>
-            {book.subtitle && <p>{book.subtitle}</p>}
-            <p>{book.authors.join("、") || "著者不明"}</p>
-            <p>読書状態: {statusLabels[book.readingStatus]}</p>
-            {book.technicalAreas.length > 0 && (
-              <p>
-                技術分野: {book.technicalAreas.map((area) => technicalAreaLabels[area]).join("、")}
-              </p>
-            )}
-            {book.summary && <p>{book.summary}</p>}
-          </article>
-        </li>
-      ))}
-    </ul>
+    <div className="book-shelves">
+      {READING_STATUS_DEFINITIONS.map(({ id, label }) => {
+        const shelfBooks = books.filter((book) => book.readingStatus === id);
+        if (shelfBooks.length === 0) return null;
+
+        return (
+          <section aria-labelledby={`shelf-${id}`} className="book-shelf" key={id}>
+            <p className="section-code" data-status={id}>
+              SHELF / {id.toUpperCase()} / COVER GRID
+            </p>
+            <div className="book-shelf__heading">
+              <div>
+                <h2 id={`shelf-${id}`}>{label}</h2>
+                <p>{shelfDescriptions[id]}</p>
+              </div>
+              <p className="book-shelf__count">{formatCount(shelfBooks.length)} BOOKS</p>
+            </div>
+            <ul className="book-shelf__grid">
+              {shelfBooks.map((book) => (
+                <li key={book.contentId}>
+                  <BookCard
+                    archiveNumber={indexedBooks.get(book.contentId) ?? "0000"}
+                    book={book}
+                    priority={priorityBookIds.has(book.contentId)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
   );
 }

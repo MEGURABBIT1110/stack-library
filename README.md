@@ -6,24 +6,24 @@ Stack Library は、技術書の蔵書を探し、読書状態や実務での参
 
 ## Current Status
 
-現在はMVPの最初の実装段階です。
+現在はNext.js App RouterとmicroCMSを使ったMVPを実装しています。
 
 実装済み:
 
-- Next.js App Routerの基本構成
-- microCMSの `books` APIとの接続
-- microCMSレスポンスの型定義と正規化
-- Book List
-- Book Detail
-- microCMS未接続時のエラー表示
+- server-onlyなmicroCMSクライアントとレスポンス正規化
+- Book ListとBook Detail
 - microCMS Assetsの書影表示
+- Light / Darkテーマ
+- 最大幅1200px、1024pxを境界にしたDesktop / Mobileレイアウト
+- 共通Header、Library Metrics、状態表示、Context Bar、Footer
+- 接続エラーと404表示
 
 未実装:
 
 - Book Form
 - ISBNからの書誌情報取得
-- 検索、絞り込み、並び替え
-- Figmaワイヤーフレームに沿ったビジュアルデザイン
+- 検索、絞り込み、並び替え、ページネーション
+- 編集・削除
 
 ## Routes
 
@@ -135,7 +135,7 @@ MVPでは扱わないもの:
 ## Design Direction
 
 - 日本語ファースト
-- 暗色ベース
+- Light / Darkテーマを同一構造で提供
 - 細い罫線
 - 精密なメタデータ表示
 - 読みやすい日本語本文

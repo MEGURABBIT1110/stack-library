@@ -62,6 +62,8 @@ export function normalizeBook(book: MicroCMSBook): Book {
     title: book.title,
     subtitle: book.subtitle,
     coverImageUrl: book.cover?.url,
+    coverImageWidth: book.cover?.width,
+    coverImageHeight: book.cover?.height,
     authors: lines(book.authors),
     isbn: book.publication?.isbn,
     publisher: book.publication?.publisher,
