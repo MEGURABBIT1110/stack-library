@@ -9,6 +9,9 @@ const STORAGE_KEY = "stack-library-theme";
 function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme;
   document.documentElement.style.colorScheme = theme;
+  document
+    .getElementById("stack-library-icon")
+    ?.setAttribute("href", theme === "dark" ? "/icon-dark.svg" : "/icon-light.svg");
   try {
     window.localStorage.setItem(STORAGE_KEY, theme);
   } catch {
