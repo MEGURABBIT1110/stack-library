@@ -8,6 +8,7 @@ const meta = {
   component: LibraryHeader,
   args: {
     books: libraryBooks,
+    currentPage: "library",
     titleAsHeading: true,
     variant: "library",
   },
@@ -39,6 +40,12 @@ export const Record: Story = {
   args: {
     titleAsHeading: false,
     variant: "record",
+  },
+};
+
+export const BankCurrent: Story = {
+  args: {
+    currentPage: "bank",
   },
 };
 

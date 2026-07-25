@@ -2,7 +2,7 @@
 
 Stack Library MVP のルーティング定義です。
 
-現在のMVPは Book List、Book Detail、Book Form の3画面だけです。旧案にあった topics、notes、collections、knowledge map、学習ルート、サイドバー付き構成はMVPに含めません。
+現在のMVPは Book List、Book Detail、Library Bank、Book Form の4画面です。旧案にあった topics、notes、collections、knowledge map、学習ルート、サイドバー付き構成はMVPに含めません。
 
 ## ルート一覧
 
@@ -10,6 +10,7 @@ Stack Library MVP のルーティング定義です。
 |---|---|---|
 | `/` | Book List | 技術書の蔵書一覧。検索、状態別絞り込み、技術領域絞り込みをこの画面内で扱う |
 | `/books/[contentId]` | Book Detail | microCMS の `contentId` を使った技術書詳細 |
+| `/bank` | Library Bank | 蔵書に登録した税込価格の全件集計と明細 |
 | `/books/new` | Book Form | 技術書の新規登録フォーム |
 
 `/` をMVPの入口兼Book Listとして扱います。`/books` の一覧ルートは作りません。
@@ -107,6 +108,20 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 - `authors`
 - `readingStatus`
 
+## Library Bank: `/bank`
+
+### 目的
+
+蔵書に登録した税込価格（日本円）を確認する画面です。市場価格、買取価格、資産価値は扱いません。
+
+### 表示するもの
+
+- 登録価格の合計、登録済み・未登録冊数、登録率、登録済み価格の平均
+- 読書状態別の蔵書数、価格登録済み冊数、登録価格合計
+- 蔵書別の書名、著者、読書状態、登録価格
+
+`books` APIは全件取得し、100件を超える蔵書にも対応します。各明細は `/books/[contentId]` へリンクします。
+
 ## MVPで作らないルート
 
 以下は将来拡張です。
@@ -131,6 +146,8 @@ MVPではサイドバーを使いません。
 
 - Book List から Book Detail
 - Book List から Book Form
+- Book List と Library Bank の相互移動
+- Library Bank から Book Detail
 - Book Detail から Book List
 - Book Detail から Book Form への導線はMVPでは任意
 

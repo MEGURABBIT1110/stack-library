@@ -20,7 +20,12 @@ export default async function HomePage() {
     return (
       <AppShell
         header={
-          <LibraryHeader books={[]} titleAsHeading={false} variant="library" />
+          <LibraryHeader
+            books={[]}
+            currentPage="library"
+            titleAsHeading={false}
+            variant="library"
+          />
         }
         variant="message"
       >
@@ -32,7 +37,13 @@ export default async function HomePage() {
   return (
     <AppShell
       contextBar={<ScrollContextBar kind="library" observeId="library-masthead" />}
-      header={<LibraryHeader books={result.books} variant="library" />}
+      header={
+        <LibraryHeader
+          books={result.books}
+          currentPage="library"
+          variant="library"
+        />
+      }
       variant="library"
     >
       <LibraryStatusSummary books={result.books} />

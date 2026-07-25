@@ -47,6 +47,12 @@ function lines(value?: string): string[] {
     .filter(Boolean);
 }
 
+function optionalPrice(value: number | undefined): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0
+    ? value
+    : undefined;
+}
+
 export function normalizeBook(book: MicroCMSBook): Book {
   const rawStatus = book.reading.status[0];
   const readingStatus = readingStatusMap[rawStatus];
@@ -65,6 +71,7 @@ export function normalizeBook(book: MicroCMSBook): Book {
     coverImageWidth: book.cover?.width,
     coverImageHeight: book.cover?.height,
     authors: lines(book.authors),
+    price: optionalPrice(book.publication?.price),
     isbn: book.publication?.isbn,
     publisher: book.publication?.publisher,
     publishedDate: book.publication?.release_date,

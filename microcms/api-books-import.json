@@ -146,7 +146,8 @@
       "name": "出版情報",
       "fieldOrderByColumn": [
         ["isbn", "publisher", "release_date"],
-        ["edition", "pages", "language"]
+        ["edition", "pages", "language"],
+        ["price"]
       ],
       "fields": [
         {
@@ -211,6 +212,15 @@
           ],
           "multipleSelect": false,
           "initialValue": ["HstEnDNN-G"]
+        },
+        {
+          "fieldId": "price",
+          "name": "価格（税込）",
+          "kind": "number",
+          "description": "蔵書として登録した税込価格（日本円）です。",
+          "required": false,
+          "numberSizeLimitValidation": null,
+          "initialValue": null
         }
       ]
     },

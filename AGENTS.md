@@ -60,11 +60,12 @@ docs(workflow): define repository conventions
 
 ## MVP
 
-MVPは以下の3画面に限定します。
+MVPは以下の4画面に限定します。
 
 1. Book List: `/`
 2. Book Detail: `/books/[contentId]`
-3. Book Form: `/books/new`
+3. Library Bank: `/bank`
+4. Book Form: `/books/new`
 
 積読などの絞り込みはBook Listの状態として扱います。サイドバーは使用しません。
 

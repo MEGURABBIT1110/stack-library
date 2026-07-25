@@ -16,6 +16,15 @@ export async function getBooks(): Promise<Book[]> {
   return response.contents.map(normalizeBook);
 }
 
+export async function getAllBooks(): Promise<Book[]> {
+  const contents = await getMicroCMSClient().getAllContents<MicroCMSBook>({
+    endpoint,
+    customRequestInit: { cache: "no-store" },
+  });
+
+  return contents.map(normalizeBook);
+}
+
 export async function getBook(contentId: string): Promise<Book> {
   const response = await getMicroCMSClient().getListDetail<MicroCMSBook>({
     endpoint,

@@ -12,7 +12,7 @@ Stack Library MVP のアーキテクチャ方針です。
 | 登録処理 | Next.js Server Action |
 | データモデル | `books` APIのみ |
 | APIキー | サーバー側だけで利用 |
-| 実装済み画面 | Book List / Book Detail |
+| 実装済み画面 | Book List / Book Detail / Library Bank |
 | 将来実装 | Book Form |
 
 旧Astro構成、旧6画面構成、サイドバー付き構成、knowledge map中心の構成は現在のMVPでは採用しません。
@@ -27,11 +27,13 @@ src/
     globals.css
     layout.tsx
     page.tsx
+    bank/page.tsx
     books/[contentId]/page.tsx
   components/
     app-shell.tsx
     library-header.tsx
     library-metrics.tsx
+    library-bank.tsx
     book-list.tsx
     book-card.tsx
     book-detail-identity.tsx
@@ -40,12 +42,15 @@ src/
   lib/
     microcms/client.ts
     books/queries.ts
+    books/bank.ts
     books/normalize.ts
     books/labels.ts
   types/book.ts
 ```
 
 ページとmicroCMS取得はServer Componentのまま維持します。Client Componentは、ブラウザ状態が必要なTheme Switchと、`IntersectionObserver`を使うContext Barに限定します。
+
+Library Bankの集計は `lib/books/bank.ts` の純粋関数で行い、microCMS取得・画面表示から分離します。登録価格が `0` の場合と未登録の場合を異なる値として扱います。
 
 ## 表示基盤
 
@@ -117,6 +122,12 @@ Patterns/LibraryHeader
 `/books/[contentId]` は `contentId` を使って microCMS から1件取得します。
 
 slug はMVPでは使いません。
+
+### Library Bank
+
+`/bank` は `getAllContents` を使って `books` を全件取得し、100件を超える蔵書も集計します。取得と集計はServer Component境界に置き、APIキーや生レスポンスをClient Componentへ渡しません。
+
+表示する金額は蔵書に登録した税込価格（日本円）であり、市場価格・買取価格・資産価値ではありません。
 
 ### Book Form
 
