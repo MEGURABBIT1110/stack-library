@@ -17,6 +17,7 @@ Stack Library は、技術書の蔵書を探し、読書状態や実務での参
 - 最大幅1200px、1024pxを境界にしたDesktop / Mobileレイアウト
 - 共通Header、Library Metrics、状態表示、Context Bar、Footer
 - 接続エラーと404表示
+- Storybookによる再利用コンポーネントのカタログと状態検証
 
 未実装:
 
@@ -84,9 +85,22 @@ http://localhost:3000/books/{contentId}
 ```bash
 npm run lint
 npm run build
+npm run build-storybook
 ```
 
-作業は`main`から短命ブランチを作り、Conventional CommitsとPRを使って統合します。ブランチ命名、コミット、検証の詳細は [Development](./docs/DEVELOPMENT.md) を参照してください。
+Storybookを起動します。
+
+```bash
+npm run storybook
+```
+
+確認URL:
+
+```txt
+http://localhost:6006/
+```
+
+作業はGitHub Issueを起点に、`main`からIssue番号付きの短命ブランチを作ります。Conventional CommitsとPRを使って統合します。ブランチ命名、コミット、検証の詳細は [Development](./docs/DEVELOPMENT.md) を参照してください。
 
 ## Content Model
 

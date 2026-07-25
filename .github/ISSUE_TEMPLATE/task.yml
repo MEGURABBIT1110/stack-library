@@ -1,0 +1,48 @@
+name: 作業提案
+description: 実装、修正、文書化などの作業記録を開始します
+title: ""
+body:
+  - type: markdown
+    attributes:
+      value: |
+        作業ブランチを作る前に、目的と完了条件を明確にします。
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 目的
+      description: 何を解決し、利用者や開発へどのような価値を与えるかを書いてください。
+      placeholder: この作業が必要な理由
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: 対応範囲
+      description: このIssueで変更する対象と、対象外にするものを書いてください。
+      placeholder: |
+        - 対応するもの
+        - 対応しないもの
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: 完了条件
+      description: 完了を客観的に確認できるチェック項目を書いてください。
+      placeholder: |
+        - [ ] 実装条件
+        - [ ] 検証条件
+        - [ ] 文書更新
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 補足
+      description: 関連URL、Figma、制約、検討事項があれば記載してください。
+    validations:
+      required: false

@@ -27,20 +27,22 @@ microCMS、型定義、データ取得、モックデータを触る場合は `d
 Git運用は `docs/DEVELOPMENT.md` に従ってください。以下は必須です。
 
 - `main`へ直接コミットしない
-- 作業開始前に`main`を最新化し、変更内容に応じた短命ブランチを作る
+- 作業開始前にGitHub Issueを作成し、目的・対応範囲・完了条件を記録する
+- `main`を最新化し、Issue番号を含む短命ブランチを作る
 - ブランチ名は`feature/`、`fix/`、`docs/`、`refactor/`、`test/`、`chore/`、`ci/`のいずれかで始める
+- ブランチ名は`<category>/<issue-number>-<short-summary>`形式にする
 - Codexやその他のエージェントによる作業でも`agent/`を使わない
 - コミットメッセージはConventional Commits 1.0.0に準拠する
 - 1ブランチには1つの目的だけを含める
 - 関係のない差分やユーザーの未完了作業を、無断で修正・削除・コミットしない
-- 検証結果をPR本文へ記録し、PR経由で`main`へ統合する
+- 検証結果と`Closes #<issue-number>`をPR本文へ記録し、PR経由で`main`へ統合する
 
 ブランチ名とコミット例:
 
 ```txt
-feature/book-form
-fix/theme-focus-ring
-docs/repository-workflow
+feature/12-book-form
+fix/18-theme-focus-ring
+docs/23-repository-workflow
 
 feat(book-form): add ISBN lookup
 fix(theme): preserve visible focus styles
