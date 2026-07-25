@@ -56,6 +56,52 @@ src/
 - Light / Darkの差はsemantic CSS variablesで切り替え、余白や構造は変えない
 - Footerは固定せず通常フローに置き、Page Shellの余剰高をMainが吸収する
 
+## デザインシステムとコンポーネント
+
+Figma、React、Storybookは同じものの複製ではなく、責務の異なる正本として扱います。
+
+| 対象 | 責務 |
+|---|---|
+| Figma | 視覚仕様、トークン、レイアウト、状態、コンポーネント間の構成 |
+| React | 振る舞い、props、データ境界、アクセシビリティ |
+| Storybook | 再利用部品のカタログ、状態・テーマ・表示幅の検証 |
+| App Router | 実データを使う画面構成とルーティング |
+
+Storybookは未導入です。導入時はFigmaの見た目をそのままComponent propsへ変換せず、Reactの再利用単位と責務を基準にStoryを作ります。
+
+Atomic Designはページの見出し名ではなく、依存方向の規則として使います。
+
+```txt
+Foundations
+  -> Primitives
+    -> Composites
+      -> Patterns
+        -> Screens
+```
+
+- Foundations: 色、文字、余白、罫線など。React Componentとしてexportしない
+- Primitives: Button、Link、Statusなど、単独責務の小さな部品
+- Composites: Book Cardなど、Primitiveを組み合わせた再利用部品
+- Patterns: Header、Context Bar、Book Listなど、ページ領域として振る舞う構造
+- Screens: App Router上の実ページ。部品ライブラリへ混ぜず、統合例として扱う
+
+下位層が上位層へ依存しないようにします。粒度だけを理由にComponentを分割せず、独立した責務、再利用性、検証価値がある場合に抽出します。
+
+Storybookのtitleは、原則として以下の階層を使います。
+
+```txt
+Foundations/Color
+Components/Primitives/Status
+Components/Composites/BookCard
+Patterns/LibraryHeader
+```
+
+- Light / DarkはStorybook globalとして切り替える
+- Desktop / Mobileはviewportまたはcontainerで検証する
+- Responsive専用ComponentやTheme専用variantを作らない
+- Figma名、React export名、Storybook titleの対応を追跡できるようにする
+- 画面固有のfixtureと公開Componentを分離する
+
 ## データ取得
 
 ### Book List

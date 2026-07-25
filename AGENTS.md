@@ -9,16 +9,43 @@ topics、notes、knowledge map、学習ルートはMVP後の拡張です。
 
 ## Required reading order
 
-作業前に、必要に応じて以下を読んでください。
+作業前に、以下を順番に確認してください。
 
 1. `README.md`
-2. `docs/ARCHITECTURE.md`
-3. `docs/CONTENT_MODEL.md`
-4. `docs/ROUTING.md`
+2. `docs/DEVELOPMENT.md`
+3. `docs/ARCHITECTURE.md`
+4. 必要に応じて `docs/CONTENT_MODEL.md` または `docs/ROUTING.md`
 
 microCMS、型定義、データ取得、モックデータを触る場合は `docs/CONTENT_MODEL.md` を必ず確認してください。
 
 ページ追加・URL設計・静的生成を触る場合は `docs/ROUTING.md` を必ず確認してください。
+
+コンポーネントの責務、Figmaとの対応、Storybookの構成を触る場合は `docs/ARCHITECTURE.md` を必ず確認してください。
+
+## Git workflow
+
+Git運用は `docs/DEVELOPMENT.md` に従ってください。以下は必須です。
+
+- `main`へ直接コミットしない
+- 作業開始前に`main`を最新化し、変更内容に応じた短命ブランチを作る
+- ブランチ名は`feature/`、`fix/`、`docs/`、`refactor/`、`test/`、`chore/`、`ci/`のいずれかで始める
+- Codexやその他のエージェントによる作業でも`agent/`を使わない
+- コミットメッセージはConventional Commits 1.0.0に準拠する
+- 1ブランチには1つの目的だけを含める
+- 関係のない差分やユーザーの未完了作業を、無断で修正・削除・コミットしない
+- 検証結果をPR本文へ記録し、PR経由で`main`へ統合する
+
+ブランチ名とコミット例:
+
+```txt
+feature/book-form
+fix/theme-focus-ring
+docs/repository-workflow
+
+feat(book-form): add ISBN lookup
+fix(theme): preserve visible focus styles
+docs(workflow): define repository conventions
+```
 
 ## Implementation stack
 
@@ -93,8 +120,17 @@ UIは日本語ファーストで設計してください。
 新しい画面・コンポーネント・データモデルを追加する場合は、必要に応じて以下のドキュメントも更新してください。
 
 - `README.md`
+- `docs/DEVELOPMENT.md`
 - `docs/ARCHITECTURE.md`
 - `docs/CONTENT_MODEL.md`
 - `docs/ROUTING.md`
 
 大きな方針変更が必要な場合は、実装前に理由を説明してください。
+
+実装後は、変更範囲に応じて最低限以下を確認してください。
+
+- `npm run lint`
+- `npm run build`
+- 変更した画面のLight / Dark、Desktop / Mobile
+- キーボード操作とフォーカス表示
+- 関連ドキュメントとの整合

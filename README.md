@@ -86,6 +86,8 @@ npm run lint
 npm run build
 ```
 
+作業は`main`から短命ブランチを作り、Conventional CommitsとPRを使って統合します。ブランチ命名、コミット、検証の詳細は [Development](./docs/DEVELOPMENT.md) を参照してください。
+
 ## Content Model
 
 microCMSではリスト形式の `books` APIを使用します。
@@ -146,6 +148,7 @@ Booklog、Notion、一般的なSaaSダッシュボードのコピーにはしま
 
 ## Documentation
 
+- [Development](./docs/DEVELOPMENT.md)
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Content Model](./docs/CONTENT_MODEL.md)
 - [Routing](./docs/ROUTING.md)
