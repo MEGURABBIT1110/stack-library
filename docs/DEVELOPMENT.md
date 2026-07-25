@@ -6,6 +6,7 @@ Stack Libraryの開発ワークフローです。人間、Codex、その他の�
 
 - `main`は常に統合可能な状態に保つ
 - `main`へ直接コミットしない
+- GitHub Issueを作業記録の起点にする
 - 1ブランチ、1目的とする
 - 短命な作業ブランチからPRを作る
 - 原則としてSquash mergeし、`main`の履歴をConventional Commitsで揃える
@@ -15,30 +16,32 @@ Stack Libraryの開発ワークフローです。人間、Codex、その他の�
 
 ## 作業開始
 
-作業ツリーがクリーンであることを確認してから、最新の`main`を起点にブランチを作ります。
+最初にGitHub Issueを作り、目的、対応範囲、完了条件を記録します。重複Issueがないことも確認します。
+
+Issue作成後、作業ツリーがクリーンであることを確認してから、最新の`main`を起点にIssue番号を含むブランチを作ります。
 
 ```bash
 git status --short --branch
 git switch main
 git pull --ff-only origin main
-git switch -c feature/book-form
+git switch -c feature/12-book-form
 ```
 
 未コミット差分がある場合は、別作業か現在の作業かを確認します。判断できない差分をstash、破棄、コミットしてはいけません。
 
 ## ブランチ命名
 
-形式は`<category>/<short-description>`です。`short-description`は英小文字とハイフンで簡潔に記述します。
+形式は`<category>/<issue-number>-<short-summary>`です。`issue-number`には起点となるGitHub Issue番号を使い、`short-summary`は英小文字とハイフンで簡潔に記述します。
 
 | Category | 用途 | 例 |
 |---|---|---|
-| `feature/` | 利用者に見える機能追加 | `feature/book-form` |
-| `fix/` | 不具合修正 | `fix/theme-focus-ring` |
-| `docs/` | ドキュメントだけの変更 | `docs/repository-workflow` |
-| `refactor/` | 振る舞いを変えない構造改善 | `refactor/book-normalizer` |
-| `test/` | テストの追加・修正 | `test/book-card-stories` |
-| `chore/` | 依存更新や保守作業 | `chore/update-next` |
-| `ci/` | CI/CDの変更 | `ci/add-quality-checks` |
+| `feature/` | 利用者に見える機能追加 | `feature/12-book-form` |
+| `fix/` | 不具合修正 | `fix/18-theme-focus-ring` |
+| `docs/` | ドキュメントだけの変更 | `docs/23-repository-workflow` |
+| `refactor/` | 振る舞いを変えない構造改善 | `refactor/27-book-normalizer` |
+| `test/` | テストの追加・修正 | `test/31-book-card-stories` |
+| `chore/` | 依存更新や保守作業 | `chore/35-update-next` |
+| `ci/` | CI/CDの変更 | `ci/42-add-quality-checks` |
 
 Codexや自動化による作業でも`agent/`は使いません。誰が作業したかではなく、何を変更するかを名前にします。
 
@@ -90,10 +93,17 @@ PR本文には最低限、以下を記載します。
 
 - 変更内容
 - 変更理由
+- 起点となるIssueへの参照
 - 影響範囲
 - 確認方法と結果
 - UI変更がある場合は対象画面と表示条件
 - 未対応事項や既知の制約
+
+対応完了時にIssueを自動で閉じるため、PR本文へ次の形式を記載します。
+
+```txt
+Closes #12
+```
 
 原則としてSquash mergeします。Squash後のコミットメッセージがConventional Commits形式になるよう、PRタイトルを整えます。
 
@@ -117,6 +127,15 @@ UI変更では、対象に応じて以下も確認します。
 - 読み込み中、0件、取得失敗
 
 Storybook導入後は、再利用コンポーネントの変更に対応するStoryと必要なinteraction testを含めます。テーマはglobal、画面幅はviewportまたはcontainerで検証し、見た目の違いだけをComponent propsへ増やしません。
+
+Storybookの起動と静的ビルド:
+
+```bash
+npm run storybook
+npm run build-storybook
+```
+
+Storyは`Foundations / Components / Patterns`の責務に沿って配置します。microCMSへ直接接続せず、`Book`型に準拠したfixtureで通常、欠損、長文などの状態を再現します。
 
 ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run build`は必須ではありません。
 

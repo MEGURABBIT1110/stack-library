@@ -67,7 +67,7 @@ Figma、React、Storybookは同じものの複製ではなく、責務の異な�
 | Storybook | 再利用部品のカタログ、状態・テーマ・表示幅の検証 |
 | App Router | 実データを使う画面構成とルーティング |
 
-Storybookは未導入です。導入時はFigmaの見た目をそのままComponent propsへ変換せず、Reactの再利用単位と責務を基準にStoryを作ります。
+Storybookは`@storybook/nextjs-vite`で導入しています。Figmaの見た目をそのままComponent propsへ変換せず、Reactの再利用単位と責務を基準にStoryを作ります。
 
 Atomic Designはページの見出し名ではなく、依存方向の規則として使います。
 
@@ -101,6 +101,8 @@ Patterns/LibraryHeader
 - Responsive専用ComponentやTheme専用variantを作らない
 - Figma名、React export名、Storybook titleの対応を追跡できるようにする
 - 画面固有のfixtureと公開Componentを分離する
+- StorybookからmicroCMSへ接続せず、`Book`型に準拠したfixtureで状態を再現する
+- 再利用コンポーネントには代表状態のStoryを用意し、操作がある場合は必要なinteraction testを追加する
 
 ## データ取得
 
