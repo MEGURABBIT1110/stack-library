@@ -29,6 +29,38 @@ git switch -c feature/12-book-form
 
 未コミット差分がある場合は、別作業か現在の作業かを確認します。判断できない差分をstash、破棄、コミットしてはいけません。
 
+## ChatGPTとCodexの引き継ぎ
+
+ChatGPT、Codex Local、Codex Worktree、Codex Cloudは、会話履歴や未共有のファイルを自動的には引き継ぎません。会話を正本にせず、GitHub IssueとDraft PRを共有状態として使用します。
+
+作業依頼には`.github/ISSUE_TEMPLATE/task.yml`を使用し、最低限以下を記録します。
+
+- 背景と解決する問題
+- 完了時のゴール
+- 対応範囲と対象外
+- 客観的な完了条件
+- 実行環境
+- 制約と変更してはいけないもの
+- 検証計画
+- 参照資料と引き継ぎ元
+- 未確定事項
+
+通常の実装は`Codex Local`を選択します。WorktreeまたはCloudを使う場合は、ローカルにしか存在しないファイルや未pushコミットを前提にせず、必要な入力と成果物の受け渡し方法をIssueへ記録します。
+
+推奨する流れ:
+
+```txt
+ChatGPTで要件を整理
+  -> GitHub Issueを作成
+  -> CodexがIssue番号付きブランチで実装
+  -> 早い段階でDraft PRを作成
+  -> コミット、検証結果、残課題をDraft PRへ反映
+  -> ChatGPTまたは人間がIssueとDraft PRを確認
+  -> 明示的な承認後にマージ
+```
+
+Issueは「なぜ、何を、どこまで行うか」の正本です。Draft PRは「現在どのコードがあり、何を検証し、何が残っているか」の正本です。作業中に決まった重要事項は、会話だけに残さずIssueの決定ログまたはDraft PR本文へ反映します。
+
 ## ブランチ命名
 
 形式は`<category>/<issue-number>-<short-summary>`です。`issue-number`には起点となるGitHub Issue番号を使い、`short-summary`は英小文字とハイフンで簡潔に記述します。
