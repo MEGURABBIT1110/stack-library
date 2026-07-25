@@ -1,48 +1,151 @@
-name: 作業提案
-description: 実装、修正、文書化などの作業記録を開始します
+name: ChatGPT / Codex 作業依頼
+description: 要件をGitHubへ記録し、ChatGPTとCodexの間で共有できる作業起点を作ります
 title: ""
 body:
   - type: markdown
     attributes:
       value: |
-        作業ブランチを作る前に、目的と完了条件を明確にします。
+        このIssueを作業要件の正本として扱います。
+        ChatGPTで整理した内容を記録し、Codexが会話履歴に依存せず着手できる状態にしてください。
 
-  - type: textarea
-    id: purpose
+  - type: dropdown
+    id: work_type
     attributes:
-      label: 目的
-      description: 何を解決し、利用者や開発へどのような価値を与えるかを書いてください。
-      placeholder: この作業が必要な理由
+      label: 作業種別
+      description: 変更内容に最も近いものを選択してください。ブランチ名とコミット種別の判断に使用します。
+      options:
+        - 機能追加
+        - 不具合修正
+        - リファクタリング
+        - ドキュメント
+        - テスト
+        - 依存関係・保守
+        - CI/CD
+        - 調査・設計
     validations:
       required: true
 
   - type: textarea
-    id: scope
+    id: background
+    attributes:
+      label: 背景・問題
+      description: 現在何が起きており、なぜこの作業が必要なのかを書いてください。
+      placeholder: |
+        現在の状態:
+        解決したい問題:
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: ゴール
+      description: このIssueが完了したときに実現している状態を、利用者または開発者の視点で書いてください。
+      placeholder: このIssueで達成すること
+    validations:
+      required: true
+
+  - type: textarea
+    id: in_scope
     attributes:
       label: 対応範囲
-      description: このIssueで変更する対象と、対象外にするものを書いてください。
+      description: このIssueで変更・調査する対象を具体的に書いてください。
       placeholder: |
-        - 対応するもの
-        - 対応しないもの
+        - 対応する画面、ファイル、機能
+        - 更新するドキュメント
     validations:
       required: true
 
   - type: textarea
-    id: acceptance-criteria
+    id: out_of_scope
+    attributes:
+      label: 対象外
+      description: 今回は変更しないものを明記してください。ない場合は「なし」と書いてください。
+      placeholder: |
+        - 今回は実装しない機能
+        - 別Issueへ分ける内容
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
     attributes:
       label: 完了条件
       description: 完了を客観的に確認できるチェック項目を書いてください。
       placeholder: |
         - [ ] 実装条件
         - [ ] 検証条件
-        - [ ] 文書更新
+        - [ ] 必要なドキュメント更新
+    validations:
+      required: true
+
+  - type: dropdown
+    id: execution_environment
+    attributes:
+      label: 実行環境
+      description: どこで作業するかを明示します。ローカルファイルを扱う通常の実装はCodex Localを選択してください。
+      options:
+        - Codex Local（推奨）
+        - Codex Worktree
+        - Codex Cloud
+        - 調査・設計のみ
+      default: 0
     validations:
       required: true
 
   - type: textarea
-    id: notes
+    id: constraints
     attributes:
-      label: 補足
-      description: 関連URL、Figma、制約、検討事項があれば記載してください。
+      label: 制約・変更してはいけないもの
+      description: 維持する仕様、禁止事項、セキュリティや互換性の条件を書いてください。ない場合は「なし」と書いてください。
+      placeholder: |
+        - mainへ直接コミットしない
+        - 既存のAPIやデータモデルを変更しない
+        - 明示的な承認までマージしない
+    validations:
+      required: true
+
+  - type: textarea
+    id: validation_plan
+    attributes:
+      label: 検証計画
+      description: 実行するコマンドと、UIで確認する条件を書いてください。該当しない項目には理由を添えてください。
+      placeholder: |
+        - [ ] npm run lint
+        - [ ] npx tsc --noEmit
+        - [ ] npm run build
+        - [ ] npm run build-storybook
+        - [ ] Light / Dark、Desktop / Mobile
+        - [ ] キーボード操作とフォーカス表示
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: 参照資料・引き継ぎ元
+      description: 関連Issue、PR、ドキュメント、Figma、引き継ぎ書などを記載してください。
+      placeholder: |
+        - 関連Issue / PR:
+        - リポジトリ内ドキュメント:
+        - 外部資料:
+    validations:
+      required: false
+
+  - type: textarea
+    id: open_questions
+    attributes:
+      label: 未確定事項
+      description: 実装前に判断が必要な点を書いてください。ない場合は「なし」と書いてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: decision_log
+    attributes:
+      label: 決定ログ
+      description: 作業中に確定した重要事項を追記します。会話だけに残さず、IssueまたはDraft PRにも反映してください。
+      placeholder: |
+        - YYYY-MM-DD: 決定内容と理由
     validations:
       required: false
