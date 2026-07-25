@@ -1,0 +1,11 @@
+interface:
+  display_name: "Stack Library Design"
+  short_description: "Atomic DesignでStack Library固有のUIを設計・改善"
+  default_prompt: "$stack-library-designを使い、既存前提とAtomic Designの依存方向を検証しながらStack Libraryの画面を設計または改善してください。"
+policy:
+  products:
+    - "chatgpt"
+    - "codex"
+    - "api"
+    - "atlas"
+  allow_implicit_invocation: true
