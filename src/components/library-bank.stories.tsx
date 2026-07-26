@@ -2,15 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { LibraryBank } from "@/components/library-bank";
 import { libraryBooks, makeBook } from "@/stories/fixtures/books";
-import type { Book, ReadingStatus } from "@/types/book";
-
-const statuses: ReadingStatus[] = [
-  "tsundoku",
-  "reading",
-  "finished",
-  "reference",
-  "paused",
-];
+import type { Book } from "@/types/book";
 
 const meta = {
   title: "Patterns/LibraryBank",
@@ -48,6 +40,7 @@ export const SomePricesMissing: Story = {
         contentId: "storybook-missing-price",
         title: "価格未登録の技術書",
         price: undefined,
+        publisher: undefined,
         readingStatus: "paused",
       }),
     ],
@@ -92,7 +85,7 @@ export const MoreThanOneHundredBooks: Story = {
         contentId: `storybook-bank-${index + 1}`,
         title: `技術標本 ${String(index + 1).padStart(3, "0")}`,
         price: index % 7 === 0 ? undefined : index * 100,
-        readingStatus: statuses[index % statuses.length],
+        publisher: index % 11 === 0 ? undefined : `技術出版社 ${index + 1}`,
       }),
     ),
   },

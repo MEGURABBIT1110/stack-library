@@ -32,7 +32,6 @@ src/
   components/
     app-shell.tsx
     library-header.tsx
-    library-metrics.tsx
     library-bank.tsx
     book-list.tsx
     book-card.tsx
@@ -54,7 +53,8 @@ Library Bankの集計は `lib/books/bank.ts` の純粋関数で行い、microCMS
 
 ## 表示基盤
 
-- 主要コンテンツの最大幅は1200px
+- 主要コンテンツの最大幅は1224px
+- Headerは画面上端へ連続する全幅の面とし、細い下境界線で本文と分ける。外側余白、強い角丸、影による浮遊表現は使わない
 - ページレベルのレスポンシブ境界は1024pxのみ
 - Desktop / Mobileで別DOMを作らず、同じコンポーネントをCSSで再配置
 - 320pxなど狭い領域への対応は、Shelf TileとBook Identity自身のcontainer queryで扱う
@@ -115,7 +115,7 @@ Patterns/LibraryHeader
 
 `/` はサーバー側で microCMS から `books` を取得します。
 
-絞り込みは `/` の検索パラメータとして扱います。積読などの状態は独立ページではなく、同一画面の表示状態です。
+蔵書は状態別の棚へ分割せず、書名・著者・技術領域を優先する単一のカタログとして表示します。読書状態はBook Card内の補助メタデータです。将来の絞り込みは `/` の検索パラメータとして扱い、状態別の独立ページは作りません。
 
 ### Book Detail
 
@@ -127,7 +127,11 @@ slug はMVPでは使いません。
 
 `/bank` は `getAllContents` を使って `books` を全件取得し、100件を超える蔵書も集計します。取得と集計はServer Component境界に置き、APIキーや生レスポンスをClient Componentへ渡しません。
 
+画面上部は登録価格合計・価格登録済み冊数・価格未登録冊数に限定し、明細は書名・出版社・登録価格の安定した列で表示します。平均、登録率、読書状態別内訳、日付は表示しません。
+
 表示する金額は蔵書に登録した税込価格（日本円）であり、市場価格・買取価格・資産価値ではありません。
+
+視覚仕様はFigmaの `Library Bank / Implementation Source`（section `605:1066`）を正本とします。Desktop Light/Darkは `605:1067` / `605:1068`、Mobile Light/Darkは `605:1069` / `605:1070` を参照し、Headerは`color/surface`、外側ラップと本文は`color/canvas`で連続させます。
 
 ### Book Form
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { BookCover } from "@/components/book-cover";
-import { BookStatusLine } from "@/components/book-status";
+import { BookStatusLine, TechnicalAreaTags } from "@/components/book-status";
 import type { Book } from "@/types/book";
 
 type BookCardProps = {
@@ -24,6 +24,7 @@ export function BookCard({ archiveNumber, book, priority = false }: BookCardProp
         <div className="book-card__copy">
           <h3>{book.title}</h3>
           <p className="book-card__author">{book.authors.join("、") || "著者不明"}</p>
+          <TechnicalAreaTags areas={book.technicalAreas} />
           <BookStatusLine book={book} />
         </div>
       </article>

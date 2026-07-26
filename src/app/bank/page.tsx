@@ -17,12 +17,7 @@ export default async function LibraryBankPage() {
     return (
       <AppShell
         header={
-          <LibraryHeader
-            books={undefined}
-            currentPage="bank"
-            titleAsHeading={false}
-            variant="library"
-          />
+          <LibraryHeader currentPage="bank" variant="library" />
         }
         variant="message"
       >
@@ -34,12 +29,7 @@ export default async function LibraryBankPage() {
   return (
     <AppShell
       header={
-        <LibraryHeader
-          books={result.books}
-          currentPage="bank"
-          titleAsHeading={false}
-          variant="library"
-        />
+        <LibraryHeader currentPage="bank" variant="library" />
       }
       variant="library"
     >

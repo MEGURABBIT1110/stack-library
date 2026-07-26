@@ -116,11 +116,12 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 
 ### 表示するもの
 
-- 登録価格の合計、登録済み・未登録冊数、登録率、登録済み価格の平均
-- 読書状態別の蔵書数、価格登録済み冊数、登録価格合計
-- 蔵書別の書名、著者、読書状態、登録価格
+- 登録価格の合計、価格登録済み冊数、価格未登録冊数
+- 蔵書別の書名、出版社、登録価格
 
 `books` APIは全件取得し、100件を超える蔵書にも対応します。各明細は `/books/[contentId]` へリンクします。
+
+`/bank` の視覚仕様はFigmaの `Library Bank / Implementation Source`（`605:1066`）配下にあるDesktop / Mobile・Light / Darkの4フレームを正本とします。
 
 ## MVPで作らないルート
 
@@ -151,4 +152,4 @@ MVPではサイドバーを使いません。
 - Book Detail から Book List
 - Book Detail から Book Form への導線はMVPでは任意
 
-画面上部に最小限のヘッダーを置く想定です。
+画面上部には全幅のフラットな共通ヘッダーを置き、細い下境界線で本文と分けます。Book ListとLibrary Bankの現在位置は`aria-current`でも示します。

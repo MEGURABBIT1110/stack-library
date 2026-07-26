@@ -12,11 +12,11 @@ Stack Library は、技術書の蔵書を探し、読書状態や実務での参
 
 - server-onlyなmicroCMSクライアントとレスポンス正規化
 - Book List、Book Detail、Library Bank
-- 登録価格の全件集計と読書状態別・蔵書別の価格台帳
+- 登録価格の全件集計と書名・出版社・価格による蔵書台帳
 - microCMS Assetsの書影表示
 - Light / Darkテーマ
-- 最大幅1200px、1024pxを境界にしたDesktop / Mobileレイアウト
-- 共通Header、Library Metrics、状態表示、Context Bar、Footer
+- 最大幅1224px、1024pxを境界にしたDesktop / Mobileレイアウト
+- 画面上端へ埋め込まれた共通Header、Context Bar、Footer
 - 接続エラーと404表示
 - Storybookによる再利用コンポーネントのカタログと状態検証
 
@@ -79,6 +79,7 @@ npm run dev
 
 ```txt
 http://localhost:3000/
+http://localhost:3000/bank
 http://localhost:3000/books/{contentId}
 ```
 

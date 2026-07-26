@@ -1,21 +1,10 @@
-import { READING_STATUS_DEFINITIONS } from "@/lib/books/labels";
-import type { Book, ReadingStatus } from "@/types/book";
-
-export type BankStatusAggregate = {
-  status: ReadingStatus;
-  bookCount: number;
-  registeredCount: number;
-  totalPrice?: number;
-};
+import type { Book } from "@/types/book";
 
 export type LibraryBankAggregate = {
   bookCount: number;
   registeredCount: number;
   unregisteredCount: number;
-  registrationRate?: number;
   totalPrice?: number;
-  averagePrice?: number;
-  byStatus: BankStatusAggregate[];
   books: Book[];
 };
 
@@ -39,21 +28,7 @@ export function aggregateLibraryBank(
     bookCount: books.length,
     registeredCount: registeredBooks.length,
     unregisteredCount: books.length - registeredBooks.length,
-    registrationRate:
-      books.length === 0 ? undefined : registeredBooks.length / books.length,
     totalPrice,
-    averagePrice:
-      totalPrice === undefined ? undefined : totalPrice / registeredBooks.length,
-    byStatus: READING_STATUS_DEFINITIONS.map(({ id }) => {
-      const statusBooks = books.filter((book) => book.readingStatus === id);
-      const statusRegisteredBooks = statusBooks.filter(hasRegisteredPrice);
-      return {
-        status: id,
-        bookCount: statusBooks.length,
-        registeredCount: statusRegisteredBooks.length,
-        totalPrice: sumRegisteredPrices(statusBooks),
-      };
-    }),
     books: [...books].sort((left, right) => {
       if (left.price === undefined && right.price === undefined) {
         return left.title.localeCompare(right.title, "ja");
@@ -71,13 +46,7 @@ export function formatRegisteredPrice(price: number | undefined): string {
     style: "currency",
     currency: "JPY",
     maximumFractionDigits: 0,
-  }).format(price);
-}
-
-export function formatRegistrationRate(rate: number | undefined): string {
-  if (rate === undefined) return "—";
-  return new Intl.NumberFormat("ja-JP", {
-    style: "percent",
-    maximumFractionDigits: 1,
-  }).format(rate);
+  })
+    .format(price)
+    .replace("￥", "¥");
 }
