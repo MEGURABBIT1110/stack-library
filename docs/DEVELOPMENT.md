@@ -141,14 +141,32 @@ Closes #12
 
 ## 検証
 
-コード変更では、原則として以下を実行します。
+検証は変更量ではなく、失敗した場合の影響範囲で選びます。途中の高速フィードバックと、PR完成前の最終ゲートを分離します。
+
+| 区分 | 主な変更 | 作業中の必須確認 | PR完成前の追加確認 |
+|---|---|---|---|
+| A: 軽微 | 文書、文言、命名、Story階層、挙動を変えない移動 | 差分、参照切れ、リンク、用語・見出し構造 | コードを含まなければbuild不要 |
+| B: 局所 | Primitive、単一コンポーネント、局所CSS、Story | `npm run lint`、`npx tsc --noEmit`、対象Storyまたは対象Figmaノード | コードを含むPRとして`npm run build`を一度実行 |
+| C: 画面・基盤 | ページ、主要レイアウト、ルーティング、データモデル、microCMS、依存・設定 | `npm run lint`、`npm run build`、影響する統合状態 | 最終差分で影響画面とアクセシビリティを再確認 |
+
+区分AでもTypeScriptのimportやファイル配置を変更した場合は、参照切れを検出するため`npx tsc --noEmit`を実行します。
+
+`next build`はTypeScript検査を含みます。同じ差分に対して`npx tsc --noEmit`と`npm run build`を連続して実行せず、前者は作業中、後者はPR完成前または区分Cの確認に使います。
+
+コードを含むPRは、Ready化またはマージ前の最終差分に対して以下を一度実行します。
 
 ```bash
 npm run lint
 npm run build
 ```
 
-UI変更では、対象に応じて以下も確認します。
+### UI確認の選び方
+
+画面・ページ領域・レスポンシブレイアウトを変更した場合は、影響するDesktop / Mobile・Light / Darkを確認します。
+
+独立したPrimitiveや単一コンポーネントでは、対象Storyと対象Figmaノードを確認します。theme・viewportに依存しないことをCSS、Auto Layout、semantic variable bindingなどの構造で確認できる場合、同じ表示を機械的に4通り取得しません。
+
+変更の性質に応じて、以下から影響する項目だけを選びます。
 
 - Light / Dark
 - Desktop / Mobile
@@ -158,17 +176,33 @@ UI変更では、対象に応じて以下も確認します。
 - 色以外でも理解できる状態表現
 - 読み込み中、0件、取得失敗
 
+Figmaを正本とする複数の関連変更は、最後の関連変更後、PR完成前に`figma_design_qa`で一括監査します。画面全体、主要レイアウト、高リスクなアクセシビリティ変更、または明示的に指定された監査は変更時点で実施します。監査後に対象へ影響する変更がなければ再監査しません。
+
 Storybook導入後は、再利用コンポーネントの変更に対応するStoryと必要なinteraction testを含めます。テーマはglobal、画面幅はviewportまたはcontainerで検証し、見た目の違いだけをComponent propsへ増やしません。
 
-Storybookの起動:
+Storybookのローカル確認には開発サーバーを使います。
 
 ```bash
 npm run storybook
 ```
 
+Storybookは公開・配布せず、静的ビルド用スクリプトや生成物を標準検証へ含めません。
+
 Storyは`Foundations / Components / Patterns`の責務に沿って配置します。microCMSへ直接接続せず、`Book`型に準拠したfixtureで通常、欠損、長文などの状態を再現します。
 
-ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run build`は必須ではありません。
+### 検証結果の再利用
+
+同じ論理タスク内の成功結果は、次の条件をすべて満たす場合に再利用できます。
+
+- 検証対象のファイルとその依存先を変更していない
+- lint、TypeScript、Next.js、Storybook、テストの設定を変更していない
+- `package.json`やlockfileを変更していない
+- 検証後にmerge、rebase、依存更新を行っていない
+- 実行環境や必要な環境変数が変わっていない
+
+条件を満たさなくなった場合も、すべてをやり直さず、影響する検証だけを再実行します。`git diff --check`、同じスクリーンショット取得、同じlintなどを、根拠なく途中で反復しません。
+
+ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run lint`と`npm run build`は必須ではありません。
 
 ## ドキュメントの責務
 
