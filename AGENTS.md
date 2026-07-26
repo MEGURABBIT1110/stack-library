@@ -49,6 +49,21 @@ fix(theme): preserve visible focus styles
 docs(workflow): define repository conventions
 ```
 
+## Design source and visual verification
+
+Figmaを視覚仕様の正本とする変更では、Issueの文章だけからUIを推論しないでください。対象Figmaフレームを先に確認し、Issueとの矛盾があれば独自に折衷せず作業を停止してください。
+
+Figmaの作成・修正後は、ノード更新や変数値の検査だけで完了としません。
+
+- Desktop / Mobile・Light / Darkの対象4画面を変更後に新しく取得する
+- 4画面を並べ、情報階層、背景面、境界、余白、コントラスト、意図しない帯・浮遊・カード化を目視比較する
+- fill、stroke、semantic variable binding、Auto Layout、bounds、clipping、overflowを構造検査する
+- 外側ラップ、本文、ヘッダー、フッターなど面が連続する領域は、個別レイヤーではなく画面全体で照合する
+- 指摘修正後は影響する全テーマ・全画面幅を再取得し、同じ検査をやり直す
+- 古いスクリーンショット、キャッシュされたプレビュー、変更前の画像を完了証拠に使わない
+- 最終画像を比較するまで「修正済み」「Figmaと一致」と報告しない
+- 未確認項目があれば完了扱いにせず、未確認として明示する
+
 ## Implementation stack
 
 - Next.js App Router を使う
