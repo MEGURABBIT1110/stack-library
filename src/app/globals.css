@@ -107,6 +107,35 @@ ul {
   margin: 0;
 }
 
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.heading[data-heading-scale="page"] {
+  font-size: 26px;
+  line-height: 36px;
+}
+
+.heading[data-heading-scale="section"] {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.heading[data-heading-scale="subsection"] {
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.heading[data-heading-scale="compact"] {
+  font-size: 15px;
+  line-height: 22px;
+}
+
 ul {
   padding: 0;
   list-style: none;
@@ -1141,12 +1170,6 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
 .bank-ledger {
   min-width: 0;
   padding-top: 36px;
-}
-
-.bank-ledger__heading h2 {
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 26px;
 }
 
 .bank-table-wrap {

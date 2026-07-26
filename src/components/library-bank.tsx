@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Heading } from "@/components/common/heading";
 import {
   aggregateLibraryBank,
   formatRegisteredPrice,
@@ -104,7 +105,9 @@ export function LibraryBank({
 
           <section aria-labelledby="bank-books-title" className="bank-ledger">
             <div className="bank-ledger__heading">
-              <h2 id="bank-books-title">書籍別の登録価格</h2>
+              <Heading as="h2" id="bank-books-title" scale="subsection">
+                書籍別の登録価格
+              </Heading>
             </div>
             <div className="bank-table-wrap">
               <table className="bank-table bank-table--books">

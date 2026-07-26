@@ -57,6 +57,12 @@
   line-height: 18px;
 }
 
+.heading-story__scale-guide {
+  display: grid;
+  gap: 24px;
+  width: min(100%, 720px);
+}
+
 @media (max-width: 639px) {
   .storybook-canvas {
     padding: 20px;
