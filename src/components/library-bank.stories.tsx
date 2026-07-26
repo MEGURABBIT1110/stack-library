@@ -72,6 +72,8 @@ export const LongJapaneseAndMultipleAuthors: Story = {
           "長期運用される大規模な日本語プロダクトにおけるフロントエンド設計とアクセシビリティ検証の実践",
         authors: ["大石 周", "技術標本研究会", "Stack Library編集部"],
         price: 123456789,
+        publisher:
+          "長期運用技術とアクセシビリティ設計に関する日本語出版研究所",
         readingStatus: "reading",
       }),
     ],

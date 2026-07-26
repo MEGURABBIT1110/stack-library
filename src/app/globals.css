@@ -1192,11 +1192,21 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
 }
 
 .bank-table--books th:first-child {
-  width: 56.5%;
+  width: 56.5359%;
+  padding-right: 72px;
 }
 
 .bank-table--books th:nth-child(2) {
-  width: 28.8%;
+  width: 28.7582%;
+  padding-right: 72px;
+}
+
+.bank-table--books tbody td:nth-child(2) {
+  padding-right: 72px;
+}
+
+.bank-table--books thead th:last-child {
+  text-align: right;
 }
 
 .bank-table--books a {
@@ -1231,6 +1241,7 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
   text-align: right;
+  white-space: nowrap;
 }
 
 .empty-state,
@@ -1608,8 +1619,9 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
   .bank-table tr {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 92px;
+    grid-template-columns: minmax(0, min(224px, calc(100% - 92px))) 92px;
     min-height: 88px;
+    justify-content: space-between;
     padding-block: 20px;
     border-bottom: 1px solid var(--color-rule);
   }
@@ -1628,15 +1640,14 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
     position: static;
     grid-column: 1;
     grid-row: 1;
-    padding-right: 18px;
     font-size: 14px;
     line-height: 22px;
   }
 
-  .bank-table--books td:nth-child(2) {
+  .bank-table--books tbody td:nth-child(2) {
     grid-column: 1;
     grid-row: 2;
-    padding-right: 18px;
+    padding-right: 0;
     color: var(--color-text-muted);
     font-size: 12px;
     line-height: 19px;
