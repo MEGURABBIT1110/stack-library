@@ -30,6 +30,8 @@ src/
     bank/page.tsx
     books/[contentId]/page.tsx
   components/
+    common/
+      theme-switch.tsx
     app-shell.tsx
     library-header.tsx
     library-bank.tsx
@@ -37,7 +39,6 @@ src/
     book-card.tsx
     book-detail-identity.tsx
     scroll-context-bar.tsx
-    theme-switch.tsx
   lib/
     microcms/client.ts
     books/queries.ts
@@ -92,6 +93,21 @@ Foundations
 - Screens: App Router上の実ページ。部品ライブラリへ混ぜず、統合例として扱う
 
 下位層が上位層へ依存しないようにします。粒度だけを理由にComponentを分割せず、独立した責務、再利用性、検証価値がある場合に抽出します。
+
+Reactのファイル配置はAtomic Designの層名をそのままディレクトリ名にせず、実装上の責務で分類します。
+
+```txt
+src/components/
+  common/   複数の画面領域で使う、ドメインに依存しない小さな部品
+  card/     1件の対象を要約し、一覧や関連情報で再利用する部品
+  section/  見出しと本文など、ページ内の意味のまとまり
+  layout/   複数領域の配置規則を再利用する必要が生じた場合のみ追加
+```
+
+- `common/`は「何でも置く場所」ではなく、単独責務を持ち、複数の上位部品から利用される確定済みPrimitiveに限定する
+- `card/`、`section/`、`layout/`は対象コンポーネントの責務と契約が確定してから作成し、空ディレクトリは置かない
+- Atomic層はFigma名、Storybook title、Architecture上の分類で追跡し、`atoms/`、`molecules/`、`organisms/`という重複したファイル階層は作らない
+- `ThemeSwitch`は確定済みPrimitiveであり、`components/common/theme-switch.tsx`を正規のimport先とする
 
 Storybookのtitleは、原則として以下の階層を使います。
 

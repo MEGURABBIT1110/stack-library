@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 
-import { ThemeSwitch } from "@/components/theme-switch";
+import { ThemeSwitch } from "@/components/common/theme-switch";
 
 const meta = {
   title: "Components/Primitives/ThemeSwitch",
