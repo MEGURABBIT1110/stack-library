@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { BookCover } from "@/components/book-cover";
-import { StatusBadge } from "@/components/book-status";
+import { StatusBadge } from "@/components/common/status-badge";
 import { ThemeSwitch } from "@/components/common/theme-switch";
 import type { Book } from "@/types/book";
 

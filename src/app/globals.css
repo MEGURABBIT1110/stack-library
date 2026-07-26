@@ -604,6 +604,19 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
   white-space: nowrap;
 }
 
+.status-badge::before {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+
+.status-badge {
+  font-weight: 500;
+}
+
 .status-badge[data-status="tsundoku"] {
   background: var(--color-status-tsundoku-soft);
   color: var(--color-status-tsundoku);
@@ -641,15 +654,19 @@ html[data-theme="dark"] .book-cover--detail .book-cover__image {
 .technical-area-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: 8px;
 }
 
 .technical-area-tags li {
+  width: max-content;
+  max-width: 100%;
+  min-height: 26px;
   padding: 3px 9px;
   border: 1px solid var(--color-rule);
   border-radius: 6px;
   color: var(--color-text-muted);
   font-size: 12px;
+  font-weight: 500;
   line-height: 18px;
 }
 

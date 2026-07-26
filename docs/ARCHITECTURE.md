@@ -32,6 +32,8 @@ src/
   components/
     common/
       heading.tsx
+      status-badge.tsx
+      technical-area-tags.tsx
       theme-switch.tsx
     app-shell.tsx
     library-header.tsx
@@ -109,6 +111,8 @@ src/components/
 - `card/`、`section/`、`layout/`は対象コンポーネントの責務と契約が確定してから作成し、空ディレクトリは置かない
 - Atomic層はFigma名、Storybookの説明、Architecture上の分類で追跡し、`atoms/`、`molecules/`、`organisms/`という重複したファイル階層は作らない
 - `Heading`は確定済みPrimitiveであり、`components/common/heading.tsx`を正規のimport先とする。HTMLの見出しレベルは`as`、視覚スケールは`scale`で独立して指定する
+- `StatusBadge`は確定済みPrimitiveであり、`components/common/status-badge.tsx`を正規のimport先とする。読書状態は日本語ラベルとsignalを併用し、色だけに依存しない
+- `TechnicalAreaTags`は確定済みPrimitiveであり、`components/common/technical-area-tags.tsx`を正規のimport先とする。各タグは`max-content`で内容幅に追従し、分類色を増やさず、複数時はwrapする
 - `ThemeSwitch`は確定済みPrimitiveであり、`components/common/theme-switch.tsx`を正規のimport先とする
 
 Storybookのtitleは、確定したReactの責務別ディレクトリと同じ階層を使います。Atomic Design上の層名はナビゲーション階層へ重ねず、各Storyの説明とArchitectureで追跡します。
@@ -116,6 +120,8 @@ Storybookのtitleは、確定したReactの責務別ディレクトリと同じ�
 ```txt
 Foundations/Color
 Components/Common/Heading
+Components/Common/StatusBadge
+Components/Common/TechnicalAreaTags
 Components/Common/ThemeSwitch
 Components/Card/BookCard
 Components/Section/SectionName

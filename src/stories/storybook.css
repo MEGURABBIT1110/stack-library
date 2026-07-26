@@ -20,6 +20,10 @@
   flex-wrap: wrap;
 }
 
+.storybook-canvas--status-badges {
+  gap: 8px;
+}
+
 .storybook-token-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

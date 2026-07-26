@@ -7,7 +7,7 @@ const meta = {
   title: "Components/Common/Heading",
   component: Heading,
   args: {
-    as: "h2",
+    as: "h1",
     children: "技術書を、知識として積み重ねる",
     scale: "page",
   },
@@ -38,7 +38,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const heading = canvas.getByRole("heading", { level: 2 });
+    const heading = canvas.getByRole("heading", { level: 1 });
 
     await expect(heading).toHaveAttribute("data-heading-scale", "page");
   },
@@ -47,17 +47,17 @@ export const Default: Story = {
 export const ScaleGuide: Story = {
   render: () => (
     <div className="heading-story__scale-guide">
-      <Heading as="h2" scale="page">
-        Page — 技術書ライブラリ
+      <Heading as="h1" scale="page">
+        h1 / Page — 技術書ライブラリ
       </Heading>
-      <Heading as="h3" scale="section">
-        Section — 書籍別の登録価格
+      <Heading as="h2" scale="section">
+        h2 / Section — 書籍別の登録価格
       </Heading>
-      <Heading as="h4" scale="subsection">
-        Subsection — 長い日本語の書名でも読みやすい見出し
+      <Heading as="h3" scale="subsection">
+        h3 / Subsection — 長い日本語の書名でも読みやすい見出し
       </Heading>
-      <Heading as="h5" scale="compact">
-        Compact — 補助的な見出し
+      <Heading as="h4" scale="compact">
+        h4 / Compact — 補助的な見出し
       </Heading>
     </div>
   ),
