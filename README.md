@@ -88,7 +88,6 @@ http://localhost:3000/books/{contentId}
 ```bash
 npm run lint
 npm run build
-npm run build-storybook
 ```
 
 Storybookを起動します。

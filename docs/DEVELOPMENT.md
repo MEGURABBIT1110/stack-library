@@ -160,11 +160,10 @@ UI変更では、対象に応じて以下も確認します。
 
 Storybook導入後は、再利用コンポーネントの変更に対応するStoryと必要なinteraction testを含めます。テーマはglobal、画面幅はviewportまたはcontainerで検証し、見た目の違いだけをComponent propsへ増やしません。
 
-Storybookの起動と静的ビルド:
+Storybookの起動:
 
 ```bash
 npm run storybook
-npm run build-storybook
 ```
 
 Storyは`Foundations / Components / Patterns`の責務に沿って配置します。microCMSへ直接接続せず、`Book`型に準拠したfixtureで通常、欠損、長文などの状態を再現します。
