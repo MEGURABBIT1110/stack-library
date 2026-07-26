@@ -2,7 +2,7 @@
 
 Stack Library MVP のルーティング定義です。
 
-現在のMVPは Book List、Book Detail、Book Form の3画面だけです。旧案にあった topics、notes、collections、knowledge map、学習ルート、サイドバー付き構成はMVPに含めません。
+現在のMVPは Book List、Book Detail、Library Bank、Book Form の4画面です。旧案にあった topics、notes、collections、knowledge map、学習ルート、サイドバー付き構成はMVPに含めません。
 
 ## ルート一覧
 
@@ -10,6 +10,7 @@ Stack Library MVP のルーティング定義です。
 |---|---|---|
 | `/` | Book List | 技術書の蔵書一覧。検索、状態別絞り込み、技術領域絞り込みをこの画面内で扱う |
 | `/books/[contentId]` | Book Detail | microCMS の `contentId` を使った技術書詳細 |
+| `/bank` | Library Bank | 蔵書に登録した税込価格の全件集計と明細 |
 | `/books/new` | Book Form | 技術書の新規登録フォーム |
 
 `/` をMVPの入口兼Book Listとして扱います。`/books` の一覧ルートは作りません。
@@ -107,6 +108,23 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 - `authors`
 - `readingStatus`
 
+## Library Bank: `/bank`
+
+### 目的
+
+蔵書に登録した税込価格（日本円）を確認する画面です。市場価格、買取価格、資産価値は扱いません。
+
+### 表示するもの
+
+- 登録価格の合計、価格登録済み冊数、価格未登録冊数
+- 蔵書別の書名、出版社、登録価格
+
+`books` APIは全件取得し、100件を超える蔵書にも対応します。各明細は `/books/[contentId]` へリンクします。
+
+`/bank` の視覚仕様はFigmaの `Library Bank / Implementation Source`（`605:1066`）配下にあるDesktop / Mobile・Light / Darkの4フレームを正本とします。
+
+通常状態ではページ見出しや明細見出しを言い換えるdescription、HeaderのProduct Context、画面内の実装注記を表示しません。状態を誤認しうるBook 0件、価格登録済み0件、取得失敗の説明は表示します。
+
 ## MVPで作らないルート
 
 以下は将来拡張です。
@@ -131,7 +149,9 @@ MVPではサイドバーを使いません。
 
 - Book List から Book Detail
 - Book List から Book Form
+- Book List と Library Bank の相互移動
+- Library Bank から Book Detail
 - Book Detail から Book List
 - Book Detail から Book Form への導線はMVPでは任意
 
-画面上部に最小限のヘッダーを置く想定です。
+画面上部には全幅のフラットな共通ヘッダーを置き、細い下境界線で本文と分けます。Book ListとLibrary Bankの現在位置は`aria-current`でも示します。テーマ切替は太陽／月の各44×44操作を持つ100×52の共通Theme SwitchをDesktop / Mobileで再利用します。

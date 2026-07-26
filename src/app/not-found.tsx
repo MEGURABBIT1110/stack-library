@@ -6,7 +6,7 @@ import { LibraryHeader } from "@/components/library-header";
 export default function NotFound() {
   return (
     <AppShell
-      header={<LibraryHeader books={[]} variant="record" />}
+      header={<LibraryHeader variant="record" />}
       variant="message"
     >
       <section className="message-state">

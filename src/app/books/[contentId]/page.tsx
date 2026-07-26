@@ -32,7 +32,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
   if ("error" in result) {
     return (
       <AppShell
-        header={<LibraryHeader books={[]} variant="record" />}
+        header={<LibraryHeader variant="record" />}
         variant="message"
       >
         <ConnectionError error={result.error} />
@@ -60,7 +60,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
           observeId="book-record-title"
         />
       }
-      header={<LibraryHeader books={books} variant="record" />}
+      header={<LibraryHeader variant="record" />}
       variant="record"
     >
       <nav aria-label="蔵書一覧へ戻る" className="back-navigation">

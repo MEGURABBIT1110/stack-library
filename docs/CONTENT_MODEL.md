@@ -31,6 +31,7 @@ Stack Library MVP の microCMS コンテンツモデル定義です。
 | `title` | テキストフィールド | 必須 | 書名 | `string` | ○ | ○ | ○ |
 | `subtitle` | テキストフィールド | 任意 | 副題、版情報の補助 | `string \| undefined` | △ | ○ | ○ |
 | `authors` | テキストエリア | 必須 | 著者名。MVPでは改行区切りで入力し、Next.js側で配列化する | `string[]` | ○ | ○ | ○ |
+| `publication.price` | カスタム内数値 | 任意 | 蔵書として登録した税込価格（日本円） | `number \| undefined` | - | ○ | 将来対応 |
 | `publication.publisher` | カスタム内テキスト | 任意 | 出版社 | `string \| undefined` | △ | ○ | ○ |
 | `publication.release_date` | カスタム内日付 | 任意 | 出版日 | `string \| undefined` | △ | ○ | ○ |
 | `publication.pages` | カスタム内数値 | 任意 | 総ページ数 | `number \| undefined` | - | ○ | ○ |
@@ -104,6 +105,7 @@ microCMSから取得する生データと、画面で扱う正規化後の型を
 - `Book`: 一覧・詳細画面が利用する正規化後の型
 - セレクト値はmicroCMSの日本語表示値からアプリ内部の英語IDへ変換する
 - `authors` と `keywords` は改行区切り文字列から配列へ変換する
+- `publication.price` は正規化後の `Book.price` として扱い、有限の0以上の数値だけを採用する。`0`は登録済み価格として保持し、未設定・負数・非数値は未登録として `undefined` にする
 - `cover.url`、`cover.width`、`cover.height` は `coverImageUrl`、`coverImageWidth`、`coverImageHeight` へ変換する
 
 `MicroCMSBook.id` は microCMS のコンテンツIDです。画面側では `contentId` として扱い、`/books/[contentId]` に使用します。
@@ -135,6 +137,10 @@ microCMSから取得する生データと、画面で扱う正規化後の型を
 
 Detailではレビューではなく、蔵書としての情報、参照用途、技術領域、入手情報を優先します。
 
+### Library Bank
+
+全件の `Book.price` を使い、登録価格の合計、価格登録済み冊数、価格未登録冊数と、書名・出版社・登録価格による蔵書別明細を表示します。`Book.price` が `undefined` の本は未登録として集計対象の金額から除外し、`0` は登録済みの実値として扱います。
+
 ### Book Form
 
 使用する主なフィールド:
@@ -153,5 +159,6 @@ Detailではレビューではなく、蔵書としての情報、参照用途�
 - `summary`
 - `readingPurpose`
 - `usageMemo`
+- `price`（将来実装。任意の税込価格、日本円）
 
 フォーム送信は Next.js Server Action で受け、サーバー側でバリデーションしたうえで microCMS に登録します。

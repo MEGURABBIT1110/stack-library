@@ -11,11 +11,12 @@ Stack Library は、技術書の蔵書を探し、読書状態や実務での参
 実装済み:
 
 - server-onlyなmicroCMSクライアントとレスポンス正規化
-- Book ListとBook Detail
+- Book List、Book Detail、Library Bank
+- 登録価格の全件集計と書名・出版社・価格による蔵書台帳
 - microCMS Assetsの書影表示
 - Light / Darkテーマ
-- 最大幅1200px、1024pxを境界にしたDesktop / Mobileレイアウト
-- 共通Header、Library Metrics、状態表示、Context Bar、Footer
+- 最大幅1224px、1024pxを境界にしたDesktop / Mobileレイアウト
+- 画面上端へ埋め込まれた共通Header、Context Bar、Footer
 - 接続エラーと404表示
 - Storybookによる再利用コンポーネントのカタログと状態検証
 
@@ -32,6 +33,7 @@ Stack Library は、技術書の蔵書を探し、読書状態や実務での参
 |---|---|---|
 | `/` | Book List | 実装済み |
 | `/books/[contentId]` | Book Detail | 実装済み |
+| `/bank` | Library Bank | 実装済み |
 | `/books/new` | Book Form | 未実装 |
 
 Book Listはトップページ `/` です。`/books` の一覧ルートは作成しません。
@@ -77,6 +79,7 @@ npm run dev
 
 ```txt
 http://localhost:3000/
+http://localhost:3000/bank
 http://localhost:3000/books/{contentId}
 ```
 
@@ -112,6 +115,7 @@ microCMSではリスト形式の `books` APIを使用します。
 - `subtitle`
 - `cover`
 - `authors`
+- `publication.price`（任意の税込登録価格・日本円）
 - `publication`（カスタムフィールド）
 - `reading`（カスタムフィールド）
 - `technicalAreas`
@@ -131,6 +135,7 @@ MVPで扱うもの:
 
 - 技術書の一覧表示
 - 技術書の詳細表示
+- 蔵書に登録した税込価格の集計
 - 技術書の新規登録
 - 積読、読書中、読了、参照用、中断の状態管理
 - Book List内での検索・絞り込み

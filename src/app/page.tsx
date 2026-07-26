@@ -2,7 +2,6 @@ import { AppShell } from "@/components/app-shell";
 import { BookList } from "@/components/book-list";
 import { ConnectionError } from "@/components/connection-error";
 import { LibraryHeader } from "@/components/library-header";
-import { LibraryStatusSummary } from "@/components/library-status-summary";
 import { ScrollContextBar } from "@/components/scroll-context-bar";
 import { getBooks } from "@/lib/books/queries";
 
@@ -20,7 +19,7 @@ export default async function HomePage() {
     return (
       <AppShell
         header={
-          <LibraryHeader books={[]} titleAsHeading={false} variant="library" />
+          <LibraryHeader currentPage="library" variant="library" />
         }
         variant="message"
       >
@@ -32,10 +31,11 @@ export default async function HomePage() {
   return (
     <AppShell
       contextBar={<ScrollContextBar kind="library" observeId="library-masthead" />}
-      header={<LibraryHeader books={result.books} variant="library" />}
+      header={
+        <LibraryHeader currentPage="library" variant="library" />
+      }
       variant="library"
     >
-      <LibraryStatusSummary books={result.books} />
       <BookList books={result.books} />
     </AppShell>
   );

@@ -1,14 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
 import { LibraryHeader } from "@/components/library-header";
-import { libraryBooks } from "@/stories/fixtures/books";
 
 const meta = {
   title: "Patterns/LibraryHeader",
   component: LibraryHeader,
   args: {
-    books: libraryBooks,
-    titleAsHeading: true,
+    currentPage: "library",
     variant: "library",
   },
   decorators: [
@@ -23,7 +21,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "蔵書画面と詳細画面の入口を示すPatternです。テーマ切替と、利用可能な場合のみ蔵書メトリクスを表示します。",
+          "Figmaの埋め込み型ヘッダーに準拠し、製品名、現在位置を示すナビゲーション、テーマ切替を表示します。",
       },
     },
   },
@@ -37,13 +35,12 @@ export const Library: Story = {};
 
 export const Record: Story = {
   args: {
-    titleAsHeading: false,
     variant: "record",
   },
 };
 
-export const MetricsUnavailable: Story = {
+export const BankCurrent: Story = {
   args: {
-    books: undefined,
+    currentPage: "bank",
   },
 };

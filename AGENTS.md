@@ -49,6 +49,21 @@ fix(theme): preserve visible focus styles
 docs(workflow): define repository conventions
 ```
 
+## Design source and visual verification
+
+Figmaを視覚仕様の正本とする変更では、Issueの文章だけからUIを推論しないでください。対象Figmaフレームを先に確認し、Issueとの矛盾があれば独自に折衷せず作業を停止してください。
+
+Figmaの作成・修正後は、ノード更新や変数値の検査だけで完了としません。
+
+- Desktop / Mobile・Light / Darkの対象4画面を変更後に新しく取得する
+- 4画面を並べ、情報階層、背景面、境界、余白、コントラスト、意図しない帯・浮遊・カード化を目視比較する
+- fill、stroke、semantic variable binding、Auto Layout、bounds、clipping、overflowを構造検査する
+- 外側ラップ、本文、ヘッダー、フッターなど面が連続する領域は、個別レイヤーではなく画面全体で照合する
+- 指摘修正後は影響する全テーマ・全画面幅を再取得し、同じ検査をやり直す
+- 古いスクリーンショット、キャッシュされたプレビュー、変更前の画像を完了証拠に使わない
+- 最終画像を比較するまで「修正済み」「Figmaと一致」と報告しない
+- 未確認項目があれば完了扱いにせず、未確認として明示する
+
 ## Implementation stack
 
 - Next.js App Router を使う
@@ -60,11 +75,12 @@ docs(workflow): define repository conventions
 
 ## MVP
 
-MVPは以下の3画面に限定します。
+MVPは以下の4画面に限定します。
 
 1. Book List: `/`
 2. Book Detail: `/books/[contentId]`
-3. Book Form: `/books/new`
+3. Library Bank: `/bank`
+4. Book Form: `/books/new`
 
 積読などの絞り込みはBook Listの状態として扱います。サイドバーは使用しません。
 
@@ -118,6 +134,18 @@ UIは日本語ファーストで設計してください。
 ## Development behavior
 
 実装時は、既存ドキュメントの思想と矛盾する変更を避けてください。
+
+### Figma design QA
+
+Figmaを視覚仕様の正本とする画面・コンポーネントを実装または修正した場合は、完了判定の前にプロジェクト固有サブエージェント `figma_design_qa` を起動し、独立した読み取り専用監査を行ってください。
+
+- Issueを仕様の正本、リンクされたFigmaノードを視覚仕様の正本として扱う
+- Figmaの対象node ID、対象viewport、Light / Dark、Desktop / Mobileを監査結果へ記録する
+- コンテナやセルの開始位置だけで一致判定しない
+- 表示文字の左右端、text alignment、有効コンテンツ幅、padding、列間gap、折り返し、行高を実測する
+- 短いサンプルだけでなく、長い日本語の書名・出版社でも比較する
+- BlockerまたはMajorの乖離が残る場合は完了としない
+- 修正後は同じ測定項目を再確認し、差分が解消した根拠を示す
 
 新しい画面・コンポーネント・データモデルを追加する場合は、必要に応じて以下のドキュメントも更新してください。
 

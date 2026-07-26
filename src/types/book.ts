@@ -41,6 +41,7 @@ type MicroCMSPublication = {
   edition?: number;
   pages?: number;
   language?: string[];
+  price?: number;
 };
 
 type MicroCMSReading = {
@@ -80,6 +81,7 @@ export type Book = {
   coverImageWidth?: number;
   coverImageHeight?: number;
   authors: string[];
+  price?: number;
   isbn?: string;
   publisher?: string;
   publishedDate?: string;

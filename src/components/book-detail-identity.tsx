@@ -1,5 +1,6 @@
 import { BookCover } from "@/components/book-cover";
 import { BookStatusLine, TechnicalAreaTags } from "@/components/book-status";
+import { formatRegisteredPrice } from "@/lib/books/bank";
 import { formatDate, LEVEL_LABELS } from "@/lib/books/labels";
 import type { Book } from "@/types/book";
 
@@ -29,6 +30,10 @@ function getCatalogItems(book: Book): CatalogItem[] {
     book.rating !== undefined && {
       label: "RATING",
       value: `${book.rating.toFixed(1)} / 5`,
+    },
+    {
+      label: "登録価格（税込）",
+      value: formatRegisteredPrice(book.price),
     },
   ].filter((item): item is CatalogItem => Boolean(item));
 }

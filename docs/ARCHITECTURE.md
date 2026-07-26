@@ -12,7 +12,7 @@ Stack Library MVP のアーキテクチャ方針です。
 | 登録処理 | Next.js Server Action |
 | データモデル | `books` APIのみ |
 | APIキー | サーバー側だけで利用 |
-| 実装済み画面 | Book List / Book Detail |
+| 実装済み画面 | Book List / Book Detail / Library Bank |
 | 将来実装 | Book Form |
 
 旧Astro構成、旧6画面構成、サイドバー付き構成、knowledge map中心の構成は現在のMVPでは採用しません。
@@ -27,11 +27,12 @@ src/
     globals.css
     layout.tsx
     page.tsx
+    bank/page.tsx
     books/[contentId]/page.tsx
   components/
     app-shell.tsx
     library-header.tsx
-    library-metrics.tsx
+    library-bank.tsx
     book-list.tsx
     book-card.tsx
     book-detail-identity.tsx
@@ -40,6 +41,7 @@ src/
   lib/
     microcms/client.ts
     books/queries.ts
+    books/bank.ts
     books/normalize.ts
     books/labels.ts
   types/book.ts
@@ -47,9 +49,13 @@ src/
 
 ページとmicroCMS取得はServer Componentのまま維持します。Client Componentは、ブラウザ状態が必要なTheme Switchと、`IntersectionObserver`を使うContext Barに限定します。
 
+Library Bankの集計は `lib/books/bank.ts` の純粋関数で行い、microCMS取得・画面表示から分離します。登録価格が `0` の場合と未登録の場合を異なる値として扱います。
+
 ## 表示基盤
 
-- 主要コンテンツの最大幅は1200px
+- 主要コンテンツの最大幅は1224px
+- Headerは画面上端へ連続する全幅の面とし、細い下境界線で本文と分ける。外側余白、強い角丸、影による浮遊表現は使わず、Product Contextは表示しない
+- Theme Switchは太陽／月の各44×44操作を持つ100×52の既存PrimitiveをDesktop / Mobileで共用し、選択状態とアクセシブルネームを維持する
 - ページレベルのレスポンシブ境界は1024pxのみ
 - Desktop / Mobileで別DOMを作らず、同じコンポーネントをCSSで再配置
 - 320pxなど狭い領域への対応は、Shelf TileとBook Identity自身のcontainer queryで扱う
@@ -110,13 +116,25 @@ Patterns/LibraryHeader
 
 `/` はサーバー側で microCMS から `books` を取得します。
 
-絞り込みは `/` の検索パラメータとして扱います。積読などの状態は独立ページではなく、同一画面の表示状態です。
+蔵書は状態別の棚へ分割せず、書名・著者・技術領域を優先する単一のカタログとして表示します。読書状態はBook Card内の補助メタデータです。将来の絞り込みは `/` の検索パラメータとして扱い、状態別の独立ページは作りません。
 
 ### Book Detail
 
 `/books/[contentId]` は `contentId` を使って microCMS から1件取得します。
 
 slug はMVPでは使いません。
+
+### Library Bank
+
+`/bank` は `getAllContents` を使って `books` を全件取得し、100件を超える蔵書も集計します。取得と集計はServer Component境界に置き、APIキーや生レスポンスをClient Componentへ渡しません。
+
+画面上部は登録価格合計・価格登録済み冊数・価格未登録冊数に限定し、明細は書名・出版社・登録価格の安定した列で表示します。平均、登録率、読書状態別内訳、日付は表示しません。
+
+表示する金額は蔵書に登録した税込価格（日本円）であり、市場価格・買取価格・資産価値ではありません。
+
+視覚仕様はFigmaの `Library Bank / Implementation Source`（section `605:1066`）を正本とします。Desktop Light/Darkは `605:1067` / `605:1068`、Mobile Light/Darkは `605:1069` / `605:1070` を参照し、Headerは`color/surface`、外側ラップと本文は`color/canvas`で連続させます。
+
+通常状態はEyebrow、ページ見出し、集計、明細の階層だけで理解できる構成とし、見出しを反復するdescriptionや実装注記を画面へ表示しません。Book 0件、価格登録済み0件、取得失敗など、誤解を防ぐ必要がある状態説明は残します。
 
 ### Book Form
 

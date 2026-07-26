@@ -51,7 +51,7 @@ function MoonIcon() {
   );
 }
 
-export function ThemeSwitch({ compact = false }: { compact?: boolean }) {
+export function ThemeSwitch() {
   const theme = useSyncExternalStore(subscribe, getThemeSnapshot, () => "light");
 
   function selectTheme(nextTheme: Theme) {
@@ -59,11 +59,8 @@ export function ThemeSwitch({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <div
-      aria-label="表示テーマ"
-      className={`theme-switch${compact ? " theme-switch--compact" : ""}`}
-      role="group"
-    >
+    <div aria-label="表示テーマ" className="theme-switch" role="group">
+      <span aria-hidden="true" className="theme-switch__selection" />
       <button
         aria-label="ライトテーマに切り替える"
         aria-pressed={theme === "light"}
