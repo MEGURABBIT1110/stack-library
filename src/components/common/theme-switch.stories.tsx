@@ -4,7 +4,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { ThemeSwitch } from "@/components/common/theme-switch";
 
 const meta = {
-  title: "Components/Primitives/ThemeSwitch",
+  title: "Components/Common/ThemeSwitch",
   component: ThemeSwitch,
   parameters: {
     docs: {
@@ -26,6 +26,9 @@ export const Default: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const lightButton = canvas.getByRole("button", {
+      name: "ライトテーマに切り替える",
+    });
     const darkButton = canvas.getByRole("button", {
       name: "ダークテーマに切り替える",
     });
@@ -33,5 +36,9 @@ export const Default: Story = {
     await userEvent.click(darkButton);
     await expect(darkButton).toHaveAttribute("aria-pressed", "true");
     await expect(document.documentElement).toHaveAttribute("data-theme", "dark");
+
+    await userEvent.click(lightButton);
+    await expect(lightButton).toHaveAttribute("aria-pressed", "true");
+    await expect(document.documentElement).toHaveAttribute("data-theme", "light");
   },
 };
