@@ -6,14 +6,11 @@ import { ThemeSwitch } from "@/components/theme-switch";
 const meta = {
   title: "Components/Primitives/ThemeSwitch",
   component: ThemeSwitch,
-  args: {
-    compact: false,
-  },
   parameters: {
     docs: {
       description: {
         component:
-          "Light / Darkを選ぶ2択のコントロールです。現在値はaria-pressedでも伝えます。",
+          "太陽と月の各44×44操作でLight / Darkを選ぶPrimitiveです。現在値は選択プレートとaria-pressedで伝えます。",
       },
     },
   },
@@ -36,11 +33,5 @@ export const Default: Story = {
     await userEvent.click(darkButton);
     await expect(darkButton).toHaveAttribute("aria-pressed", "true");
     await expect(document.documentElement).toHaveAttribute("data-theme", "dark");
-  },
-};
-
-export const Compact: Story = {
-  args: {
-    compact: true,
   },
 };

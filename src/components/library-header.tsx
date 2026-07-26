@@ -20,9 +20,6 @@ export function LibraryHeader({
           href="/"
         >
           <span className="library-header__product-name">Stack Library</span>
-          <span className="library-header__product-context">
-            PERSONAL TECHNICAL ARCHIVE
-          </span>
         </Link>
 
         {variant === "library" ? (
@@ -41,10 +38,10 @@ export function LibraryHeader({
                 Library Bank
               </Link>
             </nav>
-            <ThemeSwitch compact />
+            <ThemeSwitch />
           </div>
         ) : (
-          <ThemeSwitch compact />
+          <ThemeSwitch />
         )}
       </div>
     </header>

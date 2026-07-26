@@ -123,6 +123,8 @@ slug は使わず、microCMS のコンテンツIDをそのまま使います。
 
 `/bank` の視覚仕様はFigmaの `Library Bank / Implementation Source`（`605:1066`）配下にあるDesktop / Mobile・Light / Darkの4フレームを正本とします。
 
+通常状態ではページ見出しや明細見出しを言い換えるdescription、HeaderのProduct Context、画面内の実装注記を表示しません。状態を誤認しうるBook 0件、価格登録済み0件、取得失敗の説明は表示します。
+
 ## MVPで作らないルート
 
 以下は将来拡張です。
@@ -152,4 +154,4 @@ MVPではサイドバーを使いません。
 - Book Detail から Book List
 - Book Detail から Book Form への導線はMVPでは任意
 
-画面上部には全幅のフラットな共通ヘッダーを置き、細い下境界線で本文と分けます。Book ListとLibrary Bankの現在位置は`aria-current`でも示します。
+画面上部には全幅のフラットな共通ヘッダーを置き、細い下境界線で本文と分けます。Book ListとLibrary Bankの現在位置は`aria-current`でも示します。テーマ切替は太陽／月の各44×44操作を持つ100×52の共通Theme SwitchをDesktop / Mobileで再利用します。

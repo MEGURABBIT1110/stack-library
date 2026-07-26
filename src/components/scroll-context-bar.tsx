@@ -74,7 +74,7 @@ export function ScrollContextBar(props: ScrollContextBarProps) {
           </>
         )}
         <div className="scroll-context__theme">
-          <ThemeSwitch compact />
+          <ThemeSwitch />
         </div>
       </div>
     </div>

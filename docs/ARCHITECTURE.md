@@ -54,7 +54,8 @@ Library Bankの集計は `lib/books/bank.ts` の純粋関数で行い、microCMS
 ## 表示基盤
 
 - 主要コンテンツの最大幅は1224px
-- Headerは画面上端へ連続する全幅の面とし、細い下境界線で本文と分ける。外側余白、強い角丸、影による浮遊表現は使わない
+- Headerは画面上端へ連続する全幅の面とし、細い下境界線で本文と分ける。外側余白、強い角丸、影による浮遊表現は使わず、Product Contextは表示しない
+- Theme Switchは太陽／月の各44×44操作を持つ100×52の既存PrimitiveをDesktop / Mobileで共用し、選択状態とアクセシブルネームを維持する
 - ページレベルのレスポンシブ境界は1024pxのみ
 - Desktop / Mobileで別DOMを作らず、同じコンポーネントをCSSで再配置
 - 320pxなど狭い領域への対応は、Shelf TileとBook Identity自身のcontainer queryで扱う
@@ -132,6 +133,8 @@ slug はMVPでは使いません。
 表示する金額は蔵書に登録した税込価格（日本円）であり、市場価格・買取価格・資産価値ではありません。
 
 視覚仕様はFigmaの `Library Bank / Implementation Source`（section `605:1066`）を正本とします。Desktop Light/Darkは `605:1067` / `605:1068`、Mobile Light/Darkは `605:1069` / `605:1070` を参照し、Headerは`color/surface`、外側ラップと本文は`color/canvas`で連続させます。
+
+通常状態はEyebrow、ページ見出し、集計、明細の階層だけで理解できる構成とし、見出しを反復するdescriptionや実装注記を画面へ表示しません。Book 0件、価格登録済み0件、取得失敗など、誤解を防ぐ必要がある状態説明は残します。
 
 ### Book Form
 

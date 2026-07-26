@@ -60,9 +60,6 @@ export function LibraryBank({
           </span>
         </p>
         <h1>蔵書価格の記録</h1>
-        <p>
-          登録した技術書の税込価格を、一冊ずつ積み上げて確認します。市場価格や再販価値ではありません。
-        </p>
       </header>
 
       {!hasBooks ? (
@@ -108,9 +105,6 @@ export function LibraryBank({
           <section aria-labelledby="bank-books-title" className="bank-ledger">
             <div className="bank-ledger__heading">
               <h2 id="bank-books-title">書籍別の登録価格</h2>
-              <p>
-                価格の高い順。価格未登録の本は末尾に「未登録」と表示します。
-              </p>
             </div>
             <div className="bank-table-wrap">
               <table className="bank-table bank-table--books">
@@ -144,13 +138,6 @@ export function LibraryBank({
               </table>
             </div>
           </section>
-
-          <aside className="bank-contract" aria-label="価格表示の規則">
-            <p className="section-code">DATA / DISPLAY CONTRACT</p>
-            <p>
-              0円は有効な登録価格として表示。値がない場合は「未登録」。書籍行全体を詳細ページへのリンクとして実装する。
-            </p>
-          </aside>
         </>
       )}
     </div>
