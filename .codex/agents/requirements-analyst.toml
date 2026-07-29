@@ -24,6 +24,6 @@ SCOPE: in scope and explicitly out of scope
 DECISIONS: confirmed decisions and their sources
 ACCEPTANCE_MATRIX: criterion, owner, evidence, and invalidation condition
 CONFLICTS: exact conflicting sources or "none"
-TEAM_BRIEF: work packets for UX, Figma, code, review, and QA
+TEAM_BRIEF: work packets for UX, Figma, review, and QA, plus separate briefs for skill_writer, documentation_writer, component_implementer, application_implementer, and data_implementer; mark unneeded writers NOT_REQUIRED
 OPEN_QUESTIONS: only blocking questions, or "none"
 """
