@@ -138,9 +138,59 @@ UIは日本語ファーストで設計してください。
 
 実装時は、既存ドキュメントの思想と矛盾する変更を避けてください。
 
+### Internal development team
+
+親エージェントを司令塔とする12名の小規模開発チームを想定します。登録人数と同時稼働数を区別し、4つの同時実行枠は親と最大3担当で使用します。完了した担当は枠を解放し、次工程の担当へ交代します。
+
+| Role | Agent | Responsibility |
+|---|---|---|
+| 司令塔 | 親エージェント | Issue、優先順位、所有範囲、依存関係、停止判断、統合判断 |
+| 要件分析 | `requirements_analyst` | Issueを検証可能なAcceptance Matrixと担当別briefへ変換 |
+| UX調査・情報設計 | `ux_researcher` | 事例調査、情報優先度、Desktop/Mobile差、Design Brief作成 |
+| デザインシステム設計 | `design_system_architect` | Atomic構造、Component、Variant、Token、Figma・React・Storybook対応の契約化 |
+| Figmaデザイン | `figma_designer` | Figma実装、構造セルフチェック、Design Contract作成 |
+| デザイン批評 | `design_critic` | 凍結Figma案の独立批評、代替案とtradeoff、実装前承認 |
+| ソフトウェア設計 | `software_architect` | 実装方式の比較、境界・data flow・API・test seamのTechnical Plan作成 |
+| コード実装 | `code_implementer` | 指定ファイル、Story、対象テストの実装 |
+| コードレビュー | `code_reviewer` | 凍結diffの正確性、設計、アクセシビリティ、回帰リスク監査 |
+| テスト・QA | `test_engineer` | リスク判定、最小検証、回帰確認、再利用可能な検証証拠 |
+| デバッガー | `debugger` | 安定再現、仮説検証、根本原因の特定、最小修正handoff |
+| 独立Figma QA | `figma_design_qa` | Figmaと最終レンダーの視覚・寸法・アクセシビリティ監査 |
+
+司令塔は作業開始時にteam packetを作り、各担当へ同じ前提を渡します。
+
+- Issue、完了条件、対象外
+- branchまたはcommit、dirty diffの有無
+- `owner`と`allowed_write_surfaces`
+- `forbidden_write_surfaces`
+- `allowed_transient_outputs`とcleanup条件
+- Figma file/node ID、対象ファイル
+- 影響するtheme、viewport、state
+- Acceptance Matrix、Design Brief、Component Contract、Design Contract、Design Critic Approval、Technical Planなどの入力契約
+- 成功済み検証、その入力revision、無効化条件
+- handoff先と停止条件
+
+同じFigma nodeまたは同じtracked repository fileを複数担当へ同時に割り当てません。Figmaを編集するのは`figma_designer`、tracked repository fileを編集するのは`code_implementer`だけです。要件分析、UX調査、デザインシステム設計、デザイン批評、ソフトウェア設計、コードレビュー、テスト・QA、デバッグ、独立Figma QAはプロダクトソースを編集しません。検証・診断のtask固有成果物はOSの一時ディレクトリへ置き、repositoryへ残しません。必須コマンドが更新する既存ignore対象cacheは許容します。修正はfindingごとに元のownerへ戻します。
+
+複数領域の変更は、担当を次のWaveで交代させます。
+
+1. Intake: 司令塔と`requirements_analyst`がAcceptance Matrix、所有範囲、依存順を確定する。
+2. Discovery: `requirements_analyst`の完了後、`ux_researcher`がDesign Briefを作り、`software_architect`は既存構造と実装選択肢を調査し、`test_engineer`はbaselineと最小検証行列を準備する。
+3. Architecture: `ux_researcher`の完了後、Component、Variant、Tokenまたは再利用構造を変更する場合は`design_system_architect`がComponent Contractを作る。`figma_designer`は既存Figmaの読み取り調査だけを並行できる。
+4. Design: 必要なbriefとcontractの確定後、`figma_designer`がFigma実装とDesign Contractを凍結して担当を終了する。`design_critic`が独立批評し、承認されるまでコードの視覚実装へ進まない。指摘修正時は`figma_designer`だけを再起動し、影響範囲を`design_critic`が再確認する。
+5. Technical Design: デザイン承認後、`software_architect`が複数案とtradeoffを検討してTechnical Planを凍結する。`code_implementer`は契約確定前に視覚値やAPI境界を推測しない。
+6. Build: `code_implementer`が承認済みDesign ContractとTechnical Planからrepository実装を行う。非視覚部分が両契約へ依存しない場合だけ、司令塔が所有範囲を分けて先行実装を許可できる。
+7. Review: writerの編集凍結後、`code_reviewer`、`test_engineer`、必要な場合だけ`figma_design_qa`を並行起動する。`test_engineer`は計画済み検証を進められるが、司令塔が`code_reviewer`の`QA_HANDOFF`または「追加なし」を転送するまで最終判定しません。追加riskがあれば対象検証だけを継続します。
+8. Debug: `test_engineer`が原因不明のFAILと安定再現を返して停止した後、その枠を`debugger`へ交代します。同じ再現に対して両者を同時起動せず、`debugger`は根本原因と最小修正をwriterへ返します。
+9. Fix: findingを元のwriterへ戻し、変更で無効になった批評、レビューまたは検証だけを再実行する。
+
+全担当を機械的に起動しません。調査不要なら`ux_researcher`、Component・Variant・Token・再利用構造へ影響しなければ`design_system_architect`、判断を伴うUI変更でなければ`design_critic`、UI変更がなければ`figma_designer`と`figma_design_qa`、技術的tradeoffがない軽微変更なら`software_architect`、repository変更がなければ`code_implementer`と`code_reviewer`、検証失敗がなければ`debugger`を省略します。単一の軽微な読み取り・報告では司令塔が直接処理できますが、repositoryまたはFigmaを変更する場合は規模にかかわらず対応するwriterへ割り当てます。
+
+Figmaだけの変更ではコードbuildを要求せず、ドキュメントだけの変更ではlint/buildを要求しません。Storybookの静的buildは、公開またはCI成果物として明示的に必要な場合だけ実行します。同じ入力に対する成功済み検証は再利用し、変更で無効になった検証だけを再実行してください。
+
 ### Figma design QA
 
-Figmaを視覚仕様の正本とする画面・コンポーネントを実装または修正したPRは、Ready化またはマージ可否を判断する前に、プロジェクト固有サブエージェント `figma_design_qa` を起動し、独立した読み取り専用監査を行ってください。
+Figmaを視覚仕様の正本とする画面・コンポーネントを実装または修正したPRは、Ready化またはマージ可否を判断する前に、プロジェクト固有サブエージェント `figma_design_qa` を起動し、独立した読み取り専用監査を行ってください。Figmaライブラリだけを変更した場合も、作業完了を判断する前に、対象specimen、visible state、構造を同エージェントで独立監査します。アプリケーションrenderは要求せず、fresh Figma screenshotとnode構造を証拠にします。
 
 同じPRで連続して関連コンポーネントを変更する場合、独立QAは最後の関連変更後に一度まとめて実施します。画面全体・主要レイアウト・高リスクなアクセシビリティ変更、またはユーザーが即時監査を指定した場合は、その変更時点で実施してください。監査後に対象ノードへ影響する変更を加えた場合だけ再監査します。
 
