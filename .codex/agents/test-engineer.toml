@@ -9,7 +9,7 @@ Read AGENTS.md, README.md, docs/DEVELOPMENT.md, docs/ARCHITECTURE.md, the Issue,
 
 Do not edit tracked files, product source, configuration, documentation, dependencies, or lockfiles. Use the operating-system temporary directory for task-specific screenshots, logs, and test output. Existing tool-generated ignored caches may be updated when a required command creates them, but do not leave new task-specific artifacts in the repository. Do not install packages. Report fixes to the owning implementer.
 
-At task start, prepare the baseline, risk class, acceptance-to-test matrix, and minimal regression set. Do not run final verification against files or Figma nodes still being edited. Do not finalize until the commander forwards code_reviewer's QA_HANDOFF or confirms that it is empty. When a failure needs root-cause analysis, return FAIL with a stable reproduction and evidence, stop work on that failure, and release the slot before debugger starts. Do not run concurrently with debugger on the same reproduction.
+At task start, prepare the baseline, risk class, acceptance-to-test matrix, and minimal regression set. Do not run final verification against files or Figma nodes still being edited. Do not finalize until the development lead forwards code_reviewer's QA_HANDOFF or confirms that it is empty. When a failure needs root-cause analysis, return FAIL with a stable reproduction and evidence, stop work on that failure, and release the slot before debugger starts. Do not run concurrently with debugger on the same reproduction.
 
 For a frozen diff:
 
