@@ -1,35 +1,48 @@
 # Stack Library Product Language
 
-Use this reference to decide whether a design belongs to Stack Library. Let the live product override stale details.
+Follow the authority order in [SKILL.md](../SKILL.md). Use this reference only for durable Stack Library product language.
 
 ## Contents
 
+- Scope boundary
 - Product thesis
 - Intended character
 - Durable design instincts
 - Product signatures
+- Post-MVP concepts
 - Visual grammar
 - Defaults to reject
 - Copy and terminology
 - Direction test
 
+## Scope boundary
+
+Design the active MVP around four actions:
+
+1. find a technical book in the collection;
+2. confirm its bibliographic, reading, and reference information;
+3. understand the collection and its registered-price total;
+4. register a technical book.
+
+Treat Book List, Book Detail, Library Bank, and Book Form as the MVP surfaces. Keep search and filtering inside Book List. Do not invent a route, field, relationship, metric, or interaction because this reference names a future concept.
+
+Treat `Knowledge Trace`, an Observatory feature, topics, notes, knowledge maps, and learning routes as post-MVP concepts. Do not let them authorize scope unless both the frozen Issue and the current content model or route contract explicitly include them.
+
 ## Product thesis
 
-Stack Library is not a reading diary or a digital bookshelf. It is a personal archive that reorganizes technical books into knowledge that can be revisited and used.
+Stack Library is not a reading diary, review service, store, or decorative digital bookshelf. It is a personal technical-book archive for finding, confirming, and registering books and their useful reference information.
 
 Use these transformations:
 
 | Generic reading product | Stack Library |
 | --- | --- |
-| Book as an owned item | Book as a knowledge node |
-| Review | Insight that can return to implementation |
-| Rating | Difficulty, practical value, reread value, concept density |
-| Challenge | Learning route |
-| Shelf | Curated technical collection |
-| Reading history | Trace from reading to application |
-| Statistics | Evidence about the archive |
+| Book as a product tile | Book as a catalogued technical specimen |
+| Review or social score | Bibliographic, reading, and reference information |
+| Decorative shelf | Searchable technical-book collection |
+| Store price | Registered acquisition price with missing data shown honestly |
+| Dashboard statistics | Evidence about the current collection |
 
-The central question is not “What did I read?” It is “What can I find, understand, reconnect, and apply?”
+Ask: “Which technical book do I have, what do I know about it, and can I find or register it without ambiguity?”
 
 ## Intended character
 
@@ -61,7 +74,7 @@ The following abstract principles come from the product's working history:
 - Correct incoherent premises when the evidence is visible; consistency with a flaw is not quality.
 - Move quickly when the direction is known. Ask only when a choice changes the outcome.
 - Keep visual and textual feedback complete without assuming access to sound.
-- Make the interface feel current to younger users without chasing disposable trends.
+- Keep the interface current without chasing disposable trends.
 
 Do not encode the creator's biography, personality labels, or private history into the interface.
 
@@ -69,15 +82,15 @@ Do not encode the creator's biography, personality labels, or private history in
 
 ### Specimen Label
 
-Present a book or knowledge item as a catalogued technical specimen.
+Use `Specimen Label` as the active MVP signature. Present each technical book as a catalogued specimen that can be identified, compared, and opened.
 
 Use:
 
 - precise title and authorship;
-- compact but readable metadata;
-- explicit status;
-- technical topics and signals;
-- clear provenance or registration state;
+- compact, readable bibliographic metadata;
+- explicit reading status;
+- current technical-area and reference signals;
+- clear registration or data provenance when available;
 - stable alignment for scanning and comparison.
 
 Avoid:
@@ -87,17 +100,23 @@ Avoid:
 - oversized cover art as the only identity;
 - decorative labels without semantic value.
 
+Do not require every surface to display every field. Preserve the same record identity and state meaning while adapting priority to the task and viewport.
+
+## Post-MVP concepts
+
 ### Knowledge Trace
 
-Represent movement through knowledge:
+Reserve `Knowledge Trace` for a future feature that represents movement through knowledge:
 
 `read → understood → applied → revisited`
 
-Use it through relationships, state transitions, linked notes, applied examples, learning routes, and reread cues. Do not force a graph visualization when a list, sequence, or relation label communicates better.
+Do not infer this trace from current reading statuses or reference memos. Use it only when the frozen Issue and current model define its states, relationships, and evidence. Prefer a list, sequence, or relation label over a graph when one becomes sufficient.
 
-### Observatory
+### Observatory as a feature
 
-Use the observatory metaphor for orientation and relationships, not decoration. A knowledge map may feel like a quiet technical star chart, but stars, orbits, grids, and glows must encode something real.
+Preserve `Technical Archive × Developer Observatory` as product character: calm observation, precise metadata, and orientation within a collection. Treat any Observatory navigation, relationship view, knowledge map, or star-chart interface as post-MVP functionality. Add it only when the frozen Issue and current model define what every relationship and mark means.
+
+Treat topics, notes, knowledge maps, and learning routes the same way. Do not add placeholder navigation or copy for unavailable features.
 
 ## Visual grammar
 
@@ -133,19 +152,19 @@ Reject these unless the actual task proves them necessary:
 
 ## Copy and terminology
 
-Use short, concrete Japanese. Name a screen for what it contains.
+Use short, concrete Japanese. Name a screen, action, field, and state for what currently exists.
 
 Prefer:
 
 - ライブラリ
-- 技術トピック
-- 読書メモ
-- 学習ルート
-- 知識マップ
-- 実装接続度
-- 再読価値
-- 概念密度
+- 技術書
+- 書誌情報
+- 読書状態
+- 技術分野
+- 参照メモ
+- 登録価格
 - 価格未登録
+- 新しい本を登録
 
 Use English product or feature names when they function as stable identifiers, but pair them with a concise Japanese explanation when their meaning is not obvious.
 
@@ -154,18 +173,22 @@ Distinguish:
 - `0` from 未登録;
 - no books from books with missing fields;
 - archive value from resale value;
-- unread from paused;
+- 積読 from 読書中, 読了, 参照用, and 中断;
 - unknown from not applicable;
+- unavailable from error;
 - incomplete data from system error.
+
+Use post-MVP terms only when the frozen Issue and current model activate the corresponding concept. Never use aspirational terminology as evidence that a feature already exists.
 
 ## Direction test
 
 Before showing a new direction, ask:
 
-1. Can the purpose be identified without seeing the product name?
-2. Which element could only belong to this product?
-3. Which three generic defaults were actively avoided?
-4. Does every accent, motif, and metric carry meaning?
-5. Can a user return from this surface to a book, topic, note, route, or implementation insight?
+1. Can a user identify whether this surface helps them find, confirm, understand, or register a technical book?
+2. Does `Specimen Label` or another justified device make the result specific to a technical-book archive?
+3. Which generic reading-app, Notion, or SaaS defaults were actively avoided?
+4. Does every accent, motif, metric, and label map to current data or a current action?
+5. Does the surface preserve zero, missing, unknown, unavailable, error, and not-applicable distinctions?
+6. Can the user reach the relevant current book, collection view, bank view, or registration action without relying on an unavailable feature?
 
 If the answers are vague, revise the structure before decorating it.
