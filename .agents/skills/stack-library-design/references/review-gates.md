@@ -19,6 +19,8 @@ Use only the stages needed for the task. An established screen change usually st
 
 Before choosing a stage, verify:
 
+- the frozen Issue revision defines the purpose, acceptance criteria, and allowed change surfaces;
+- each artifact has one assigned writer and review findings return to that writer;
 - the current pattern still serves the product thesis and requested task;
 - reuse would preserve meaning rather than merely preserve appearance;
 - neighboring screens, breakpoints, themes, and states do not expose a contradiction;
@@ -28,10 +30,10 @@ Before choosing a stage, verify:
 Classify the inspected scope as:
 
 - **Preserve:** coherent and intentional;
-- **Correct now:** Blocker, Major, or an obvious low-risk local defect;
-- **Defer:** valid concern outside the coherent task boundary.
+- **Correct now:** required by the frozen Issue and owned by the assigned writer;
+- **Defer:** valid concern outside the Issue or allowed write surfaces; report it for handoff or a separate Issue instead of editing it.
 
-Gate: the chosen scope is the smallest coherent result, not simply the smallest edit.
+Gate: the chosen scope is the smallest result that satisfies the frozen Issue without crossing an ownership boundary. Stop and request a decision when an out-of-scope problem prevents an acceptance criterion from being met.
 
 ## Stage 1 — Product foundation
 
@@ -55,9 +57,7 @@ Verify:
 - color has a semantic or interactive purpose;
 - new tokens or components have a proven need;
 - component properties describe meaningful structural or content variation.
-- each component is assigned to the lowest Atomic Design layer that fully owns its responsibility;
-- lower layers do not depend on higher layers;
-- no component exists only to satisfy taxonomy or visual granularity.
+- component classification and dependency direction follow the current `docs/ARCHITECTURE.md` without introducing a competing taxonomy.
 
 Gate: the system can explain every new primitive and every layer boundary.
 
@@ -69,11 +69,12 @@ Verify:
 - labels are direct and Japanese-first;
 - related information is grouped;
 - comparison values share stable anchors;
-- desktop and mobile preserve order and meaning;
+- desktop and mobile preserve the primary task, data and state meaning, recovery, accessibility-critical information, and intentional reachability;
+- any omission, aggregation, progressive disclosure, relabeling, or reordering of secondary metadata is authorized by the Issue or linked Figma and records its rationale;
 - long content, missing content, and dense content have defined behavior;
 - navigation shows location and a return path.
 
-Gate: the layout remains coherent across breakpoints and content extremes.
+Gate: the layout remains coherent across breakpoints and content extremes without requiring identical fields, order, labels, or visible density.
 
 ## Stage 4 — Components and states
 
@@ -85,8 +86,6 @@ Verify:
 - no dead-end flow exists;
 - actions expose recovery, retry, undo, or a clear next step where relevant;
 - repeated structures use shared components rather than visual copies;
-- data retrieval, route selection, redirects, navigation policy, and the app-wide route schema remain at the Screen boundary;
-- a lower-layer link is owned there only when its invariant semantic destination is intrinsic to that component's responsibility;
 - theme and breakpoint differences do not create duplicate component hierarchies;
 - real or representative Japanese data is used.
 
@@ -117,10 +116,11 @@ Verify:
 - reflow and text enlargement;
 - reduced-motion behavior;
 - no essential audio-only information;
-- lint, types, build, and relevant route rendering for code changes;
 - clipping, bounds, variables, fonts, and instances for Figma changes.
 
-Gate: no WCAG 2.2 AA blocker or technical regression remains in the changed scope.
+Select code commands, rendered-route checks, and other technical verification from the risk matrix in `docs/DEVELOPMENT.md`. Do not require lint, type checks, or build mechanically when the documented change category does not require them.
+
+Gate: no WCAG 2.2 AA blocker or Issue-scoped technical regression remains.
 
 ## Severity
 
@@ -145,7 +145,7 @@ Use for:
 - an inherited premise that no longer supports the product or task;
 - broken hierarchy;
 - inconsistent component or theme behavior;
-- desktop/mobile meaning mismatch;
+- desktop/mobile mismatch in the primary task, data or state meaning, recovery, or intentional reachability;
 - missing important state;
 - generic pattern that weakens the product identity;
 - long Japanese content breaking layout;
@@ -184,6 +184,7 @@ Use observation → consequence → fix. Avoid unsupported preference statements
 
 Report only evidence relevant to the work:
 
+- frozen Issue revision and allowed change surfaces;
 - frames and states inspected;
 - themes and breakpoints covered;
 - component instances and variables reused;
@@ -192,5 +193,7 @@ Report only evidence relevant to the work:
 - zoom/reflow result;
 - reduced-motion result;
 - lint, type, build, and route result.
+
+List a command result only when `docs/DEVELOPMENT.md` selected that command for the change risk and it was actually run.
 
 Do not claim a full audit when only a screenshot was reviewed.
