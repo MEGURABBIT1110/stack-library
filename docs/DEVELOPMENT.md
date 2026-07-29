@@ -220,3 +220,29 @@ Storyは`Foundations / Components / Patterns`の責務に沿って配置しま�
 | `docs/ROUTING.md` | URL、画面責務、ナビゲーション |
 
 方針を変更した場合は、実装と同じPRで該当文書を更新します。
+
+## Repository writerの所有権
+
+tracked fileの内容は、team packetでexact pathを割り当てられた次のwriterだけが編集します。
+
+| Writer | 標準所有範囲 |
+|---|---|
+| `skill_writer` | `.agents/skills/**` |
+| `documentation_writer` | `README.md`、`AGENTS.md`、`docs/**`、`.codex/agents/**`、Issue/PR template |
+| `component_implementer` | `src/components/**`、`src/stories/**`、局所style、component test |
+| `application_implementer` | `src/app/**`、画面統合test。ただしcolocated Server Action moduleを除く |
+| `data_implementer` | `src/lib/**`、`src/types/**`、`src/actions/**`、`microcms/**`、data fixture/test。`src/app/**/actions.ts`などはexact pathを明示した場合だけ含む |
+
+`.storybook/**`、root設定、共有style、test infrastructureには暗黙のownerを置かず、開発リードが1名を明示します。`package.json`とlockfileは同じwriterがatomic bundleとして扱います。複数領域は原則としてdata、component、application、skill/documentationの依存順でhandoffします。
+
+同じfileの同時編集は禁止します。再割り当て時はownership ledgerへ旧owner、新owner、引き継ぎrevisionを記録し、最後のownerがfile全体のdiffとreview修正を引き受けます。互いに素なexact pathのdirty diffは、ownership ledgerと凍結入力を汚染しない限り並行作業として許容します。writerはstageやcommitを行わず、次をhandoffします。
+
+- `SOURCE_WRITER`
+- input Issue revisionとinput contract revision
+- base HEADとexact path list
+- 各fileのSHA-256とfrozen diff revision
+- 変更していない禁止面、検証結果、既知のrisk
+- 実際のdownstream contractと無効化条件
+- findingを返す`FINDING_RETURN_WRITER`
+
+Git index/history、push、Draft PRは、publication authorizationを受けた`release_manager`だけが変更します。
