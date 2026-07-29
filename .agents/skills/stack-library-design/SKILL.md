@@ -26,7 +26,7 @@ Stay inside the frozen Issue. Correct a nearby defect only when required to sati
 
 Honor the team packet:
 
-- Write only as the assigned writer: `product_owner` for Issue fields, `figma_designer` for Figma, `code_implementer` for tracked repository content, and `release_manager` for approved Git/PR metadata.
+- Write only as the assigned writer: `product_owner` for Issue fields, `figma_designer` for Figma, the tracked repository writer explicitly assigned in the team packet for tracked repository content, and `release_manager` for approved Git/PR metadata.
 - Respect `owner`, `allowed_write_surfaces`, `forbidden_write_surfaces`, publication authorization, and handoff conditions.
 - Never assign the same Issue specification, Figma node, or tracked file to concurrent writers.
 - Return findings to the owning writer; reviewers and QA do not repair product sources.
