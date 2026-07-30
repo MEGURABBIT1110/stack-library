@@ -140,29 +140,23 @@ UIは日本語ファーストで設計してください。
 
 ### Internal development organization
 
-親エージェントを開発リードとする19職能（開発リードと18専門職）の仮想開発組織を想定します。19職能を常時稼働させるのではなく、登録職能と同時稼働数を区別し、4つの同時実行枠は親と最大3担当で使用します。完了した担当は枠を解放し、次工程の担当へ交代します。
+外部の親エージェントを開発リードとする31職能（`development_lead`と30専門職）の仮想開発組織を想定します。31職能を常時稼働させるのではなく、登録職能と同時稼働数を区別し、4つの同時実行枠は親と最大3担当で使用します。完了した担当は枠を解放し、次工程の担当へ交代します。
 
-| Role | Agent | Responsibility |
+30専門職は`.codex/config.toml`から明示登録し、`.codex/agents/<group>/`へ配置します。group directoryは人間が上流・下流を理解するための分類であり、指揮命令、起動順、権限、承認を自動的には強制しません。実際の起動と依存順はteam packet、権限とhandoffは各TOMLの`ORGANIZATION CONTRACT`に従います。各groupの目的、全職能のActivation Gate、上流入力、下流handoffは[Agent Organization](docs/AGENT_ORGANIZATION.md)を参照してください。
+
+| Group | Specialists | Responsibility |
 |---|---|---|
-| 開発リード | 親エージェント | 技術方針、所有範囲、依存関係、停止判断、公開・マージ承認 |
-| スクラムマスター | `scrum_master` | WIP、blocker、handoff、scope drift、4枠のWave交代管理 |
-| プロダクトオーナー | `product_owner` | Issue作成・編集、優先順位、scope、Acceptance Criteria、意思決定履歴 |
-| 要件分析 | `requirements_analyst` | Issueを検証可能なAcceptance Matrixと担当別briefへ変換 |
-| UX調査・情報設計 | `ux_researcher` | 事例調査、情報優先度、Desktop/Mobile差、Design Brief作成 |
-| デザインシステム設計 | `design_system_architect` | Atomic構造、Component、Variant、Token、Figma・React・Storybook対応の契約化 |
-| Figmaデザイン | `figma_designer` | Figma実装、構造セルフチェック、Design Contract作成 |
-| デザイン批評 | `design_critic` | 凍結Figma案の独立批評、代替案とtradeoff、実装前承認 |
-| ソフトウェア設計 | `software_architect` | 実装方式の比較、境界・data flow・API・test seamのTechnical Plan作成 |
-| スキル実装 | `skill_writer` | `.agents/skills/**`のスキル本文、参照、metadata、validator対応 |
-| ドキュメント実装 | `documentation_writer` | プロジェクト文書、agent定義、Issue/PR templateの実装 |
-| コンポーネント実装 | `component_implementer` | 再利用UI、局所style、`src/stories/**`、対象component testの実装 |
-| アプリケーション実装 | `application_implementer` | App Routerのpage、layout、画面統合、対象integration testの実装 |
-| データ実装 | `data_implementer` | microCMS、型、query、normalize、Server Action、fixture、対象data testの実装 |
-| コードレビュー | `code_reviewer` | 凍結diffの正確性、設計、アクセシビリティ、回帰リスク監査 |
-| テスト・QA | `test_engineer` | リスク判定、最小検証、回帰確認、再利用可能な検証証拠 |
-| デバッガー | `debugger` | 安定再現、仮説検証、根本原因の特定、最小修正handoff |
-| 独立Figma QA | `figma_design_qa` | Figmaと最終レンダーの視覚・寸法・アクセシビリティ監査 |
-| リリースマネージャー | `release_manager` | stage、commit、push、Draft PR、PR本文、remote整合、merge handoff |
+| external parent | `development_lead` | 技術方針、所有範囲、依存関係、停止判断、publication/merge authorization |
+| `apex` | `principal_product_strategist`, `global_context_intelligence_lead`, `innovation_futures_portfolio_lead`, `technology_readiness_lead`, `design_philosophy_steward` | 現在の製品戦略、世界文脈、将来選択肢、技術成熟度、設計哲学を独立監査 |
+| `governance` | `scrum_master`, `product_owner`, `product_integrity_reviewer` | WIP、Issue仕様、優先順位、Acceptance Criteria、独立した製品整合監査 |
+| `discovery` | `requirements_analyst`, `ux_researcher`, `bibliographic_identity_librarian`, `authority_control_librarian` | Acceptance Matrix、UX/情報設計、書誌同一性、典拠語彙の契約化 |
+| `architecture` | `design_system_architect`, `software_architect` | Component/Variant/Tokenとソフトウェア境界、data flow、test seam、writer routingの契約化 |
+| `design` | `figma_designer`, `design_critic`, `adaptive_resilience_experimenter` | Figma視覚仕様、独立批評、回復性実験契約の凍結 |
+| `build` | `skill_writer`, `documentation_writer`, `component_implementer`, `application_implementer`, `data_implementer` | exact pathを割り当てられたtracked repository実装 |
+| `assurance` | `code_reviewer`, `test_engineer`, `debugger`, `figma_design_qa`, `epistemic_red_team_analyst`, `human_factors_error_specialist`, `security_privacy_risk_steward` | code/test/debug/Figma parity、証拠品質、human error、security/privacyの独立監査 |
+| `delivery` | `release_manager` | authorized pathのstage、commit、push、Draft PR、remote整合、merge handoff |
+
+5つの`apex`職能は対等な独立視点であり、常設の承認会議でも互いの代役でもありません。該当するActivation Gateを満たす職能だけを起動し、見解の衝突は多数決で解消せず、根拠とともに`development_lead`へ返します。新設された12職能はすべてread-only advisory roleであり、gate外では`NOT_REQUIRED`を返し、repository、Issue、Figma、Git、PR、permission、external serviceのmutation authorityを持ちません。
 
 開発リードは作業開始時にteam packetを作り、各担当へ同じ前提を渡します。
 
@@ -178,7 +172,22 @@ UIは日本語ファーストで設計してください。
 - 成功済み検証、その入力revision、無効化条件
 - handoff先と停止条件
 
-同じFigma node、同じtracked repository file、同じIssue specificationを複数担当へ同時に割り当てません。Figmaを編集するのは`figma_designer`、tracked repository fileの内容を編集するのはteam packetで割り当てられた5種のwriter、Issueのtitle、body、Acceptance Criteria、priority、labelを編集するのは`product_owner`だけです。`release_manager`は承認済みpathのGit index/historyとPR metadataだけを変更でき、working-tree fileやIssueは編集しません。要件分析、進行管理、UX調査、デザインシステム設計、デザイン批評、ソフトウェア設計、コードレビュー、テスト・QA、デバッグ、独立Figma QAはプロダクトソースを編集しません。検証・診断のtask固有成果物はOSの一時ディレクトリへ置き、repositoryへ残しません。必須コマンドが更新する既存ignore対象cacheは許容します。修正はfindingごとに元のwriterへ戻します。
+GitHubまたはFigmaのlive external accessをteam packetで割り当て、対象serviceのMCP-backed toolがcallableな場合、担当はそのtoolでexact targetを読み書きし、handoffへ`MCP_EVIDENCE`を残します。plugin、capability、skill、tool schemaの存在は`availability`の根拠にはなっても`invocation`の根拠にはなりません。runtimeでtool identifierが変わり得るため単一の名前を固定せず、実際に使用したfully qualified tool identifierとprovenance/server、exact target ID/URL、operation、permission result、result/errorをcallごとに記録します。tool callがなかった場合もno-call entryを1件出力し、tool identifierとprovenance/serverは`none`、targetとintended operationは割り当て内容（未割り当てなら`none`）、permission resultは`NOT_TESTED`、result/errorは`no MCP call`とします。各entryは次の6状態を区別し、no-call entryでは必ず`invocation=NOT_INVOKED`とします。
+
+- `availability`: `AVAILABLE | UNAVAILABLE | UNKNOWN`
+- `invocation`: `INVOKED | NOT_INVOKED`
+- `access`: `GRANTED | DENIED | UNKNOWN`
+- `read`: `SUCCEEDED | FAILED | NOT_REQUESTED`
+- `mutation_requested`: `YES | NO`
+- `mutation_verified`: `VERIFIED | UNVERIFIED | NOT_REQUESTED`
+
+`mutation_requested`はmutationの割り当て有無ではなく、MCP-backed mutation callを実際にserviceへ送ったかを表します。no-call entryでは、`availability`は確認結果、`access=UNKNOWN`、`read=NOT_REQUESTED`、`mutation_requested=NO`、`mutation_verified=NOT_REQUESTED`とします。live mutationを割り当てられていてもcallしなかった場合は、`intended operation`へ割り当て内容を残したうえで該当taskを`BLOCKED`とします。
+
+required live mutationに使うMCP-backed toolがunavailableまたはundiscoverableな場合は、利用不能なtoolを試行せず、`availability=UNAVAILABLE | UNKNOWN`、`invocation=NOT_INVOKED`のno-call entryを残して`BLOCKED`とします。そのlive external operationをCLI、browser、直接API、または他のnon-MCP手段で代替してはいけません。`release_manager`に許可されたlocal Gitのindex/history/pushは引き続き利用できますが、MCP evidenceにはならず、GitHub Issue/PR operationの代替にもなりません。
+
+live mutationは、同じserviceのMCP-backed readを使い、変更したexact targetの期待状態をread-backで確認した場合だけ完了と報告できます。read-back entryには、実際に使ったfully qualified read-back tool identifier、exact target ID/URL、revisionまたはretrieval timestamp、expected state、observed state、`comparison result=MATCH | MISMATCH`を記録します。`comparison result=MATCH`の場合だけ`mutation_verified=VERIFIED`にできます。read-backできない、権限がない、または期待状態と一致しない場合は`mutation_verified=UNVERIFIED`として、該当職能の契約に従い`BLOCKED`または未検証を報告します。CLI、browser、直接API、画面表示、過去のhandoffだけではMCP invocationまたはmutation verificationの証拠になりません。
+
+同じFigma node、同じtracked repository file、同じIssue specificationを複数担当へ同時に割り当てません。Figmaを編集するのはexact nodeを割り当てられた`figma_designer`、tracked repository fileの内容を編集するのはteam packetでexact pathを割り当てられた5種のwriter、Issueのtitle、body、Acceptance Criteria、priority、decision history、labelを編集するのは明示的にauthorizedされた`product_owner`だけです。`release_manager`はpublication authorization後に承認済みpathのGit index/history、push、PR metadataだけを変更でき、working-tree fileやIssueは編集しません。5種のwriter、`figma_designer`、`product_owner`、`release_manager`以外の専門職はadvisory、review、verification、diagnosisだけを行い、tracked file、Issue、Figma、Git、PR、permission、external serviceを変更しません。検証・診断のtask固有成果物はOSの一時ディレクトリへ置き、repositoryへ残しません。必須コマンドが更新する既存ignore対象cacheは許容します。修正はfindingごとに元のwriterへ戻します。
 
 writerの標準所有範囲は次のとおりです。実際の編集権限はteam packetのexact path manifestでさらに狭めます。
 
@@ -188,7 +197,7 @@ writerの標準所有範囲は次のとおりです。実際の編集権限はte
 - `application_implementer`: `src/app/**`と画面統合test。ただし`src/app/**/actions.ts`などのServer Action moduleは標準所有範囲から除く
 - `data_implementer`: `src/lib/**`、`src/types/**`、`src/actions/**`、`microcms/**`、data fixtureとtest。`src/app/**/actions.ts`などのcolocated Server Action moduleはteam packetでexact pathを明示した場合だけ所有する
 
-`.storybook/**`、repository rootの設定、共有style、test infrastructure、`package.json`とlockfileなどの横断面は暗黙のownerを持ちません。開発リードが1名のwriterとexact pathを明示します。`package.json`とlockfileを変更する場合は同じwriterへ一体のatomic bundleとして割り当て、片方だけをhandoffしません。
+`.storybook/**`、`.codex/config.toml`、repository rootの設定、共有style、test infrastructure、`package.json`とlockfileなどの横断面は暗黙のownerを持ちません。開発リードが1名のwriterとexact pathを明示します。`package.json`とlockfileを変更する場合は同じwriterへ一体のatomic bundleとして割り当て、片方だけをhandoffしません。
 
 1つのfileを複数writerへ順次再割り当てる必要がある場合、ownership ledgerへ旧owner、新owner、引き継ぎrevisionを記録します。最後に明示されたownerがそのfileの全diffとreview修正を所有し、以前のownerはconsult-onlyになります。ledger更新なしの共同編集は禁止します。writer開始時に存在するdirty diffが自身のexact pathと重ならず、ownership ledgerと凍結入力を変更しない場合は、正当な並行作業として停止理由にしません。pathの重複、ledger不一致、入力contractの汚染がある場合だけ該当writerを停止します。
 
@@ -198,19 +207,19 @@ writer handoffはwriter自身のcommitを前提にしません。`SOURCE_WRITER`
 
 複数領域の変更は、担当を次のWaveで交代させます。
 
-1. Product Intake: `product_owner`がユーザー確認済み要件をIssueへ記録し、Issue revisionを凍結して終了する。`requirements_analyst`がそのrevisionを独立監査し、Acceptance Matrixへ変換する。開発リードは所有範囲と依存順を確定する。複数Waveになる場合、`scrum_master`がslot planとhandoff条件を確認して終了する。
-2. Discovery: `requirements_analyst`の完了後、`ux_researcher`がDesign Briefを作り、`software_architect`は既存構造と実装選択肢を調査し、`test_engineer`はbaselineと最小検証行列を準備する。
+1. Product Intake: 新方向、価値提案、成功指標、設計哲学の変更がある場合だけ、該当する`principal_product_strategist`と`design_philosophy_steward`が独立した上流契約を作る。`product_owner`がユーザー確認済み要件をIssueへ記録し、Issue revisionを凍結して終了する。`requirements_analyst`がそのrevisionを独立監査し、Acceptance Matrixへ変換する。高影響のscope freeze、新screen/modelでは`product_integrity_reviewer`が独立監査する。開発リードは所有範囲と依存順を確定する。複数Waveになる場合、`scrum_master`がslot planとhandoff条件を確認して終了する。
+2. Discovery: `requirements_analyst`の完了後、`ux_researcher`がDesign Briefを作り、`software_architect`は既存構造と実装選択肢を調査し、`test_engineer`はbaselineと最小検証行列を準備する。該当するActivation Gateがある場合だけ、`global_context_intelligence_lead`、`innovation_futures_portfolio_lead`、`technology_readiness_lead`、`bibliographic_identity_librarian`、`authority_control_librarian`がそれぞれ独立した契約を先に凍結する。
 3. Architecture: `ux_researcher`の完了後、Component、Variant、Tokenまたは再利用構造を変更する場合は`design_system_architect`がComponent Contractを作る。`figma_designer`は既存Figmaの読み取り調査だけを並行できる。
 4. Design: 必要なbriefとcontractの確定後、`figma_designer`がFigma実装とDesign Contractを凍結して担当を終了する。`design_critic`が独立批評し、承認されるまでコードの視覚実装へ進まない。指摘修正時は`figma_designer`だけを再起動し、影響範囲を`design_critic`が再確認する。
-5. Technical Design: デザイン承認後、`software_architect`が複数案とtradeoff、writer routing、依存順、file planを含むTechnical Planを凍結する。writerは契約確定前に視覚値やAPI境界を推測しない。
+5. Technical Design: デザイン承認後、`software_architect`が複数案とtradeoff、writer routing、依存順、file planを含むTechnical Planを凍結する。critical dependency、unproven recovery、migration、高risk launchでは`adaptive_resilience_experimenter`が安全な実験契約を作り、Server Action、API、external service、secret、personal data、write、trust-boundary changeでは`security_privacy_risk_steward`がrisk contractを作る。writerは契約確定前に視覚値やAPI境界を推測しない。
 6. Build: 割り当てられたwriterが承認済みDesign ContractとTechnical Planからrepository実装を行う。複数writerが必要な場合は原則として`data_implementer`、`component_implementer`、`application_implementer`、`skill_writer`または`documentation_writer`の依存順でhandoffし、独立したexact pathだけを並行できます。非視覚部分が両契約へ依存しない場合だけ、開発リードが所有範囲を分けて先行実装を許可できます。
-7. Review: writerの編集凍結後、`code_reviewer`、`test_engineer`、必要な場合だけ`figma_design_qa`を並行起動する。`test_engineer`は計画済み検証を進められるが、開発リードが`code_reviewer`の`QA_HANDOFF`または「追加なし」を転送するまで最終判定しません。追加riskがあれば対象検証だけを継続します。
+7. Review: writerの編集凍結後、`code_reviewer`、`test_engineer`、必要な場合だけ`figma_design_qa`を並行起動する。human-error surfaceがある場合は`human_factors_error_specialist`、高影響で証拠が不完全、単一仮説、source相関、説明されない不一致がある場合は`epistemic_red_team_analyst`を起動する。`test_engineer`は計画済み検証を進められるが、開発リードが`code_reviewer`の`QA_HANDOFF`または「追加なし」を転送するまで最終判定しません。追加riskがあれば対象検証だけを継続します。
 8. Debug: `test_engineer`が原因不明のFAILと安定再現を返して停止した後、その枠を`debugger`へ交代します。同じ再現に対して両者を同時起動せず、`debugger`は根本原因と最小修正をwriterへ返します。
 9. Fix: findingを元のwriterへ戻し、変更で無効になった批評、レビューまたは検証だけを再実行する。複数回の差し戻し、blocker、scope driftがあれば`scrum_master`を再起動する。
 10. Delivery: ユーザーまたは開発リードからpublication authorizationを受けた後、`release_manager`が承認済みpathだけをstageし、commit、push、既存Draft PRの更新または新規Draft PR作成、remote整合確認を行う。既存PRが指定されている場合はそのPRだけを更新し、代替PRを作らない。
 11. Merge: 明示的なユーザー承認を開発リードが記録した場合だけ、`release_manager`がマージを実行できる。PR作成やReady化をマージ承認と解釈しない。
 
-全担当を機械的に起動しません。Issueを作成・編集しなければ`product_owner`、単一Waveなら`scrum_master`、調査不要なら`ux_researcher`、Component・Variant・Token・再利用構造へ影響しなければ`design_system_architect`、判断を伴うUI変更でなければ`design_critic`、UI変更がなければ`figma_designer`と`figma_design_qa`、技術的tradeoffがない軽微変更なら`software_architect`、repository変更がなければ5種のwriterと`code_reviewer`、検証失敗がなければ`debugger`、GitHubへ公開しなければ`release_manager`を省略します。単一の軽微な読み取り・報告では開発リードが直接処理できますが、Issue、repositoryまたはFigmaを変更する場合は規模にかかわらず対応するwriterへ割り当てます。
+全担当を機械的に起動しません。各TOMLの`ACTIVATION_GATE`を満たさない職能は`NOT_REQUIRED`として起動しません。Issueを作成・編集しなければ`product_owner`、単一Waveなら`scrum_master`、高影響の製品整合監査が不要なら`product_integrity_reviewer`、調査不要なら`ux_researcher`、書誌同一性や語彙が不変なら2種のlibrarian、Component・Variant・Token・再利用構造へ影響しなければ`design_system_architect`、判断を伴うUI変更でなければ`design_critic`、UI変更がなければ`figma_designer`と`figma_design_qa`、回復性実験が不要なら`adaptive_resilience_experimenter`、技術的tradeoffがない軽微変更なら`software_architect`、repository変更がなければ5種のwriterと`code_reviewer`、証拠・human error・security/privacyの該当riskがなければ対応するassurance職能、検証失敗がなければ`debugger`、GitHubへ公開しなければ`release_manager`を省略します。単一の軽微な読み取り・報告では開発リードが直接処理できますが、Issue、repositoryまたはFigmaを変更する場合は規模にかかわらず対応するexclusive ownerへ割り当てます。
 
 Figmaだけの変更ではコードbuildを要求せず、ドキュメントだけの変更ではlint/buildを要求しません。Storybookの静的buildは、公開またはCI成果物として明示的に必要な場合だけ実行します。同じ入力に対する成功済み検証は再利用し、変更で無効になった検証だけを再実行してください。
 
