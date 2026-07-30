@@ -139,6 +139,19 @@ Closes #12
 
 原則としてSquash mergeします。Squash後のコミットメッセージがConventional Commits形式になるよう、PRタイトルを整えます。
 
+### GitとGitHub serviceの操作境界
+
+local repositoryとGitHub serviceの操作を区別します。
+
+| 対象 | 標準手段 | 例 |
+|---|---|---|
+| local repositoryとGit transport | local `git` | status、diff、branch、stage、commit、push、local/remote ref alignment |
+| GitHub service | callableなGitHub MCP-backed tool | Issue、PR、review、check、release、mergeのread/mutation |
+
+GitHub MCPで必要なGitHub service操作がcallableなら、GitHub CLI（`gh`）の認証確認や`gh auth login`を作業の前提にしません。`git push`はlocal Gitのpublication操作であり、GitHub MCP invocationやGitHub serviceのread-back evidenceではありません。
+
+必要な特定操作に対応するcallableなGitHub MCP-backed toolがtool search後もなく、その操作が契約上MCP必須でない場合に限り、`gh`を使用できます。その場合はMCP gap、tool search、操作の必要性、exact `gh` operationと結果をhandoffへ記録します。required MCP operationがunavailable、undiscoverable、denied、または失敗した場合、`gh`、browser、direct APIへfallbackせず`BLOCKED`とします。`gh`の結果をMCP invocation、MCP evidence、MCP read-backとして扱いません。
+
 ## 検証
 
 検証は変更量ではなく、失敗した場合の影響範囲で選びます。途中の高速フィードバックと、PR完成前の最終ゲートを分離します。
@@ -245,4 +258,4 @@ tracked fileの内容は、team packetでexact pathを割り当てられた次�
 - 実際のdownstream contractと無効化条件
 - findingを返す`FINDING_RETURN_WRITER`
 
-Git index/history、push、Draft PRは、publication authorizationを受けた`release_manager`だけが変更します。
+Git index/historyとpush、およびGitHub上のDraft PR metadataは、publication authorizationを受けた`release_manager`だけが変更します。前者はlocal `git`、後者は上記のGitHub service規則に従います。

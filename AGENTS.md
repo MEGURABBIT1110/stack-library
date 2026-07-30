@@ -174,6 +174,10 @@ UIは日本語ファーストで設計してください。
 
 GitHubまたはFigmaのlive external accessをteam packetで割り当て、対象serviceのMCP-backed toolがcallableな場合、担当はそのtoolでexact targetを読み書きし、handoffへ`MCP_EVIDENCE`を残します。plugin、capability、skill、tool schemaの存在は`availability`の根拠にはなっても`invocation`の根拠にはなりません。runtimeでtool identifierが変わり得るため単一の名前を固定せず、実際に使用したfully qualified tool identifierとprovenance/server、exact target ID/URL、operation、permission result、result/errorをcallごとに記録します。tool callがなかった場合もno-call entryを1件出力し、tool identifierとprovenance/serverは`none`、targetとintended operationは割り当て内容（未割り当てなら`none`）、permission resultは`NOT_TESTED`、result/errorは`no MCP call`とします。各entryは次の6状態を区別し、no-call entryでは必ず`invocation=NOT_INVOKED`とします。
 
+GitとGitHub serviceは同じものとして扱いません。local repositoryのstatus、diff、branch、stage、commit、push、local/remote ref alignmentはlocal `git`を使います。Issue、PR、review、check、release、mergeなどGitHub service上の対象を読み書きする操作は、職能のauthorityとauthorizationの範囲でcallableなGitHub MCP-backed toolを使います。GitHub MCPで対象操作がcallableなら、GitHub CLI（`gh`）の認証状態を確認したり、`gh auth login`を要求したりすることを開始条件にしてはいけません。
+
+`gh`を使えるのは、必要な特定操作に対応するcallableなGitHub MCP-backed toolがtool search後も存在せず、かつ、その操作が契約上MCP必須ではない場合だけです。handoffにはMCP gap、実施したtool search、操作の必要性、使用したexact `gh` operationと結果を記録します。`gh`、browser、direct APIの実行結果はMCP invocation、`MCP_EVIDENCE`、MCP read-backの代わりにはなりません。required MCP operationのtoolがunavailable、undiscoverable、denied、または失敗した場合は、`gh`をfallbackに使わず、その職能の契約に従って`BLOCKED`を返します。
+
 - `availability`: `AVAILABLE | UNAVAILABLE | UNKNOWN`
 - `invocation`: `INVOKED | NOT_INVOKED`
 - `access`: `GRANTED | DENIED | UNKNOWN`

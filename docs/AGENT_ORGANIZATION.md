@@ -140,11 +140,13 @@ development_lead
 - Issue title、body、scope、Acceptance Criteria、priority、decision history、labelのmutationは、明示的にauthorizedされた`product_owner`だけが行います。
 - Figma mutationは、exact file/nodeを割り当てられた`figma_designer`だけが行います。
 - tracked repository fileの内容は、ownership ledgerでexact pathを割り当てられた5 writerだけが編集します。
-- Git index/history、push、PR metadataは、publication authorization後の`release_manager`だけが変更します。`release_manager`はworking-tree fileやIssueを編集しません。
+- Git index/history、push、PR metadataは、publication authorization後の`release_manager`だけが変更します。status、diff、branch、stage、commit、push、local/remote ref alignmentにはlocal `git`を使い、PRなどGitHub service上の対象にはcallableなGitHub MCP-backed toolを使います。`release_manager`はworking-tree fileやIssueを編集しません。
 - 新しい12職能はすべてread-only advisory roleであり、repository、Issue、Figma、Git、PR、permission、external serviceのmutation authorityを持ちません。
 
 ## MCP evidence
 
 live GitHub/Figma accessのavailability、invocation、access、read、mutation request、mutation verificationは[AGENTS.md](../AGENTS.md)のshared `MCP_EVIDENCE` semanticsを正本とします。plugin、skill、schema、tool capabilityの存在だけをinvocation evidenceにせず、実際に呼んだfully qualified tool identifier、provenance/server、exact target、operation、permission result、result/errorを記録します。
 
-required MCP accessがunavailableまたはundiscoverableなら、CLI、browser、direct API、別のnon-MCP手段へfallbackしません。no-call entryは`invocation=NOT_INVOKED`、`access=UNKNOWN`、`read=NOT_REQUESTED`、`mutation_requested=NO`、`mutation_verified=NOT_REQUESTED`を含めます。live mutationの完了には、同じserviceのMCP-backed read-backと`comparison result=MATCH`が必要です。
+local `git`とGitHub service operationは分離します。GitHub MCPで対象操作がcallableなら、`gh auth`の状態はその操作の開始条件ではありません。`gh`は、tool search後も対応するcallableなMCP toolがなく、その特定操作が契約上MCP必須ではない場合だけ使用でき、MCP gap、tool search、必要性、exact operation、結果をhandoffへ残します。`gh`の結果はMCP evidenceやread-backになりません。
+
+required MCP accessがunavailable、undiscoverable、denied、または失敗した場合は、CLI、browser、direct API、別のnon-MCP手段へfallbackしません。no-call entryは`invocation=NOT_INVOKED`、`access=UNKNOWN`、`read=NOT_REQUESTED`、`mutation_requested=NO`、`mutation_verified=NOT_REQUESTED`を含めます。live mutationの完了には、同じserviceのMCP-backed read-backと`comparison result=MATCH`が必要です。
