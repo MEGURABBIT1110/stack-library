@@ -29,7 +29,39 @@ git switch -c feature/12-book-form
 
 未コミット差分がある場合は、別作業か現在の作業かを確認します。判断できない差分をstash、破棄、コミットしてはいけません。
 
-## ChatGPTとCodexの引き継ぎ
+## Codex chat lifecycleと引き継ぎ
+
+Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 1 parent Codex chat`で進めます。requirements、implementation、review、fix、delivery、mergeは職能ごとの別chatへ分断せず、同じIssue、branch、outcomeを所有するparent chatで継続します。parent chatは必要な専門職をbounded internal subagentとして起動し、user-visible chatを職能ごとに増やしません。
+
+| 状況 | Chatの扱い |
+|---|---|
+| 同じIssue、branch、coherent outcomeを継続 | requirementsからmergeまで同じparent chatを使う |
+| 別のIssueまたは別のoutcome | 新しいparent chatを作る |
+| shared contextからgenuine alternativeを比較 | forkできる。単なる工程分割、職能分割、引き継ぎには使わない |
+| 軽量なread-only question、説明、state check、report | Issueを省略できる。mutation開始前にIssue、outcome、branch、ownershipを確定する |
+| merge後のfollow-up change | 完了したparent chatをarchive candidateとし、通常は新しいIssueとparent chatを使う |
+
+同じ論理作業でreview findingやvalidation failureが出ても、新しいparent chatへ移さず、findingを元writerへ返して同じparent chat内のFix Waveで解消します。publication authorizationは、承認済みpathのstage、commit、push、Draft PRの作成・更新の許可であり、merge authorizationではありません。mergeには引き続き別の明示的user承認が必要です。
+
+新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。並行する複数chatがtracked fileへ書く必要がある場合は、chatごとに別worktree、別branch、exact path ownershipを割り当てます。同じbranchまたは同じpathへ複数chatから書いてはいけません。read-only chatはこのwrite分離要件の対象外です。
+
+### New-chat handoff packet
+
+別Issue、別outcome、または環境上の理由で新しいparent chatへ移るときは、会話履歴だけに依存せず、次のpacketを渡します。値がない項目も省略せず`none`または`absent`と記録します。
+
+- Issue URL/numberとfrozen Issue revision
+- branch、base commit、head commit
+- dirty diffの有無、exact changed paths、各diffのowner
+- exact scope、coherent outcome、non-goals
+- owner、allowed write surfaces、forbidden write surfaces、path単位のownership ledgerとそのrevision
+- frozen Acceptance Matrix、Design Brief、Component Contract、Design Contract、Design Critic Approval、Technical Planなど、適用するcontractとrevision
+- 完了済みvalidation、validation input revision、結果、再利用条件とinvalidation conditions
+- Figma file/node ID、対象file、theme、viewport、state
+- publication authorizationの有無、独立したmerge authorizationの有無
+- 既存Draft PRのURL/numberと状態
+- 次のdownstream handoff、未解決finding、stop condition
+
+受け取ったparent chatは、branch、base/head、dirty diff、ownership ledger、frozen input revisionがpacketと一致することをread-onlyで確認してから作業を続けます。不一致、同じbranch/pathへの別chatのwrite、凍結入力の更新があれば停止し、`development_lead`へ返します。
 
 ChatGPT、Codex Local、Codex Worktree、Codex Cloudは、会話履歴や未共有のファイルを自動的には引き継ぎません。会話を正本にせず、GitHub IssueとDraft PRを共有状態として使用します。
 

@@ -4,6 +4,16 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 
 `.codex/agents/<group>/`の8グループは、人間が責務、上流入力、下流handoffを理解するための組織図です。ファイルシステムの階層自体は、指揮命令、起動順、権限、承認、継承を強制しません。実際の登録は`.codex/config.toml`、実行制御は`development_lead`のteam packet、各職能の責務はTOML内の`ORGANIZATION CONTRACT`を正本とします。
 
+## Parent chat and internal specialists
+
+組織の実行単位は、`1 GitHub Issue / 1 coherent outcome / 1 parent Codex chat`です。`development_lead`であるparent chatが、同じIssue、branch、outcomeをrequirements、implementation、review、fix、delivery、mergeまで保持します。30専門職はbounded internal subagentであり、職能ごとのuser-visible chatではありません。Waveの交代やfindingのwriter返却も同じparent chat内で行います。
+
+別Issueまたは別outcomeは新しいparent chatを使います。forkはshared contextからgenuine alternativeが分岐する場合だけに限定し、role、Wave、reviewの分割には使いません。軽量なread-only question、説明、state check、reportはIssueなしで開始できますが、mutation前にIssue、outcome、branch、ownershipを確定します。merge後はparent chatをcompleteかつarchive candidateとし、通常のfollow-up changeは新しいIssueとparent chatへ分けます。
+
+複数のparent chatによるparallel writeは、chatごとに別worktree、別branch、exact path ownershipがある場合だけ許可します。同じbranchまたは同じpathを複数chatで編集してはいけません。この分離は、下記のexclusive authorityとpath ownership ledgerを置き換えず、その前提として追加されます。
+
+新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。引き継ぎにはIssue URL/revision、branch/base/head、dirty diff/owner、scope/non-goals、allowed/forbidden surfacesとownership ledger、frozen contracts、validation revisionsとinvalidation、Figma targets、publication/merge authorization、既存Draft PR、downstream handoff/stop conditionを含むpacketを使います。packetの完全なschemaと確認手順は[Development](./DEVELOPMENT.md#new-chat-handoff-packet)を参照してください。
+
 ## Group map
 
 | Group | Purpose | Members |

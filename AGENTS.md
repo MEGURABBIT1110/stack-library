@@ -51,6 +51,33 @@ fix(theme): preserve visible focus styles
 docs(workflow): define repository conventions
 ```
 
+## Codex chat lifecycle
+
+Codex作業の既定単位は、`1 GitHub Issue / 1 coherent outcome / 1 parent Codex chat`です。同じIssue、branch、outcomeは、requirements、implementation、review、fix、delivery、mergeまで同じparent chatで継続します。職能ごとにuser-visible chatを作らず、必要な専門職はparent chatがbounded internal subagentとして起動し、既存のexclusive authority、Wave、handoff、publication authorization、merge authorizationに従わせます。
+
+- 別のIssueまたは別のoutcomeは、新しいparent chatで開始する
+- forkは、shared contextからgenuine alternativeを比較・追跡する場合だけ使う。工程分割や職能分割の代わりにしない
+- 複数のparent chatが並行してtracked fileへ書く場合は、chatごとに別worktreeとexact path ownershipが必要。同じbranchまたは同じpathを複数chatから編集しない
+- merge後はparent chatをcompleteかつarchive candidateとして扱う。通常のfollow-up changeは新しいIssueとparent chatを使う
+- 軽量なread-only question、説明、state check、reportはIssueなしで扱える。mutationへ移る前にIssue、outcome、branch、ownershipを確定し、そのcoherent outcomeのparent chatとして継続する
+
+新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`を確実にdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。別worktreeが必要な並行writeは、parent chat開始後にownershipとbranchを分離して割り当てます。
+
+新しいchatへ引き継ぐ場合は、次を含むhandoff packetを渡します。
+
+- Issue URL/numberとfrozen revision
+- branch、base、head
+- dirty diffの有無、内容、owner
+- exact scope、coherent outcome、non-goals
+- owner、allowed/forbidden write surfaces、path単位のownership ledger
+- frozen Acceptance Matrix、Design Brief、Component/Design Contract、Technical Planなどのinput contractとrevision
+- 完了済みvalidation、そのinput revision、結果、invalidation conditions
+- Figma file/node、対象theme、viewport、state。対象外なら`none`
+- publication authorization、独立したmerge authorization、既存Draft PR
+- downstream handoffとstop condition
+
+詳細な開始・引き継ぎ手順は[Development](docs/DEVELOPMENT.md)、parentと専門職の関係は[Agent Organization](docs/AGENT_ORGANIZATION.md)を参照してください。
+
 ## Design source and visual verification
 
 Figmaを視覚仕様の正本とする変更では、Issueの文章だけからUIを推論しないでください。対象Figmaフレームを先に確認し、Issueとの矛盾があれば独自に折衷せず作業を停止してください。
