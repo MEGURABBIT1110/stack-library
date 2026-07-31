@@ -50,7 +50,7 @@ Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 
 | merge authorization | userが対象PRのmerge実行を明示的に承認し、`development_lead`が記録する |
 | merge-method authorization | 方法指定のない明示的な「マージ」承認は`development_lead`が`merge_method=merge`へ正規化する。SquashまたはRebaseはuserがその方法を別途明示した場合だけ`merge_method=squash|rebase`と記録する |
 
-`release_manager`はこれらの状態を統合または推測せず、merge authorizationと記録済み`merge_method`の両方が揃った場合だけ実行します。
+`release_manager`はこれらの状態を統合または推測せず、merge authorization、記録済み`merge_method`、authorized/frozen `expected_head_sha`が揃った場合だけ実行します。
 
 新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。並行する複数chatがtracked fileへ書く必要がある場合は、chatごとに別worktree、別branch、exact path ownershipを割り当てます。同じbranchまたは同じpathへ複数chatから書いてはいけません。read-only chatはこのwrite分離要件の対象外です。
 
@@ -66,9 +66,11 @@ Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 
 - frozen Acceptance Matrix、Design Brief、Component Contract、Design Contract、Design Critic Approval、Technical Planなど、適用するcontractとrevision
 - 完了済みvalidation、validation input revision、結果、再利用条件とinvalidation conditions
 - Figma file/node ID、対象file、theme、viewport、state
-- publication authorization、DraftからReadyへのauthorization、独立したmerge authorization、`merge_method=merge|squash|rebase`の各状態
+- publication authorization、DraftからReadyへのauthorization、独立したmerge authorization、`merge_method=merge|squash|rebase`、authorized/frozen `expected_head_sha=<40-character SHA>|absent`の各状態
 - 既存Draft PRのURL/numberと状態
 - 次のdownstream handoff、未解決finding、stop condition
+
+`head commit`はpacket作成時に観測したbranchの状態です。`expected_head_sha`はそれとは独立して`development_lead`がmerge authorizationへ束縛し、MCP merge mutationへそのまま渡すexact SHAです。merge対象を凍結するまでは`expected_head_sha=absent`とし、観測したheadから暗黙に補完しません。
 
 受け取ったparent chatは、branch、base/head、dirty diff、ownership ledger、frozen input revisionがpacketと一致することをread-onlyで確認してから作業を続けます。不一致、同じbranch/pathへの別chatのwrite、凍結入力の更新があれば停止し、`development_lead`へ返します。
 
@@ -189,7 +191,7 @@ PR作成、DraftからReadyへの変更、merge authorization、merge-method aut
 | Rebaseを指定したmerge承認 | `merge_method=rebase` | `rebase`（GitHub Rebase merge） |
 | 承認なし、方法が曖昧、または承認と記録が不一致 | 記録不可または要訂正 | 実行せず`BLOCKED` |
 
-`release_manager`は承認・記録された値だけを使用し、MCP merge mutationのmerge method parameterを省略しません。方法指定のない承認を`merge_method=merge`へ正規化するのは`development_lead`であり、`release_manager`による推測ではありません。
+`release_manager`は承認・記録された値だけを使用し、MCP merge mutationのmerge method parameterと、別途authorizationへ束縛された`expected_head_sha`を省略しません。方法指定のない承認を`merge_method=merge`へ正規化するのは`development_lead`であり、`release_manager`による推測ではありません。
 
 既存履歴は保持し、amend、local rebase、force-push、その他のhistory rewriteを行いません。表中のRebaseはGitHubがPRを統合する名前付き方法であり、既存のlocal/remote履歴を書き換える許可ではありません。
 
