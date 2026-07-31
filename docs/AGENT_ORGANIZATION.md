@@ -12,7 +12,7 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 
 複数のparent chatによるparallel writeは、chatごとに別worktree、別branch、exact path ownershipがある場合だけ許可します。同じbranchまたは同じpathを複数chatで編集してはいけません。この分離は、下記のexclusive authorityとpath ownership ledgerを置き換えず、その前提として追加されます。
 
-新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。引き継ぎにはIssue URL/revision、branch/base/head、dirty diff/owner、scope/non-goals、allowed/forbidden surfacesとownership ledger、frozen contracts、validation revisionsとinvalidation、Figma targets、publication/merge authorization、既存Draft PR、downstream handoff/stop conditionを含むpacketを使います。packetの完全なschemaと確認手順は[Development](./DEVELOPMENT.md#new-chat-handoff-packet)を参照してください。
+新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。引き継ぎにはIssue URL/revision、branch/base/head、dirty diff/owner、scope/non-goals、allowed/forbidden surfacesとownership ledger、frozen contracts、validation revisionsとinvalidation、Figma targets、publication、DraftからReady、mergeの各authorization、`merge_method`、既存Draft PR、downstream handoff/stop conditionを含むpacketを使います。packetの完全なschemaと確認手順は[Development](./DEVELOPMENT.md#new-chat-handoff-packet)を参照してください。
 
 ## Group map
 
@@ -25,7 +25,7 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 | `design` | Figma視覚仕様、独立批評、回復性実験設計を実装前に凍結する | `figma_designer`, `design_critic`, `adaptive_resilience_experimenter` |
 | `build` | team packetで割り当てられたexact pathだけをtracked repositoryへ実装する | `skill_writer`, `documentation_writer`, `component_implementer`, `application_implementer`, `data_implementer` |
 | `assurance` | 凍結差分、検証、原因、視覚一致、証拠品質、ヒューマンエラー、security/privacy riskを独立監査する | `code_reviewer`, `test_engineer`, `debugger`, `figma_design_qa`, `epistemic_red_team_analyst`, `human_factors_error_specialist`, `security_privacy_risk_steward` |
-| `delivery` | 承認済み差分だけをstage、commit、pushし、Draft PRへ反映する | `release_manager` |
+| `delivery` | 承認済み差分だけをstage、commit、pushしてDraft PRへ反映し、別途承認・記録された方法だけでmergeする | `release_manager` |
 
 ## Five independent apex lenses
 
@@ -111,7 +111,7 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 
 | Role | Authority and activation | Contract / return |
 |---|---|---|
-| `release_manager` | publication authorization後、承認済みpathのGit index/history、push、PR metadataだけを変更する。working treeとIssueは編集しない。mergeは明示的なuser承認後だけ | commit/push/PR read-backを含むpublication handoff。scope、authority、evidence不一致は`BLOCKED` |
+| `release_manager` | publication authorization後、承認済みpathのGit index/history、push、PR metadataだけを変更する。working treeとIssueは編集しない。mergeは明示的なuser承認と`development_lead`が記録した`merge_method=merge|squash|rebase`の両方がある場合だけ、その方法を明示して実行する | commit/push/PR/merge read-backを含むhandoff。方法を推測せず、missing、ambiguous、mismatchまたはparameter省略は`BLOCKED` |
 
 ## Activation and Wave overlay
 
@@ -122,7 +122,7 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 3. Architecture / Design: `design_system_architect`、`software_architect`、`figma_designer`、`design_critic`を依存順で交代する。回復性riskがあれば`adaptive_resilience_experimenter`、human-error surfaceがあれば`human_factors_error_specialist`を起動する。
 4. Build: exact path ownership ledgerに従って5 writerを依存順またはdisjoint pathだけ並列で起動する。
 5. Review / Debug / Fix: writer凍結後に`code_reviewer`と`test_engineer`、必要な場合だけ`figma_design_qa`、`security_privacy_risk_steward`、`epistemic_red_team_analyst`を起動する。原因不明FAILでは`test_engineer`を止めて`debugger`へ交代し、fixは元writerへ戻す。
-6. Delivery / Merge: publication authorization後だけ`release_manager`を起動し、mergeは別の明示的user承認を要求する。
+6. Delivery / Merge: publication authorization後だけ`release_manager`を起動する。PR作成、DraftからReadyへの変更、merge authorization、merge-method authorizationは独立して扱う。方法を限定しない明示的な「マージ」承認は`development_lead`が`merge_method=merge`と記録し、SquashまたはRebaseはuserがその方法を別途指定した場合だけ記録する。`release_manager`は記録された方法だけをMCP merge mutationへ明示的に渡す。
 
 `NOT_REQUIRED`は、登録職能が不要になったことではなく、そのtaskがActivation Gate外であり起動不要であることを表します。
 
@@ -150,7 +150,7 @@ development_lead
 - Issue title、body、scope、Acceptance Criteria、priority、decision history、labelのmutationは、明示的にauthorizedされた`product_owner`だけが行います。
 - Figma mutationは、exact file/nodeを割り当てられた`figma_designer`だけが行います。
 - tracked repository fileの内容は、ownership ledgerでexact pathを割り当てられた5 writerだけが編集します。
-- Git index/history、push、PR metadataは、publication authorization後の`release_manager`だけが変更します。status、diff、branch、stage、commit、push、local/remote ref alignmentにはlocal `git`を使い、PRなどGitHub service上の対象にはcallableなGitHub MCP-backed toolを使います。`release_manager`はworking-tree fileやIssueを編集しません。
+- Git index/history、push、PR metadataは、publication authorization後の`release_manager`だけが変更します。status、diff、branch、stage、commit、push、local/remote ref alignmentにはlocal `git`を使い、PRなどGitHub service上の対象にはcallableなGitHub MCP-backed toolを使います。mergeには別のuser承認と`development_lead`が記録した`merge_method`が必要です。`release_manager`は設定、UI、履歴から方法を推測せず、既存履歴をamend、local rebase、force-pushその他の方法で書き換えません。GitHub Rebase mergeは名前付きmerge方法であり、history rewriteの許可ではありません。`release_manager`はworking-tree fileやIssueを編集しません。
 - 新しい12職能はすべてread-only advisory roleであり、repository、Issue、Figma、Git、PR、permission、external serviceのmutation authorityを持ちません。
 
 ## MCP evidence

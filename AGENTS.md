@@ -73,7 +73,7 @@ Codex作業の既定単位は、`1 GitHub Issue / 1 coherent outcome / 1 parent 
 - frozen Acceptance Matrix、Design Brief、Component/Design Contract、Technical Planなどのinput contractとrevision
 - 完了済みvalidation、そのinput revision、結果、invalidation conditions
 - Figma file/node、対象theme、viewport、state。対象外なら`none`
-- publication authorization、独立したmerge authorization、既存Draft PR
+- publication authorization、DraftからReadyへのauthorization、独立したmerge authorization、`merge_method=merge|squash|rebase`、既存Draft PR
 - downstream handoffとstop condition
 
 詳細な開始・引き継ぎ手順は[Development](docs/DEVELOPMENT.md)、parentと専門職の関係は[Agent Organization](docs/AGENT_ORGANIZATION.md)を参照してください。
@@ -192,7 +192,7 @@ UIは日本語ファーストで設計してください。
 - `owner`と`allowed_write_surfaces`。複数writerを使う場合はpath単位のownership ledgerと担当revision
 - `forbidden_write_surfaces`
 - `allowed_transient_outputs`とcleanup条件
-- `publication_authorization`、base/head、既存PR、merge authorization
+- `publication_authorization`、DraftからReadyへのauthorization、base/head、既存PR、独立したmerge authorizationと`merge_method=merge|squash|rebase`
 - Figma file/node ID、対象ファイル
 - 影響するtheme、viewport、state
 - Acceptance Matrix、Design Brief、Component Contract、Design Contract、Design Critic Approval、Technical Planなどの入力契約
@@ -248,7 +248,7 @@ writer handoffはwriter自身のcommitを前提にしません。`SOURCE_WRITER`
 8. Debug: `test_engineer`が原因不明のFAILと安定再現を返して停止した後、その枠を`debugger`へ交代します。同じ再現に対して両者を同時起動せず、`debugger`は根本原因と最小修正をwriterへ返します。
 9. Fix: findingを元のwriterへ戻し、変更で無効になった批評、レビューまたは検証だけを再実行する。複数回の差し戻し、blocker、scope driftがあれば`scrum_master`を再起動する。
 10. Delivery: ユーザーまたは開発リードからpublication authorizationを受けた後、`release_manager`が承認済みpathだけをstageし、commit、push、既存Draft PRの更新または新規Draft PR作成、remote整合確認を行う。既存PRが指定されている場合はそのPRだけを更新し、代替PRを作らない。
-11. Merge: 明示的なユーザー承認を開発リードが記録した場合だけ、`release_manager`がマージを実行できる。PR作成やReady化をマージ承認と解釈しない。
+11. Merge: PR作成、DraftからReadyへの変更、merge authorization、merge-method authorizationは独立した状態です。明示的なユーザー承認を開発リードが記録した場合だけ`release_manager`がマージを実行できます。方法を限定しない「マージ」承認はGitHub merge commitを意味し、開発リードが`merge_method=merge`と記録します。SquashまたはRebaseはユーザーがその方法を別途明示した場合だけ`merge_method=squash|rebase`と記録します。`release_manager`は記録済みの方法をMCP merge mutationへ明示的に渡し、推測やparameter省略をしません。
 
 全担当を機械的に起動しません。各TOMLの`ACTIVATION_GATE`を満たさない職能は`NOT_REQUIRED`として起動しません。Issueを作成・編集しなければ`product_owner`、単一Waveなら`scrum_master`、高影響の製品整合監査が不要なら`product_integrity_reviewer`、調査不要なら`ux_researcher`、書誌同一性や語彙が不変なら2種のlibrarian、Component・Variant・Token・再利用構造へ影響しなければ`design_system_architect`、判断を伴うUI変更でなければ`design_critic`、UI変更がなければ`figma_designer`と`figma_design_qa`、回復性実験が不要なら`adaptive_resilience_experimenter`、技術的tradeoffがない軽微変更なら`software_architect`、repository変更がなければ5種のwriterと`code_reviewer`、証拠・human error・security/privacyの該当riskがなければ対応するassurance職能、検証失敗がなければ`debugger`、GitHubへ公開しなければ`release_manager`を省略します。単一の軽微な読み取り・報告では開発リードが直接処理できますが、Issue、repositoryまたはFigmaを変更する場合は規模にかかわらず対応するexclusive ownerへ割り当てます。
 

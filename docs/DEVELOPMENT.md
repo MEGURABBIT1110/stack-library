@@ -9,7 +9,7 @@ Stack Libraryの開発ワークフローです。人間、Codex、その他の�
 - GitHub Issueを作業記録の起点にする
 - 1ブランチ、1目的とする
 - 短命な作業ブランチからPRを作る
-- 原則としてSquash mergeし、`main`の履歴をConventional Commitsで揃える
+- merge方法は明示的なuser承認に従い、方法指定のない「マージ」はGitHub merge commitとする
 - 未完了の別作業を、無断で現在のブランチへ混ぜない
 
 長期の`develop`ブランチや、担当者・ツール名を表すブランチは作りません。
@@ -41,7 +41,16 @@ Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 
 | 軽量なread-only question、説明、state check、report | Issueを省略できる。mutation開始前にIssue、outcome、branch、ownershipを確定する |
 | merge後のfollow-up change | 完了したparent chatをarchive candidateとし、通常は新しいIssueとparent chatを使う |
 
-同じ論理作業でreview findingやvalidation failureが出ても、新しいparent chatへ移さず、findingを元writerへ返して同じparent chat内のFix Waveで解消します。publication authorizationは、承認済みpathのstage、commit、push、Draft PRの作成・更新の許可であり、merge authorizationではありません。mergeには引き続き別の明示的user承認が必要です。
+同じ論理作業でreview findingやvalidation failureが出ても、新しいparent chatへ移さず、findingを元writerへ返して同じparent chat内のFix Waveで解消します。publication authorizationは、承認済みpathのstage、commit、push、Draft PRの作成・更新の許可であり、DraftからReadyへの変更、merge authorization、merge-method authorizationを含みません。
+
+| 状態 | 記録と意味 |
+|---|---|
+| PR作成・更新 | publication authorizationによりDraft PRを作成または更新できる |
+| DraftからReadyへの変更 | PR作成とは別の明示的authorizationを必要とする |
+| merge authorization | userが対象PRのmerge実行を明示的に承認し、`development_lead`が記録する |
+| merge-method authorization | 方法指定のない明示的な「マージ」承認は`development_lead`が`merge_method=merge`へ正規化する。SquashまたはRebaseはuserがその方法を別途明示した場合だけ`merge_method=squash|rebase`と記録する |
+
+`release_manager`はこれらの状態を統合または推測せず、merge authorizationと記録済み`merge_method`の両方が揃った場合だけ実行します。
 
 新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。並行する複数chatがtracked fileへ書く必要がある場合は、chatごとに別worktree、別branch、exact path ownershipを割り当てます。同じbranchまたは同じpathへ複数chatから書いてはいけません。read-only chatはこのwrite分離要件の対象外です。
 
@@ -57,7 +66,7 @@ Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 
 - frozen Acceptance Matrix、Design Brief、Component Contract、Design Contract、Design Critic Approval、Technical Planなど、適用するcontractとrevision
 - 完了済みvalidation、validation input revision、結果、再利用条件とinvalidation conditions
 - Figma file/node ID、対象file、theme、viewport、state
-- publication authorizationの有無、独立したmerge authorizationの有無
+- publication authorization、DraftからReadyへのauthorization、独立したmerge authorization、`merge_method=merge|squash|rebase`の各状態
 - 既存Draft PRのURL/numberと状態
 - 次のdownstream handoff、未解決finding、stop condition
 
@@ -169,7 +178,20 @@ PR本文には最低限、以下を記載します。
 Closes #12
 ```
 
-原則としてSquash mergeします。Squash後のコミットメッセージがConventional Commits形式になるよう、PRタイトルを整えます。
+### Merge authorizationと方法
+
+PR作成、DraftからReadyへの変更、merge authorization、merge-method authorizationは独立した状態として記録します。PRの存在、Ready状態、repository設定、GitHub UI、過去の履歴からmerge承認や方法を推測しません。
+
+| Userの明示的な承認 | `development_lead`の記録 | `release_manager`がMCP merge mutationへ渡す方法 |
+|---|---|---|
+| 「マージ」など、方法を限定しないmerge承認 | `merge_method=merge` | `merge`（GitHub merge commit） |
+| Squashを指定したmerge承認 | `merge_method=squash` | `squash` |
+| Rebaseを指定したmerge承認 | `merge_method=rebase` | `rebase`（GitHub Rebase merge） |
+| 承認なし、方法が曖昧、または承認と記録が不一致 | 記録不可または要訂正 | 実行せず`BLOCKED` |
+
+`release_manager`は承認・記録された値だけを使用し、MCP merge mutationのmerge method parameterを省略しません。方法指定のない承認を`merge_method=merge`へ正規化するのは`development_lead`であり、`release_manager`による推測ではありません。
+
+既存履歴は保持し、amend、local rebase、force-push、その他のhistory rewriteを行いません。表中のRebaseはGitHubがPRを統合する名前付き方法であり、既存のlocal/remote履歴を書き換える許可ではありません。
 
 ### GitとGitHub serviceの操作境界
 
