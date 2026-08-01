@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 import { BookCover } from "@/components/book-cover";
-import { BookStatusLine, TechnicalAreaTags } from "@/components/book-status";
+import { BookStatusLine } from "@/components/book-status";
+import { TechnicalAreaTags } from "@/components/common/technical-area-tags";
 import type { Book } from "@/types/book";
 
 type BookCardProps = {

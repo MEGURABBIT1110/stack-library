@@ -30,6 +30,11 @@ src/
     bank/page.tsx
     books/[contentId]/page.tsx
   components/
+    common/
+      heading.tsx
+      status-badge.tsx
+      technical-area-tags.tsx
+      theme-switch.tsx
     app-shell.tsx
     library-header.tsx
     library-bank.tsx
@@ -37,7 +42,6 @@ src/
     book-card.tsx
     book-detail-identity.tsx
     scroll-context-bar.tsx
-    theme-switch.tsx
   lib/
     microcms/client.ts
     books/queries.ts
@@ -93,15 +97,38 @@ Foundations
 
 下位層が上位層へ依存しないようにします。粒度だけを理由にComponentを分割せず、独立した責務、再利用性、検証価値がある場合に抽出します。
 
-Storybookのtitleは、原則として以下の階層を使います。
+Reactのファイル配置はAtomic Designの層名をそのままディレクトリ名にせず、実装上の責務で分類します。
+
+```txt
+src/components/
+  common/   複数の画面領域で使う、ドメインに依存しない小さな部品
+  card/     1件の対象を要約し、一覧や関連情報で再利用する部品
+  section/  見出しと本文など、ページ内の意味のまとまり
+  layout/   複数領域の配置規則を再利用する必要が生じた場合のみ追加
+```
+
+- `common/`は「何でも置く場所」ではなく、単独責務を持ち、複数の上位部品から利用される確定済みPrimitiveに限定する
+- `card/`、`section/`、`layout/`は対象コンポーネントの責務と契約が確定してから作成し、空ディレクトリは置かない
+- Atomic層はFigma名、Storybookの説明、Architecture上の分類で追跡し、`atoms/`、`molecules/`、`organisms/`という重複したファイル階層は作らない
+- `Heading`は確定済みPrimitiveであり、`components/common/heading.tsx`を正規のimport先とする。HTMLの見出しレベルは`as`、視覚スケールは`scale`で独立して指定する
+- `StatusBadge`は確定済みPrimitiveであり、`components/common/status-badge.tsx`を正規のimport先とする。読書状態は日本語ラベルとsignalを併用し、色だけに依存しない
+- `TechnicalAreaTags`は確定済みPrimitiveであり、`components/common/technical-area-tags.tsx`を正規のimport先とする。各タグは`max-content`で内容幅に追従し、分類色を増やさず、複数時はwrapする
+- `ThemeSwitch`は確定済みPrimitiveであり、`components/common/theme-switch.tsx`を正規のimport先とする
+
+Storybookのtitleは、確定したReactの責務別ディレクトリと同じ階層を使います。Atomic Design上の層名はナビゲーション階層へ重ねず、各Storyの説明とArchitectureで追跡します。
 
 ```txt
 Foundations/Color
-Components/Primitives/Status
-Components/Composites/BookCard
-Patterns/LibraryHeader
+Components/Common/Heading
+Components/Common/StatusBadge
+Components/Common/TechnicalAreaTags
+Components/Common/ThemeSwitch
+Components/Card/BookCard
+Components/Section/SectionName
+Components/Layout/LayoutName
 ```
 
+- 未整理のStoryは、対象コンポーネントの責務と契約が確定した時点で責務別階層へ移す
 - Light / DarkはStorybook globalとして切り替える
 - Desktop / Mobileはviewportまたはcontainerで検証する
 - Responsive専用ComponentやTheme専用variantを作らない
