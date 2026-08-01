@@ -1,6 +1,6 @@
 interface:
   display_name: "Stack Library Design"
-  short_description: "Issue範囲でStack Library固有のUIを設計・監査"
-  default_prompt: "$stack-library-designを使い、Issueを仕様の正本、Issueからリンクされた対象Figmaを視覚仕様の正本としてStack LibraryのUIを設計またはレビューしてください。"
+  short_description: "Stack LibraryのUIとデザインシステムを設計・監査"
+  default_prompt: "$stack-library-designを使い、Issueを仕様の正本、Issueからリンクされた対象Figmaを視覚仕様の正本として、Stack LibraryのUIまたはデザインシステムを設計・実装連携・レビューしてください。"
 policy:
   allow_implicit_invocation: true
