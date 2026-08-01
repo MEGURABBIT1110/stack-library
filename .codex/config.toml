@@ -1,0 +1,122 @@
+[agents]
+max_concurrent_threads_per_session = 3
+
+[agents.principal_product_strategist]
+description = "Frames the present customer, problem, outcomes, product thesis, success logic, and strategic coherence."
+config_file = "agents/apex/principal-product-strategist.toml"
+
+[agents.global_context_intelligence_lead]
+description = "Audits assumptions across culture, language and script, jurisdiction, regulation, and ecosystem."
+config_file = "agents/apex/global-context-intelligence-lead.toml"
+
+[agents.innovation_futures_portfolio_lead]
+description = "Builds plausible future scenarios, option portfolios, review dates, and observable signposts."
+config_file = "agents/apex/innovation-futures-portfolio-lead.toml"
+
+[agents.technology_readiness_lead]
+description = "Evaluates demonstrated technology capability, maturity, adoption timing, lifecycle, and exit criteria."
+config_file = "agents/apex/technology-readiness-lead.toml"
+
+[agents.design_philosophy_steward]
+description = "Stewards normative product and design values, identity invariants, anti-patterns, and principle tradeoffs."
+config_file = "agents/apex/design-philosophy-steward.toml"
+
+[agents.scrum_master]
+description = "Controls WIP, blockers, handoff readiness, scope drift, and parent-plus-three slot transitions."
+config_file = "agents/governance/scrum-master.toml"
+
+[agents.product_owner]
+description = "Owns authorized GitHub Issue specifications, scope, priority, acceptance criteria, and decision history."
+config_file = "agents/governance/product-owner.toml"
+
+[agents.product_integrity_reviewer]
+description = "Independently reviews frozen specifications for product coherence, MVP alignment, and contradictions."
+config_file = "agents/governance/product-integrity-reviewer.toml"
+
+[agents.requirements_analyst]
+description = "Turns frozen Issues and linked evidence into testable Acceptance Matrices and specialist briefs."
+config_file = "agents/discovery/requirements-analyst.toml"
+
+[agents.ux_researcher]
+description = "Researches user tasks, comparable interfaces, information architecture, and responsive priorities."
+config_file = "agents/discovery/ux-researcher.toml"
+
+[agents.bibliographic_identity_librarian]
+description = "Defines Work, Instance, and Item identity boundaries, duplicate rules, editions, formats, and copies."
+config_file = "agents/discovery/bibliographic-identity-librarian.toml"
+
+[agents.authority_control_librarian]
+description = "Defines stable concept identities, labels, synonyms, semantic relations, and deprecated redirects."
+config_file = "agents/discovery/authority-control-librarian.toml"
+
+[agents.design_system_architect]
+description = "Defines component, token, variant, accessibility, and Figma-to-code contracts."
+config_file = "agents/architecture/design-system-architect.toml"
+
+[agents.software_architect]
+description = "Evaluates implementation options and freezes boundaries, data flow, test seams, and writer routing."
+config_file = "agents/architecture/software-architect.toml"
+
+[agents.figma_designer]
+description = "Implements approved briefs in assigned Figma nodes and freezes exact visual contracts."
+config_file = "agents/design/figma-designer.toml"
+
+[agents.design_critic]
+description = "Independently critiques frozen Figma proposals before visual code implementation."
+config_file = "agents/design/design-critic.toml"
+
+[agents.adaptive_resilience_experimenter]
+description = "Designs bounded reversible experiments for degradation, dependency failure, and recovery claims."
+config_file = "agents/design/adaptive-resilience-experimenter.toml"
+
+[agents.skill_writer]
+description = "Implements exact assigned Stack Library skill paths from frozen contracts."
+config_file = "agents/build/skill-writer.toml"
+
+[agents.documentation_writer]
+description = "Implements exact assigned documentation, agent-definition, and repository-template paths."
+config_file = "agents/build/documentation-writer.toml"
+
+[agents.component_implementer]
+description = "Implements exact assigned reusable React components, local styles, Stories, and focused tests."
+config_file = "agents/build/component-implementer.toml"
+
+[agents.application_implementer]
+description = "Implements exact assigned App Router pages, layouts, screen integration, and focused tests."
+config_file = "agents/build/application-implementer.toml"
+
+[agents.data_implementer]
+description = "Implements exact assigned microCMS, type, query, normalization, Server Action, fixture, and data-test paths."
+config_file = "agents/build/data-implementer.toml"
+
+[agents.code_reviewer]
+description = "Independently reviews frozen diffs for correctness, architecture, accessibility, and regressions."
+config_file = "agents/assurance/code-reviewer.toml"
+
+[agents.test_engineer]
+description = "Plans and runs the smallest risk-based verification set against frozen inputs."
+config_file = "agents/assurance/test-engineer.toml"
+
+[agents.debugger]
+description = "Reproduces and isolates stable failures, then hands the smallest correction to the owning writer."
+config_file = "agents/assurance/debugger.toml"
+
+[agents.figma_design_qa]
+description = "Independently audits Figma and final renders for visual, dimensional, responsive, and accessibility parity."
+config_file = "agents/assurance/figma-design-qa.toml"
+
+[agents.epistemic_red_team_analyst]
+description = "Audits claim types, source quality, competing hypotheses, disconfirmation, confidence, and dissent."
+config_file = "agents/assurance/epistemic-red-team-analyst.toml"
+
+[agents.human_factors_error_specialist]
+description = "Analyzes predictable human errors, cognitive load, error chains, containment, recovery, and misuse."
+config_file = "agents/assurance/human-factors-error-specialist.toml"
+
+[agents.security_privacy_risk_steward]
+description = "Assesses assets, data flows, trust boundaries, secrets, permissions, abuse cases, and privacy."
+config_file = "agents/assurance/security-privacy-risk-steward.toml"
+
+[agents.release_manager]
+description = "Publishes approved changes through authorized Git and GitHub PR operations without editing working-tree files."
+config_file = "agents/delivery/release-manager.toml"

@@ -9,7 +9,7 @@ Stack Libraryの開発ワークフローです。人間、Codex、その他の�
 - GitHub Issueを作業記録の起点にする
 - 1ブランチ、1目的とする
 - 短命な作業ブランチからPRを作る
-- 原則としてSquash mergeし、`main`の履歴をConventional Commitsで揃える
+- merge方法は明示的なuser承認に従い、方法指定のない「マージ」はGitHub merge commitとする
 - 未完了の別作業を、無断で現在のブランチへ混ぜない
 
 長期の`develop`ブランチや、担当者・ツール名を表すブランチは作りません。
@@ -29,7 +29,50 @@ git switch -c feature/12-book-form
 
 未コミット差分がある場合は、別作業か現在の作業かを確認します。判断できない差分をstash、破棄、コミットしてはいけません。
 
-## ChatGPTとCodexの引き継ぎ
+## Codex chat lifecycleと引き継ぎ
+
+Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 1 parent Codex chat`で進めます。requirements、implementation、review、fix、delivery、mergeは職能ごとの別chatへ分断せず、同じIssue、branch、outcomeを所有するparent chatで継続します。parent chatは必要な専門職をbounded internal subagentとして起動し、user-visible chatを職能ごとに増やしません。
+
+| 状況 | Chatの扱い |
+|---|---|
+| 同じIssue、branch、coherent outcomeを継続 | requirementsからmergeまで同じparent chatを使う |
+| 別のIssueまたは別のoutcome | 新しいparent chatを作る |
+| shared contextからgenuine alternativeを比較 | forkできる。単なる工程分割、職能分割、引き継ぎには使わない |
+| 軽量なread-only question、説明、state check、report | Issueを省略できる。mutation開始前にIssue、outcome、branch、ownershipを確定する |
+| merge後のfollow-up change | 完了したparent chatをarchive candidateとし、通常は新しいIssueとparent chatを使う |
+
+同じ論理作業でreview findingやvalidation failureが出ても、新しいparent chatへ移さず、findingを元writerへ返して同じparent chat内のFix Waveで解消します。publication authorizationは、承認済みpathのstage、commit、push、Draft PRの作成・更新の許可であり、DraftからReadyへの変更、merge authorization、merge-method authorizationを含みません。
+
+| 状態 | 記録と意味 |
+|---|---|
+| PR作成・更新 | publication authorizationによりDraft PRを作成または更新できる |
+| DraftからReadyへの変更 | PR作成とは別の明示的authorizationを必要とする |
+| merge authorization | userが対象PRのmerge実行を明示的に承認し、`development_lead`が記録する |
+| merge-method authorization | 方法指定のない明示的な「マージ」承認は`development_lead`が`merge_method=merge`へ正規化する。SquashまたはRebaseはuserがその方法を別途明示した場合だけ`merge_method=squash|rebase`と記録する |
+
+`release_manager`はこれらの状態を統合または推測せず、merge authorization、記録済み`merge_method`、authorized/frozen `expected_head_sha`が揃った場合だけ実行します。
+
+新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。並行する複数chatがtracked fileへ書く必要がある場合は、chatごとに別worktree、別branch、exact path ownershipを割り当てます。同じbranchまたは同じpathへ複数chatから書いてはいけません。read-only chatはこのwrite分離要件の対象外です。
+
+### New-chat handoff packet
+
+別Issue、別outcome、または環境上の理由で新しいparent chatへ移るときは、会話履歴だけに依存せず、次のpacketを渡します。値がない項目も省略せず`none`または`absent`と記録します。
+
+- Issue URL/numberとfrozen Issue revision
+- branch、base commit、head commit
+- dirty diffの有無、exact changed paths、各diffのowner
+- exact scope、coherent outcome、non-goals
+- owner、allowed write surfaces、forbidden write surfaces、path単位のownership ledgerとそのrevision
+- frozen Acceptance Matrix、Design Brief、Component Contract、Design Contract、Design Critic Approval、Technical Planなど、適用するcontractとrevision
+- 完了済みvalidation、validation input revision、結果、再利用条件とinvalidation conditions
+- Figma file/node ID、対象file、theme、viewport、state
+- publication authorization、DraftからReadyへのauthorization、独立したmerge authorization、`merge_method=merge|squash|rebase`、authorized/frozen `expected_head_sha=<40-character SHA>|absent`の各状態
+- 既存Draft PRのURL/numberと状態
+- 次のdownstream handoff、未解決finding、stop condition
+
+`head commit`はpacket作成時に観測したbranchの状態です。`expected_head_sha`はそれとは独立して`development_lead`がmerge authorizationへ束縛し、MCP merge mutationへそのまま渡すexact SHAです。merge対象を凍結するまでは`expected_head_sha=absent`とし、観測したheadから暗黙に補完しません。
+
+受け取ったparent chatは、branch、base/head、dirty diff、ownership ledger、frozen input revisionがpacketと一致することをread-onlyで確認してから作業を続けます。不一致、同じbranch/pathへの別chatのwrite、凍結入力の更新があれば停止し、`development_lead`へ返します。
 
 ChatGPT、Codex Local、Codex Worktree、Codex Cloudは、会話履歴や未共有のファイルを自動的には引き継ぎません。会話を正本にせず、GitHub IssueとDraft PRを共有状態として使用します。
 
@@ -137,7 +180,33 @@ PR本文には最低限、以下を記載します。
 Closes #12
 ```
 
-原則としてSquash mergeします。Squash後のコミットメッセージがConventional Commits形式になるよう、PRタイトルを整えます。
+### Merge authorizationと方法
+
+PR作成、DraftからReadyへの変更、merge authorization、merge-method authorizationは独立した状態として記録します。PRの存在、Ready状態、repository設定、GitHub UI、過去の履歴からmerge承認や方法を推測しません。
+
+| Userの明示的な承認 | `development_lead`の記録 | `release_manager`がMCP merge mutationへ渡す方法 |
+|---|---|---|
+| 「マージ」など、方法を限定しないmerge承認 | `merge_method=merge` | `merge`（GitHub merge commit） |
+| Squashを指定したmerge承認 | `merge_method=squash` | `squash` |
+| Rebaseを指定したmerge承認 | `merge_method=rebase` | `rebase`（GitHub Rebase merge） |
+| 承認なし、方法が曖昧、または承認と記録が不一致 | 記録不可または要訂正 | 実行せず`BLOCKED` |
+
+`release_manager`は承認・記録された値だけを使用し、MCP merge mutationのmerge method parameterと、別途authorizationへ束縛された`expected_head_sha`を省略しません。方法指定のない承認を`merge_method=merge`へ正規化するのは`development_lead`であり、`release_manager`による推測ではありません。
+
+既存履歴は保持し、amend、local rebase、force-push、その他のhistory rewriteを行いません。表中のRebaseはGitHubがPRを統合する名前付き方法であり、既存のlocal/remote履歴を書き換える許可ではありません。
+
+### GitとGitHub serviceの操作境界
+
+local repositoryとGitHub serviceの操作を区別します。
+
+| 対象 | 標準手段 | 例 |
+|---|---|---|
+| local repositoryとGit transport | local `git` | status、diff、branch、stage、commit、push、local/remote ref alignment |
+| GitHub service | callableなGitHub MCP-backed tool | Issue、PR、review、check、release、mergeのread/mutation |
+
+GitHub MCPで必要なGitHub service操作がcallableなら、GitHub CLI（`gh`）の認証確認や`gh auth login`を作業の前提にしません。`git push`はlocal Gitのpublication操作であり、GitHub MCP invocationやGitHub serviceのread-back evidenceではありません。
+
+必要な特定操作に対応するcallableなGitHub MCP-backed toolがtool search後もなく、その操作が契約上MCP必須でない場合に限り、`gh`を使用できます。その場合はMCP gap、tool search、操作の必要性、exact `gh` operationと結果をhandoffへ記録します。required MCP operationがunavailable、undiscoverable、denied、または失敗した場合、`gh`、browser、direct APIへfallbackせず`BLOCKED`とします。`gh`の結果をMCP invocation、MCP evidence、MCP read-backとして扱いません。
 
 ## 検証
 
@@ -216,3 +285,29 @@ Storyは`Foundations / Components / Patterns`の責務に沿って配置しま�
 | `docs/ROUTING.md` | URL、画面責務、ナビゲーション |
 
 方針を変更した場合は、実装と同じPRで該当文書を更新します。
+
+## Repository writerの所有権
+
+tracked fileの内容は、team packetでexact pathを割り当てられた次のwriterだけが編集します。
+
+| Writer | 標準所有範囲 |
+|---|---|
+| `skill_writer` | `.agents/skills/**` |
+| `documentation_writer` | `README.md`、`AGENTS.md`、`docs/**`、`.codex/agents/**`、Issue/PR template |
+| `component_implementer` | `src/components/**`、`src/stories/**`、局所style、component test |
+| `application_implementer` | `src/app/**`、画面統合test。ただしcolocated Server Action moduleを除く |
+| `data_implementer` | `src/lib/**`、`src/types/**`、`src/actions/**`、`microcms/**`、data fixture/test。`src/app/**/actions.ts`などはexact pathを明示した場合だけ含む |
+
+`.storybook/**`、root設定、共有style、test infrastructureには暗黙のownerを置かず、開発リードが1名を明示します。`package.json`とlockfileは同じwriterがatomic bundleとして扱います。複数領域は原則としてdata、component、application、skill/documentationの依存順でhandoffします。
+
+同じfileの同時編集は禁止します。再割り当て時はownership ledgerへ旧owner、新owner、引き継ぎrevisionを記録し、最後のownerがfile全体のdiffとreview修正を引き受けます。互いに素なexact pathのdirty diffは、ownership ledgerと凍結入力を汚染しない限り並行作業として許容します。writerはstageやcommitを行わず、次をhandoffします。
+
+- `SOURCE_WRITER`
+- input Issue revisionとinput contract revision
+- base HEADとexact path list
+- 各fileのSHA-256とfrozen diff revision
+- 変更していない禁止面、検証結果、既知のrisk
+- 実際のdownstream contractと無効化条件
+- findingを返す`FINDING_RETURN_WRITER`
+
+Git index/historyとpush、およびGitHub上のDraft PR metadataは、publication authorizationを受けた`release_manager`だけが変更します。前者はlocal `git`、後者は上記のGitHub service規則に従います。

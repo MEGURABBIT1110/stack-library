@@ -5,246 +5,143 @@ description: Design, extend, implement, or review Stack Library interfaces by cr
 
 # Stack Library Design
 
-Design Stack Library as a quiet technical archive and a map back to usable knowledge. Make the interface feel precise, legible, calm, and unmistakably tied to technical books.
+Design Stack Library as a Japanese-first technical-book archive: precise, calm, legible, and accessible. Preserve `Technical Archive × Developer Observatory`; do not drift into a generic reading app, Notion clone, SaaS dashboard, or decorative “tech” interface.
 
-## Resolve the current truth
+## Establish authority and scope
 
-Use this priority order:
+Resolve decisions in this order:
 
 1. Follow the user's current instruction.
-2. Inspect the live Figma file and current implementation.
-3. Inspect current project documents and content models.
-4. Use this skill's references as durable guidance.
+2. Follow the frozen GitHub Issue specification for purpose, scope, exclusions, and acceptance criteria.
+3. Follow the Issue-linked target Figma node for visual specification.
+4. Follow `AGENTS.md` and applicable project documents for governance and architecture.
+5. Use the current implementation, Storybook, and fresh render evidence to understand actual behavior.
+6. Use this skill's references as durable guidance, never as competing project truth.
 
-Treat older proposals as history, not truth. Do not restore a removed field, route, technology choice, component, or visual motif merely because it appears in a reference. When sources conflict, apply the higher-priority source and mention only conflicts that affect the result.
+Treat older proposals and unlinked Figma frames as history. Treat implementation as evidence, not authority to preserve a defect.
 
-Treat the current Figma file and implementation as evidence of the current state, not proof that the design is correct. Respect decisions that remain coherent; question assumptions that create unclear meaning, structural debt, inconsistency, inaccessibility, or a generic result.
+When the Issue and its linked Figma target conflict, stop. Report the exact conflict and request resolution from the Issue owner; do not invent a compromise or silently choose one.
 
-Before reusing an existing pattern, perform a short premise check:
+Stay inside the frozen Issue. Correct a nearby defect only when required to satisfy acceptance criteria or prevent a direct regression. Record broader findings for separate scope.
 
-- Does it still serve the product thesis and the user's current goal?
-- Does its information hierarchy make the primary meaning obvious?
-- Does it contradict a neighboring screen, component contract, data state, or breakpoint?
-- Is it accessible and technically representable?
-- Is it a deliberate product decision, or merely an inherited default?
+Honor the team packet:
 
-Do not preserve a flaw for the sake of visual consistency. Fix Blocker and Major problems in the changed surface, plus obvious low-risk defects in its immediate neighbors. If a correction would materially change the product direction, data model, navigation, or task scope, explain the evidence and ask one focused question before making that broader change.
+- Write only as the assigned writer: `product_owner` for Issue fields, `figma_designer` for Figma, the tracked repository writer explicitly assigned in the team packet for tracked repository content, and `release_manager` for approved Git/PR metadata.
+- Respect `owner`, `allowed_write_surfaces`, `forbidden_write_surfaces`, publication authorization, and handoff conditions.
+- Never assign the same Issue specification, Figma node, or tracked file to concurrent writers.
+- Return findings to the owning writer; reviewers and QA do not repair product sources.
+- Stop before writing when a required contract, target revision, or ownership boundary is missing or contradictory.
 
-Read [product-language.md](references/product-language.md) before creating a new screen or materially changing visual direction.
-Read [interaction-accessibility.md](references/interaction-accessibility.md) for interactive components, motion, responsive behavior, and accessibility.
-Read [review-gates.md](references/review-gates.md) for audits, handoff, and final verification.
+Read project documents in the order required by `AGENTS.md`. Read `docs/CONTENT_MODEL.md` for data, type, microCMS, or fixture changes and `docs/ROUTING.md` for route or page-responsibility changes.
 
-## Choose the smallest valid path
+## Route detailed guidance conditionally
 
-### Fast path — established product
+Load only the reference needed for the current task:
 
-Use when the current Figma, tokens, components, and direction already exist.
+- Read [product-language.md](references/product-language.md) when creating a screen, changing information hierarchy or language, or materially changing visual direction.
+- Read [interaction-accessibility.md](references/interaction-accessibility.md) when designing interaction, motion, responsive behavior, focus, keyboard behavior, dynamic states, forms, or error recovery.
+- Read [design-system-contracts.md](references/design-system-contracts.md) when adding or changing a token, component, variant, component property, Storybook contract, or Figma-to-code mapping.
+- Read [ecosystem-evidence.md](references/ecosystem-evidence.md) when benchmarking an external design system, evaluating a borrowed pattern, or auditing the system's documentation and source coverage.
+- Read [design-system-landscape.md](references/design-system-landscape.md) when selecting a benchmark, checking the current status of a Design System Collection entry, or comparing coverage across the full catalog.
+- Read [review-gates.md](references/review-gates.md) when performing critique, visual QA, handoff, or completion review.
 
-1. Inspect the relevant current screen, component, and implementation.
-2. Inspect the immediate neighboring surfaces and run the premise check.
-3. State the feature's primary meaning, the gap to fill, and any existing defect that affects the result.
-4. Separate what should be preserved, corrected now, and deferred.
-5. Reuse only the structure, variables, typography, and components that still support the intended meaning.
-6. Add the missing component, state, or rule and make the corrections needed for a coherent result.
-7. Verify the changed surface and its neighboring surfaces.
+Project documents override these references.
 
-Do not reopen settled brand decisions or wait for confirmation unless an unresolved choice would materially change the result.
-The smallest valid path means the smallest coherent result, not the fewest changed pixels or nodes. Do not use reuse as a substitute for design judgment.
+## Frame the product meaning
 
-### Foundation path — genuinely new territory
+Before designing, state a compact brief:
 
-Use when no existing pattern can express the feature.
+- the person and action;
+- the primary fact or decision;
+- required states and distinctions;
+- the route back to the book or usable knowledge;
+- the product-specific device, using `Specimen Label` or a device explicitly activated by the frozen Issue and supported by the current product, content, and route model;
+- generic patterns to reject.
 
-1. Name at least five domain concepts from the actual product.
-2. Define one product-specific signature for the feature.
-3. Name three likely generic defaults and their replacements.
-4. Define the intended feeling with concrete terms.
-5. Ask one focused question only if the direction remains materially ambiguous.
+Treat a technical book as a knowledge node, not an e-commerce product. Treat metrics as evidence, not decoration. Use direct, natural Japanese labels; reserve English for the product name and established technical terms.
 
-Never create code or high-fidelity design from adjectives alone.
+Define the data contract before polishing numeric or status UI. Preserve distinct meanings for zero, missing, unknown, unavailable, error, and not applicable.
 
-### Review path — audit or critique
+## Inventory before assembly
 
-1. Report an observable fact.
-2. Explain the user or system consequence.
-3. Give a concrete correction.
-4. Classify it as Blocker, Major, or Minor.
+Use a component-first process before assembling a screen:
 
-Do not replace evidence with taste words such as “cleaner” or “more modern.”
-If the user permits changes, implement Blocker and Major corrections and safe local Minor corrections instead of stopping at critique.
+1. Inventory applicable current tokens, Figma components, React components, Storybook stories, data shapes, and states.
+2. Identify what can be reused unchanged, what requires a contract change, and what is genuinely missing.
+3. Define each affected component's semantic responsibility, inputs, states, responsive behavior, accessibility contract, and verification surface.
+4. Resolve component and token gaps before composing the page.
+5. Assemble the screen from approved contracts; do not hide unresolved component decisions inside page-specific styling.
+6. Record each affected asset as reuse, extend, create, deprecate, or migrate; include the consumer and compatibility impact for every non-reuse decision.
 
-## Frame the feature before designing
+Add a token or component only when the existing system cannot express the requirement. Name it by semantic role. Avoid wrapper-only abstractions and props that expose incidental Figma structure.
 
-Write a compact internal brief:
+## Follow the current architecture vocabulary
 
-- Human: who is using this surface, and in what context?
-- Action: what verb must they complete?
-- Meaning: what must they understand immediately?
-- States: what values or conditions must remain distinguishable?
-- Return path: how does this help them return to knowledge or implementation?
-- Signature: use `Specimen Label`, `Knowledge Trace`, or a justified new product-specific device.
-- Rejections: which generic patterns must not appear?
+Delegate exact Atomic Design vocabulary and dependency rules to the current `docs/ARCHITECTURE.md`; do not freeze a duplicate taxonomy here. Use Atomic Design to control responsibility and dependency direction, not to derive information hierarchy or split by visual size.
 
-For numeric and status surfaces, define the data contract first. Distinguish zero, missing, unknown, unavailable, error, and not applicable. Never let visual polish collapse those states.
+Inspect and follow the current repository organization while keeping physical placement separate from Atomic classification. A directory name describes physical organization; it does not automatically determine semantic layer. Keep Figma names, React exports, Storybook titles, and architecture notes traceable without requiring identical trees.
 
-## Build the information hierarchy
+Treat traceability as a behavioral contract, not a naming exercise. Map semantic responsibility, public states, variant axes, responsive rules, accessibility behavior, and verification evidence across Figma, React, and Storybook. Record an intentional platform-only difference instead of forcing false parity.
 
-Order content by meaning, not by component availability:
+Model theme and responsive differences with semantic variables, CSS, viewport, or container behavior. Do not create theme-only or breakpoint-only component taxonomies.
 
-1. Put the page's primary fact or action first.
-2. Add enough context to interpret it correctly.
-3. Expose state, provenance, and incompleteness.
-4. Place secondary metadata where it supports scanning.
-5. Move advanced controls one level deeper.
+## Preserve responsive semantic parity
 
-Prefer direct Japanese labels. Avoid vague destinations such as “Home” or “Overview” when a specific label exists. Use English for the product name or established technical terms only when it improves recognition.
+Preserve the same primary task, primary facts, state distinctions, and accessible meaning across breakpoints. Semantic parity does not require identical visible fields, order, density, or disclosure.
 
-Treat a technical book as a knowledge node, not an e-commerce product. Treat metrics as evidence, not decoration. Treat an empty state as a state of the archive, not empty space to fill with illustration.
+On narrower layouts, omit, reorder, summarize, truncate, or progressively disclose secondary metadata only when the frozen Issue or Issue-linked Figma target authorizes it and the primary meaning and a discoverable path to full information remain intact. Record that upstream decision in the component or design contract; never let a downstream contract authorize the change or let information disappear accidentally.
 
-## Preserve the visual system
-
-- Reuse the active theme variables and component APIs.
-- Preserve light/dark parity; do not finish one theme and merely invert it.
-- Keep Japanese typography primary. Verify line breaks, line height, metadata density, and long titles with real Japanese content.
-- Use restrained neutral surfaces, thin rules, precise anchors, and one meaningful accent.
-- Use color for action, status, or emphasis; never use color as the only carrier of meaning.
-- Keep radii, elevation, and spacing systematic. Avoid large soft cards and excessive pills by default.
-- Prefer flat, legible icon geometry. Keep joins smooth and recognizable at the actual rendered size.
-- Add no decorative object merely to literalize “book,” “archive,” “star,” “bank,” or “technology.”
-
-When a new token or component appears necessary, first prove that the current system cannot represent the need. Name additions by semantic role rather than isolated appearance.
-
-## Apply Atomic Design as a dependency model
-
-Use Atomic Design to control responsibility, reuse, and dependency direction. Do not use it to generate the information hierarchy or to split components by visual size.
-
-Use the project vocabulary:
-
-```txt
-Foundations
-  -> Primitives
-    -> Composites
-      -> Patterns
-        -> Screens
-```
-
-- Treat Foundations as tokens and rules, not exported React components.
-- Treat Primitives as single-responsibility controls or labels such as Button, Link, and Status.
-- Treat Composites as reusable domain units such as Book Card that combine Primitives around one meaning.
-- Treat Patterns as page regions such as Header, Context Bar, and Book List that coordinate Composites.
-- Treat Screens as App Router pages that own routing, data retrieval, and page-level composition.
-
-Enforce these rules:
-
-1. Keep dependencies moving from higher layers toward lower layers; never make a lower layer import a higher layer. Allow same-layer composition when it stays acyclic and each component retains an independent responsibility. If same-layer components mainly coordinate one another, promote that coordinator to the next layer.
-2. Classify a component at the lowest layer that fully owns its semantic responsibility.
-3. Extract a component only when it has an independent responsibility, reuse value, or verification value.
-4. Keep data retrieval, route selection, redirects, navigation policy, and the app-wide route schema at the Screen boundary. Allow a lower layer to own or construct an invariant semantic destination when that link is intrinsic to its responsibility, such as a book card deriving its canonical detail URL from a book identifier or the product identity returning to the library root. Accept an `href` contract when the component must work in multiple routing contexts; do not add pass-through route props solely to satisfy the taxonomy.
-5. Model theme and breakpoint differences with variables, CSS, viewport, or container behavior instead of duplicate atomic layers.
-6. Keep Figma, React, and Storybook classifications traceable through stable names, story titles, or architecture notes for shared units that need independent verification. Do not require a separate Story for every export or force identical node trees, props, or file structures.
-7. Add a separate Template layer only when multiple Screens share a page skeleton that needs independent reuse and verification.
-
-Let product meaning and accessibility override taxonomy. Do not add wrapper components, generic atoms, or pass-through props merely to complete an Atomic Design hierarchy.
-
-Treat a homogeneous collection of one label concept, such as technical-area tags, as a Primitive when the collection still has one semantic responsibility. Promote it to a Composite only when it coordinates distinct primitives, interactions, or domain meanings.
-
-Allow story-local render helpers to demonstrate Foundations, provided they are not exported as production Foundation components and do not become an alternative token source.
-
-## Design responsive structure
-
-Use the same information model across breakpoints. Change composition, not meaning.
-
-- Preserve order, labels, and state distinctions between desktop and mobile.
-- Define which regions wrap, stack, scroll, truncate, or reveal.
-- Keep repeated values aligned where comparison matters.
-- Test long Japanese titles, multiple authors, large numbers, missing covers, and dense tags.
-- Avoid horizontal scrolling except for inherently two-dimensional content.
-- Prevent fixed headers, sheets, and footers from hiding focused or magnified content.
-
-Use existing frame widths and content gutters from the live design. Do not introduce new breakpoint numbers from habit.
-
-## Design interaction as feedback
-
-- Respond immediately to user input.
-- Keep state changes visible and reversible where practical.
-- Allow an interaction to be interrupted; never lock input merely because an animation is running.
-- Anchor overlays and transitions to their source.
-- Use motion to explain state or spatial change, not to perform.
-- Use restrained timing for routine UI; use spring or momentum behavior only for direct manipulation.
-- Provide a reduced-motion equivalent that preserves feedback and meaning.
-
-Never depend on audio. If sound or haptics are optional reinforcement, provide the same causal and completion information visually and semantically.
-
-## Make accessibility part of the component contract
-
-For every interactive component, specify:
-
-- semantic role and accessible name;
-- keyboard operation and visible focus;
-- reading and focus order;
-- hover, focus, active, disabled, loading, success, warning, and error states as applicable;
-- announcements for dynamic updates;
-- text alternative or long description for meaningful visuals;
-- non-color cue for every state;
-- behavior at text enlargement and reflow;
-- reduced-motion behavior.
-
-Use native HTML before ARIA in implementation. Do not invent interaction semantics in Figma that cannot be expressed robustly in code.
+Define wrapping, stacking, scrolling, truncation, and disclosure explicitly. Verify long Japanese titles, multiple authors, dense metadata, missing covers, zero values, and narrow containers. Use current project breakpoints and containers rather than habitual values.
 
 ## Work in Figma
 
-Load and follow the applicable Figma prerequisite skills before using Figma tools.
+Before any Figma tool call, load and follow every applicable Figma prerequisite skill.
 
-1. Inspect current pages, variables, styles, and component sets.
-2. Extend the nearest current screen rather than a deprecated page.
-3. Build repeated UI as components with a small, meaningful property API.
-4. Use variants for structural differences, not arbitrary content combinations.
-5. Bind color and typography to active variables and styles.
-6. Cover desktop/mobile and light/dark where the feature applies.
-7. Include normal, partial, empty, loading, and error references when implementation decisions depend on them.
-8. Add data and accessibility notes beside the visual design when the rule is not visible.
-9. Inspect bounds, clipping, overflow, font substitution, and instance usage before completion.
+1. Confirm the Issue-linked file and node IDs, revision, themes, viewports, and states.
+2. Inspect relevant variables, component sets, neighboring structure, and current implementation evidence.
+3. Extend the nearest valid components and bind active semantic variables.
+4. Represent structural differences with purposeful variants, not arbitrary content combinations.
+5. Preserve Main Component and Instance relationships, component-property intent, descriptions, and existing code mappings; do not detach an instance or introduce a local style or raw value merely to obtain visual parity.
+6. Inspect final screenshots and node structure, including bounds, Auto Layout, text resizing, clipping, overflow, variable bindings, component properties, and instance integrity.
 
-Do not duplicate a component merely to create a theme or breakpoint version when a variable mode or structural variant can express it.
+Do not claim completion from property inspection alone. Use fresh visual evidence required by `AGENTS.md`, and invoke independent Figma QA when that contract requires it.
 
 ## Implement in code
 
-1. Inspect the repository's current stack and conventions.
-2. Preserve semantic HTML, existing tokens, and component boundaries.
-3. Keep domain rules separate from formatting.
-4. Render every defined state from real data shapes.
-5. Avoid a new dependency when platform primitives or the current stack suffice.
-6. Verify lint, type checks, build, and the relevant rendered route.
-7. Perform keyboard, reflow, theme, and reduced-motion checks for changed interactions.
+1. Start only from the frozen Issue, approved visual/design contract, and applicable technical plan.
+2. Preserve semantic HTML, server/client boundaries, domain rules, current tokens, and component responsibilities.
+3. Render required states from valid data shapes; keep Storybook fixtures independent from microCMS.
+4. Keep public props semantic; do not expose Figma layer names, breakpoint flags, theme variants, or purely visual switches as an API.
+5. Add the smallest representative Story set that proves public states, long and missing content, applicable themes and widths, and keyboard behavior. Add interaction coverage when user input or state change is part of the contract.
+6. Compare the final rendered surface with the Issue-linked Figma target and verify both changed behavior and accessible semantics.
 
-Do not infer the project's framework from old planning documents.
+Do not infer visual values, API boundaries, routes, or data fields when an upstream contract is unresolved.
 
-## Communicate efficiently
+## Keep essential quality constraints
 
-Lead with the outcome. Keep process narration short.
+- Target WCAG 2.2 AA. Maintain Japanese readability, meaningful heading order, visible and unobscured focus, keyboard operation, operable target size, reflow, and non-color state cues.
+- Preserve Light/Dark accessibility and sufficient contrast through semantic variables.
+- Preserve distinct presentation and semantics for zero, missing, and error states.
 
-For a creation or implementation, report:
+Use the conditionally linked references for detailed visual grammar and accessibility guidance.
 
-- what was created or changed;
-- which existing assumptions were preserved, corrected, or deliberately left unchanged;
-- the key product-specific decision;
-- states and breakpoints covered;
-- verification completed;
-- any remaining external action.
+## Validate by risk
 
-For a review, group findings by severity. For each finding, give the affected element, observation, consequence, and concrete fix. Omit empty severity groups.
+Select and reuse validation exactly as defined by `docs/DEVELOPMENT.md`. Do not invent a second validation matrix here.
 
-## Finish through quality gates
+For documentation-only work, inspect the diff, references, terminology, links, and cross-document consistency. For code or Figma work, run only risk-appropriate checks and fresh visual comparisons required by project governance. Re-run a successful check only when its input or environment has been invalidated.
 
-Apply only the gates relevant to the task, but never skip the accessibility and technical gate for shippable work. Use [review-gates.md](references/review-gates.md).
+Do not call work complete while a required source is unresolved, a Blocker or Major discrepancy remains, the final changed state is uninspected, or required evidence is missing.
 
-Do not call the work complete while any of these remain:
+## Report concisely
 
-- meaning depends on inference the interface could state;
-- zero and missing are conflated;
-- a state is conveyed only by color, motion, or sound;
-- Japanese text breaks the layout;
-- mobile loses information available on desktop;
-- the result could be mistaken for a generic book app, Notion page, or SaaS template;
-- a new visual motif exists without a functional role;
-- changed code or Figma structure has not been inspected in its final state.
+Lead with the outcome. Report:
+
+- changed surface and Issue scope;
+- key product or component-contract decision;
+- intentional responsive omissions, reorderings, or disclosures;
+- affected states, themes, and viewports;
+- validation performed against which revision;
+- unresolved conflict, external action, or deferred finding.
+
+For reviews, report observable evidence, consequence, correction, and severity. Do not substitute taste words such as “cleaner” or “modern” for evidence.
