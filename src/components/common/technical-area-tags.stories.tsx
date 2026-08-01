@@ -24,6 +24,19 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+export const Wrapped: Story = {
+  args: {
+    areas: ["frontend", "architecture", "language", "testing"],
+  },
+  decorators: [
+    (Story) => (
+      <div style={{ width: 180 }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
 export const Empty: Story = {
   args: {
     areas: [],

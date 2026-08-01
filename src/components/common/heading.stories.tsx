@@ -48,13 +48,14 @@ export const ScaleGuide: Story = {
   render: () => (
     <div className="heading-story__scale-guide">
       <Heading as="h1" scale="page">
-        h1 / Page — 技術書ライブラリ
+        h1 / Page — 蔵書価格の記録
       </Heading>
       <Heading as="h2" scale="section">
         h2 / Section — 書籍別の登録価格
       </Heading>
       <Heading as="h3" scale="subsection">
-        h3 / Subsection — 長い日本語の書名でも読みやすい見出し
+        h3 / Subsection —
+        長い日本語の書名でも読みやすい見出し設計と、技術書ライブラリにおける情報階層の検証
       </Heading>
       <Heading as="h4" scale="compact">
         h4 / Compact — 補助的な見出し
