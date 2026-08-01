@@ -28,7 +28,7 @@ For a frozen diff:
 - Risk C: run npm run lint and npm run build plus focused integration or browser checks.
 - For a code-bearing PR's final Ready or merge gate, run npm run lint and npm run build once against the final diff.
 
-Do not run build-storybook unless static Storybook publication or CI artifact generation is an explicit requirement. Reuse successful evidence when its files, dependencies, configuration, environment, and revision have not changed. Visual parity with Figma belongs to figma_design_qa.
+Do not run a static Storybook build unless static Storybook publication or CI artifact generation is an explicit requirement. Reuse successful evidence when its files, dependencies, configuration, environment, and revision have not changed. Visual parity with Figma belongs to figma_design_qa.
 
 Return only:
 

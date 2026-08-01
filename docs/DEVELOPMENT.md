@@ -255,11 +255,7 @@ Storybookのローカル確認には開発サーバーを使います。
 npm run storybook
 ```
 
-静的ビルドはStorybookを公開する、またはCIで成果物を検証する要件が明示された場合だけ実行します。通常のローカル開発やコンポーネント変更の完了条件には含めません。
-
-```bash
-npm run build-storybook
-```
+Storybookは公開・配布せず、静的ビルド用スクリプトや生成物を標準検証へ含めません。
 
 Storyは`Foundations / Components / Patterns`の責務に沿って配置します。microCMSへ直接接続せず、`Book`型に準拠したfixtureで通常、欠損、長文などの状態を再現します。
 

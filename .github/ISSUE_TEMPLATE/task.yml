@@ -114,7 +114,6 @@ body:
         - [ ] npm run lint
         - [ ] npx tsc --noEmit
         - [ ] npm run build
-        - [ ] npm run build-storybook
         - [ ] Light / Dark、Desktop / Mobile
         - [ ] キーボード操作とフォーカス表示
     validations:
