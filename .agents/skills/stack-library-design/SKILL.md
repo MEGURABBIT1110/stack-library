@@ -39,7 +39,10 @@ Read project documents in the order required by `AGENTS.md`. Read `docs/CONTENT_
 Load only the reference needed for the current task:
 
 - Read [product-language.md](references/product-language.md) when creating a screen, changing information hierarchy or language, or materially changing visual direction.
-- Read [interaction-accessibility.md](references/interaction-accessibility.md) when designing interaction, motion, responsive behavior, focus, keyboard behavior, or dynamic states.
+- Read [interaction-accessibility.md](references/interaction-accessibility.md) when designing interaction, motion, responsive behavior, focus, keyboard behavior, dynamic states, forms, or error recovery.
+- Read [design-system-contracts.md](references/design-system-contracts.md) when adding or changing a token, component, variant, component property, Storybook contract, or Figma-to-code mapping.
+- Read [ecosystem-evidence.md](references/ecosystem-evidence.md) when benchmarking an external design system, evaluating a borrowed pattern, or auditing the system's documentation and source coverage.
+- Read [design-system-landscape.md](references/design-system-landscape.md) when selecting a benchmark, checking the current status of a Design System Collection entry, or comparing coverage across the full catalog.
 - Read [review-gates.md](references/review-gates.md) when performing critique, visual QA, handoff, or completion review.
 
 Project documents override these references.
@@ -68,6 +71,7 @@ Use a component-first process before assembling a screen:
 3. Define each affected component's semantic responsibility, inputs, states, responsive behavior, accessibility contract, and verification surface.
 4. Resolve component and token gaps before composing the page.
 5. Assemble the screen from approved contracts; do not hide unresolved component decisions inside page-specific styling.
+6. Record each affected asset as reuse, extend, create, deprecate, or migrate; include the consumer and compatibility impact for every non-reuse decision.
 
 Add a token or component only when the existing system cannot express the requirement. Name it by semantic role. Avoid wrapper-only abstractions and props that expose incidental Figma structure.
 
@@ -76,6 +80,8 @@ Add a token or component only when the existing system cannot express the requir
 Delegate exact Atomic Design vocabulary and dependency rules to the current `docs/ARCHITECTURE.md`; do not freeze a duplicate taxonomy here. Use Atomic Design to control responsibility and dependency direction, not to derive information hierarchy or split by visual size.
 
 Inspect and follow the current repository organization while keeping physical placement separate from Atomic classification. A directory name describes physical organization; it does not automatically determine semantic layer. Keep Figma names, React exports, Storybook titles, and architecture notes traceable without requiring identical trees.
+
+Treat traceability as a behavioral contract, not a naming exercise. Map semantic responsibility, public states, variant axes, responsive rules, accessibility behavior, and verification evidence across Figma, React, and Storybook. Record an intentional platform-only difference instead of forcing false parity.
 
 Model theme and responsive differences with semantic variables, CSS, viewport, or container behavior. Do not create theme-only or breakpoint-only component taxonomies.
 
@@ -95,7 +101,8 @@ Before any Figma tool call, load and follow every applicable Figma prerequisite 
 2. Inspect relevant variables, component sets, neighboring structure, and current implementation evidence.
 3. Extend the nearest valid components and bind active semantic variables.
 4. Represent structural differences with purposeful variants, not arbitrary content combinations.
-5. Inspect final screenshots and node structure, including bounds, Auto Layout, clipping, overflow, and variable bindings.
+5. Preserve Main Component and Instance relationships, component-property intent, descriptions, and existing code mappings; do not detach an instance or introduce a local style or raw value merely to obtain visual parity.
+6. Inspect final screenshots and node structure, including bounds, Auto Layout, text resizing, clipping, overflow, variable bindings, component properties, and instance integrity.
 
 Do not claim completion from property inspection alone. Use fresh visual evidence required by `AGENTS.md`, and invoke independent Figma QA when that contract requires it.
 
@@ -104,14 +111,15 @@ Do not claim completion from property inspection alone. Use fresh visual evidenc
 1. Start only from the frozen Issue, approved visual/design contract, and applicable technical plan.
 2. Preserve semantic HTML, server/client boundaries, domain rules, current tokens, and component responsibilities.
 3. Render required states from valid data shapes; keep Storybook fixtures independent from microCMS.
-4. Add representative Stories and interaction coverage only where architecture and behavior require them.
-5. Compare the final rendered surface with the Issue-linked Figma target and verify changed behavior.
+4. Keep public props semantic; do not expose Figma layer names, breakpoint flags, theme variants, or purely visual switches as an API.
+5. Add the smallest representative Story set that proves public states, long and missing content, applicable themes and widths, and keyboard behavior. Add interaction coverage when user input or state change is part of the contract.
+6. Compare the final rendered surface with the Issue-linked Figma target and verify both changed behavior and accessible semantics.
 
 Do not infer visual values, API boundaries, routes, or data fields when an upstream contract is unresolved.
 
 ## Keep essential quality constraints
 
-- Maintain Japanese readability, meaningful heading order, visible focus, keyboard operation, and non-color state cues.
+- Target WCAG 2.2 AA. Maintain Japanese readability, meaningful heading order, visible and unobscured focus, keyboard operation, operable target size, reflow, and non-color state cues.
 - Preserve Light/Dark accessibility and sufficient contrast through semantic variables.
 - Preserve distinct presentation and semantics for zero, missing, and error states.
 

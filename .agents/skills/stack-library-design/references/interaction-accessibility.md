@@ -65,7 +65,7 @@ When translucent materials are used, provide a solid or higher-opacity alternati
 
 ### Perceivable
 
-- Meet WCAG 2.2 AA contrast for text and UI components.
+- Meet WCAG 2.2 AA contrast: 4.5:1 for normal text, 3:1 for large text, and 3:1 for meaningful non-text UI boundaries and states, unless the criterion defines an exception.
 - Check actual light and dark backgrounds.
 - Never use color alone for status, selection, error, or progress.
 - Give meaningful covers, diagrams, and charts appropriate alternatives.
@@ -76,12 +76,12 @@ When translucent materials are used, provide a solid or higher-opacity alternati
 ### Operable
 
 - Use native interactive elements.
-- Provide a visible focus indicator in every theme.
+- Provide a visible focus indicator in every theme, keep the focused control at least partially unobscured, and preserve sufficient contrast between the indicator and adjacent colors.
 - Preserve logical tab order and reading order.
 - Keep focused content visible beneath sticky UI.
 - Support keyboard alternatives for drag, swipe, and pointer-only controls.
 - Provide a single-pointer alternative to complex gestures.
-- Use target sizes that remain operable for touch and motor variability.
+- Provide a 24 by 24 CSS-pixel target or equivalent spacing for pointer inputs unless a WCAG 2.2 Target Size (Minimum) exception applies; prefer at least 44 by 44 CSS pixels for primary touch actions where the layout permits.
 - Avoid keyboard traps.
 
 ### Understandable
@@ -144,6 +144,9 @@ Annotate behavior that static pixels cannot prove:
 - value formatting and missing-state copy;
 - responsive stacking order;
 - reduced-motion replacement.
+- accessible name, description, error, and status-message relationship;
+- target-size exception and equivalent control when the 24 CSS-pixel minimum is not met;
+- focus order and any sticky-region behavior that could obscure focus.
 
 Keep annotations near the relevant component and separate normative rules from sample data.
 
@@ -159,5 +162,6 @@ For implementation, combine automated checks with manual checks:
 6. Inspect semantic structure with browser accessibility tooling.
 7. Test dynamic state announcements.
 8. Check long Japanese content and missing data.
+9. Measure applicable text, non-text, focus, and target-size criteria rather than judging them visually.
 
 Automated accessibility tooling cannot prove reading order, useful labels, focus behavior, or whether state distinctions are understandable.
