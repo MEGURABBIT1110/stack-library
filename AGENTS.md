@@ -51,6 +51,20 @@ fix(theme): preserve visible focus styles
 docs(workflow): define repository conventions
 ```
 
+### Stacked PRとVercel review
+
+Stacked PRは任意です。2つ以上のcode-bearing outcomeが依存順を持ち、各outcomeを独立してレビュー・検証・mergeできる場合だけ使用します。
+
+- 各layerに別のIssue、coherent outcome、branch、PR、parent Codex chat（parent task）を割り当てる。同じoutcome内の専門職やWaveをlayerへ分けない
+- 最下層PRは`main`、上層PRは直下layerのbranchをbaseにする
+- 実装に伴う文書更新は対応するcode layerへ同梱し、docs-only layerを作らない。独立したdocs-only変更は通常の単独PRで扱える
+- stack構築中は各PRをDraftに保ち、検証・review後にPRごとにReadyへ変更する
+- stack全体または一部の一括mergeは禁止する。常に最下層から1 PRずつmergeする
+- merge authorization、`merge_method`、authorized/frozen `expected_head_sha`はPRごとに独立して記録し、他layerから流用しない
+- 下層merge後のservice側rebase・retargetはlocal history rewriteの許可ではない。新しいbase、head、CI/checkを取得し、validation、review、handoff、Ready/merge authorizationのうち無効になった証拠だけを再実行・再取得する
+
+Vercel Preview DeploymentとVercel Agent Code Reviewは別の処理です。自動Agent reviewは無効を推奨し、code-bearing Ready PRで追加監査が必要な場合だけ`@vercel run a review`を使用します。Draft PRとdocs-only PRにAgent reviewは要求しません。Ignored Build StepをAgent reviewの停止条件として扱ってはいけません。詳細は[Development](docs/DEVELOPMENT.md#stacked-pull-request)を参照してください。
+
 ## Codex chat lifecycle
 
 Codex作業の既定単位は、`1 GitHub Issue / 1 coherent outcome / 1 parent Codex chat`です。同じIssue、branch、outcomeは、requirements、implementation、review、fix、delivery、mergeまで同じparent chatで継続します。職能ごとにuser-visible chatを作らず、必要な専門職はparent chatがbounded internal subagentとして起動し、既存のexclusive authority、Wave、handoff、publication authorization、merge authorizationに従わせます。
