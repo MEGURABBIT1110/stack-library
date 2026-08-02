@@ -162,7 +162,7 @@ refactor(books): separate normalization from queries
 
 ## Pull Request
 
-PRは`main`をbaseにします。タイトルもConventional Commits形式を推奨します。
+通常のPRとStacked PRの最下層は`main`をbaseにします。Stacked PRの上層だけは、直下のPRのbranchをbaseにします。タイトルもConventional Commits形式を推奨します。
 
 PR本文には最低限、以下を記載します。
 
@@ -179,6 +179,47 @@ PR本文には最低限、以下を記載します。
 ```txt
 Closes #12
 ```
+
+### Stacked Pull Request
+
+Stacked PRは、2つ以上の依存順を持つ変更を、小さく独立してレビュー可能なPRへ分ける必要がある場合だけ任意で使用します。各layerはcodeを含み、単独の成果としてレビュー・検証・bottom-up mergeできるcoherent outcomeでなければなりません。通常の1 PRで十分な変更へ機械的に適用しません。
+
+| 判断対象 | Stack Libraryでの扱い |
+|---|---|
+| 適用できる変更 | 2つ以上のcode-bearing outcomeがあり、上層が下層へ依存し、各outcomeを独立してレビュー・検証・mergeできる変更 |
+| layerの作業単位 | 各layerに別のGitHub Issue、coherent outcome、branch、PR、parent Codex chat（parent task）を割り当てる |
+| layerにしないもの | 同じoutcome内のrequirements、専門職、Wave、review、fix、deliveryなどの工程分割 |
+| 実装に伴う文書更新 | 対応するcode layerへ同梱し、docs-only layerを作らない |
+| 独立した文書変更 | Stacked PRを使わない通常のdocs-only Issue、branch、PRとして扱える |
+| base branch | 最下層は`main`、上層は直下layerのbranch |
+| PR状態 | stack構築中は各PRをDraftに保ち、layerごとに検証とreviewが完了したものだけ個別にReadyへ変更する |
+| merge | stack全体または複数layerの一括mergeを禁止する。常に最下層の1 PRだけを承認・mergeし、残りもbottom-upで1 PRずつ進める |
+| authorization | PRごとにDraftからReadyへのauthorization、merge authorization、`merge_method`、authorized/frozen `expected_head_sha`を独立して記録する。下層の承認を上層へ流用しない |
+
+GitHub自体はstack全体または途中までの一括mergeを提供しますが、このrepositoryでは使用しません。上位PRをmergeして下位layerも同時に取り込む操作や、中間PRをmergeして複数の下位layerを取り込む操作は、個別PRのmerge authorizationを迂回するためです。
+
+下層PRのmerge後、GitHubは残る上層branchをservice側で自動的にrebaseし、次のPRのbaseをretargetすることがあります。このservice動作は、local rebase、amend、force-push、その他のhistory rewriteを許可しません。自動更新後は次の順序で残るPRを再評価します。
+
+1. GitHub serviceから対象PRの新しいbase、head SHA、stack位置、CI/check状態を取得する。
+2. 新しいheadで、以前のvalidation、review、writer handoff、Ready authorization、merge authorization、`merge_method`、`expected_head_sha`が引き続き有効かを判定する。
+3. rebase・retargetまたは差分変化で無効になった証拠だけを再実行または再取得する。
+4. Readyまたはmerge authorizationが新しいheadへ束縛されていない場合は、再承認されるまでmergeしない。
+
+GitHub Stacked PRはpublic previewであり、仕様変更の可能性があります。運用時は[GitHub Docs: About stacked pull requests](https://docs.github.com/en/pull-requests/get-started/about-stacked-prs)と[GitHub Changelog: Stacked pull requests are now in public preview](https://github.blog/changelog/2026-07-30-stacked-pull-requests-are-now-in-public-preview/)を確認します。AI sessionとの対応例は[GitHub Blog: Stacked sessions and pull requests in the GitHub Copilot app](https://github.blog/ai-and-ml/github-copilot/stacked-sessions-and-pull-requests-in-the-github-copilot-app/)を参考情報とし、Stack Libraryのparent Codex chat規則を優先します。
+
+### Vercel Preview DeploymentとAgent Code Review
+
+Vercel Preview DeploymentとVercel Agent Code Reviewは別の処理です。Preview Deploymentはbuildとpreview環境を扱い、Agent Code ReviewはPR差分をAIで監査します。Ignored Build Stepなどでdeployment buildをskipまたはcancelする設定を、Agent reviewの停止条件として扱いません。
+
+| 対象 | 運用 |
+|---|---|
+| 自動Agent review | Vercel Agentの設定でautomatic reviewを無効にすることを推奨する |
+| code-bearing Draft PR | stackを含め、Agent reviewを要求しない |
+| code-bearing Ready PR | 追加のAI監査が必要な場合だけ、PR commentの`@vercel run a review`でon-demand reviewを起動する |
+| docs-only PR | Agent reviewを要求しない。文書の差分、リンク、用語、構造、他文書との整合を確認する |
+| Preview Deployment | Agent reviewとは独立して、projectのdeployment policyに従う |
+
+自動reviewを無効にしても、repositoryのcode review、test、CI/check、branch protection、merge authorizationは省略しません。Vercel Agent Code Reviewの設定とtriggerは[Vercel Docs: Code Review](https://vercel.com/docs/agent/pr-review)を正本とし、on-demand reviewは[Vercel Changelog: On-demand Vercel Agent code reviews](https://vercel.com/changelog/on-demand-vercel-agent-code-reviews)、Ignored Build Stepは[Vercel Project Settings](https://vercel.com/docs/project-configuration/project-settings#ignored-build-step)を参照します。
 
 ### Merge authorizationと方法
 
