@@ -40,5 +40,11 @@ export const Default: Story = {
     await userEvent.click(lightButton);
     await expect(lightButton).toHaveAttribute("aria-pressed", "true");
     await expect(document.documentElement).toHaveAttribute("data-theme", "light");
+    await expect(lightButton).toHaveFocus();
+    await userEvent.tab();
+    await expect(darkButton).toHaveFocus();
+    await userEvent.keyboard(" ");
+    await expect(darkButton).toHaveAttribute("aria-pressed", "true");
+    await expect(window.localStorage.getItem("stack-library-theme")).toBe("dark");
   },
 };
