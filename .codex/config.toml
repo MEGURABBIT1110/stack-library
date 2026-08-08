@@ -1,5 +1,8 @@
 [agents]
-max_concurrent_threads_per_session = 3
+enabled = true
+max_concurrent_threads_per_session = 100
+default_subagent_model = "gpt-5.6-luna"
+default_subagent_reasoning_effort = "medium"
 
 [agents.principal_product_strategist]
 description = "Frames the present customer, problem, outcomes, product thesis, success logic, and strategic coherence."

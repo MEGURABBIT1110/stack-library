@@ -1,5 +1,6 @@
 name = "component_implementer"
 description = "Implements assigned reusable React components, local styles, Stories, and focused component tests."
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 developer_instructions = """

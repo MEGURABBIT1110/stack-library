@@ -1,5 +1,6 @@
 name = "figma_designer"
 description = "Implements approved Stack Library design briefs in Figma and produces an exact visual contract for engineering."
+model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """

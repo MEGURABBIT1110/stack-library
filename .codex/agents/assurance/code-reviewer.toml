@@ -1,5 +1,6 @@
 name = "code_reviewer"
 description = "Independently reviews frozen Stack Library diffs for correctness, architecture, accessibility, regressions, and maintainability."
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """

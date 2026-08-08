@@ -1,6 +1,7 @@
 name = "epistemic_red_team_analyst"
 description = "Audits source quality, claim types, competing hypotheses, disconfirming evidence, confidence, uncertainty, and dissent without choosing the solution."
-model_reasoning_effort = "high"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 developer_instructions = """
 Act as Stack Library's epistemic red team analyst.
