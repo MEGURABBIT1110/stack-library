@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, within } from "storybook/test";
+import { expect } from "storybook/test";
 
 import { ScrollContextBar } from "@/components/scroll-context-bar";
 import { makeBook } from "@/stories/fixtures/books";
@@ -16,7 +16,32 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+let emitIntersection: IntersectionObserverCallback | undefined;
+
+function mockIntersectionObserver() {
+  const original = window.IntersectionObserver;
+
+  window.IntersectionObserver = class {
+    constructor(callback: IntersectionObserverCallback) {
+      emitIntersection = callback;
+    }
+
+    disconnect() {}
+    observe() {}
+    takeRecords() {
+      return [];
+    }
+    unobserve() {}
+  } as unknown as typeof IntersectionObserver;
+
+  return () => {
+    window.IntersectionObserver = original;
+    emitIntersection = undefined;
+  };
+}
+
 export const LibraryContext: Story = {
+  beforeEach: mockIntersectionObserver,
   args: {
     kind: "library",
     observeId: "scroll-context-target",
@@ -33,10 +58,28 @@ export const LibraryContext: Story = {
     const bar = canvasElement.querySelector(".scroll-context");
 
     await expect(bar).toHaveAttribute("inert");
+    emitIntersection?.([
+      {
+        boundingClientRect: { bottom: -1 } as DOMRect,
+        isIntersecting: false,
+      } as IntersectionObserverEntry,
+    ], {} as IntersectionObserver);
+    await expect(bar).toHaveClass("scroll-context--visible");
+    await expect(bar).not.toHaveAttribute("inert");
+
+    emitIntersection?.([
+      {
+        boundingClientRect: { bottom: 100 } as DOMRect,
+        isIntersecting: true,
+      } as IntersectionObserverEntry,
+    ], {} as IntersectionObserver);
+    await expect(bar).not.toHaveClass("scroll-context--visible");
+    await expect(bar).toHaveAttribute("inert");
   },
 };
 
 export const RecordContext: Story = {
+  beforeEach: mockIntersectionObserver,
   args: {
     book: makeBook(),
     kind: "record",
@@ -59,7 +102,6 @@ export const RecordContext: Story = {
     </>
   ),
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
     const bar = canvasElement.querySelector(".scroll-context");
 
     await expect(bar).toHaveAttribute("inert");
