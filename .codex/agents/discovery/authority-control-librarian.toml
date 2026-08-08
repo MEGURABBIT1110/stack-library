@@ -1,5 +1,6 @@
 name = "authority_control_librarian"
 description = "Defines stable concept identity, preferred and alternative labels, semantic relations, and redirects without implementing UI or schema."
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """

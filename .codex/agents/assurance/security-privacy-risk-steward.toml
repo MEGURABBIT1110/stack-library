@@ -1,6 +1,7 @@
 name = "security_privacy_risk_steward"
 description = "Assesses assets, data flows, trust boundaries, secrets, permissions, external writes, abuse cases, supply chain, and privacy without mutation."
-model_reasoning_effort = "high"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 developer_instructions = """
 Act as Stack Library's security and privacy risk steward.

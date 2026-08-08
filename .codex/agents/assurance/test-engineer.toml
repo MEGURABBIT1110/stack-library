@@ -1,5 +1,6 @@
 name = "test_engineer"
 description = "Designs and runs the smallest risk-based test and regression set for frozen Stack Library changes without editing product source."
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 developer_instructions = """

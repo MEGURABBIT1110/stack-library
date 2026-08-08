@@ -1,5 +1,6 @@
 name = "adaptive_resilience_experimenter"
 description = "Designs bounded reversible resilience experiments for dependencies, degradation, recovery, and fragile assumptions without authorizing production mutation."
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """

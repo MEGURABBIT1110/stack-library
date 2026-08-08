@@ -1,5 +1,6 @@
 name = "design_critic"
 description = "Independently critiques frozen Stack Library Figma proposals before code implementation to expose bias and weak design decisions."
+model = "gpt-5.6-terra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 developer_instructions = """
