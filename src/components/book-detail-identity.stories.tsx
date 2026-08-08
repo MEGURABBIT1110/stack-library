@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
+import { page } from "vitest/browser";
 
 import { BookDetailIdentity } from "@/components/book-detail-identity";
 import { makeBook } from "@/stories/fixtures/books";
@@ -39,5 +40,17 @@ export const MissingCover: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole("img", { name: /書影未登録/ })).toBeVisible();
+  },
+};
+
+export const NarrowJapaneseRecord: Story = {
+  play: async ({ canvasElement }) => {
+    await page.viewport(320, 900);
+    const canvas = within(canvasElement);
+    const identity = canvasElement.querySelector(".book-identity");
+
+    await expect(canvas.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(identity).toBeTruthy();
+    await expect(identity!.scrollWidth).toBeLessThanOrEqual(320);
   },
 };

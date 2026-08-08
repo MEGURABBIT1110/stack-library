@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect } from "storybook/test";
+import { expect, waitFor } from "storybook/test";
 
 import { ScrollContextBar } from "@/components/scroll-context-bar";
 import { makeBook } from "@/stories/fixtures/books";
@@ -64,8 +64,8 @@ export const LibraryContext: Story = {
         isIntersecting: false,
       } as IntersectionObserverEntry,
     ], {} as IntersectionObserver);
-    await expect(bar).toHaveClass("scroll-context--visible");
-    await expect(bar).not.toHaveAttribute("inert");
+    await waitFor(() => expect(bar).toHaveClass("scroll-context--visible"));
+    await waitFor(() => expect(bar).not.toHaveAttribute("inert"));
 
     emitIntersection?.([
       {
@@ -73,8 +73,8 @@ export const LibraryContext: Story = {
         isIntersecting: true,
       } as IntersectionObserverEntry,
     ], {} as IntersectionObserver);
-    await expect(bar).not.toHaveClass("scroll-context--visible");
-    await expect(bar).toHaveAttribute("inert");
+    await waitFor(() => expect(bar).not.toHaveClass("scroll-context--visible"));
+    await waitFor(() => expect(bar).toHaveAttribute("inert"));
   },
 };
 

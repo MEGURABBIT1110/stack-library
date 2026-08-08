@@ -7,19 +7,26 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "storybook": "storybook dev -p 6006"
+    "storybook": "storybook dev -p 6006",
+    "test-storybook": "vitest run --project=storybook --configLoader=runner --no-cache"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "^10.5.6",
     "@storybook/addon-docs": "^10.5.6",
+    "@storybook/addon-vitest": "^10.5.6",
     "@storybook/nextjs-vite": "^10.5.6",
     "@types/node": "^26.1.2",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
+    "@vitest/browser": "^4.1.10",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "latest",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.3.0",
+    "playwright": "^1.62.1",
     "storybook": "^10.5.6",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
   },
   "packageManager": "npm@11.18.0",
   "engines": {

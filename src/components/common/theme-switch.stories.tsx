@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
+import { cdp } from "vitest/browser";
 
 import { ThemeSwitch } from "@/components/common/theme-switch";
 
@@ -46,5 +47,26 @@ export const Default: Story = {
     await userEvent.keyboard(" ");
     await expect(darkButton).toHaveAttribute("aria-pressed", "true");
     await expect(window.localStorage.getItem("stack-library-theme")).toBe("dark");
+  },
+};
+
+export const ReducedMotion: Story = {
+  globals: {
+    theme: "light",
+  },
+  play: async ({ canvasElement }) => {
+    const client = await cdp();
+
+    try {
+      await client.send("Emulation.setEmulatedMedia", {
+        features: [{ name: "prefers-reduced-motion", value: "reduce" }],
+      });
+      const selection = canvasElement.querySelector(".theme-switch__selection");
+
+      await expect(window.matchMedia("(prefers-reduced-motion: reduce)").matches).toBe(true);
+      await expect(selection).toHaveStyle({ transitionDuration: "0.00001s" });
+    } finally {
+      await client.send("Emulation.setEmulatedMedia", { features: [] });
+    }
   },
 };
