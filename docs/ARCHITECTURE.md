@@ -79,6 +79,8 @@ Figma、React、Storybookは同じものの複製ではなく、責務の異な�
 
 Storybookは`@storybook/nextjs-vite`で導入しています。Figmaの見た目をそのままComponent propsへ変換せず、Reactの再利用単位と責務を基準にStoryを作ります。
 
+Figma・React・Storybook・検証状態の対応は、初期対象4部品を [Component Traceability Registry](./COMPONENT_TRACEABILITY.md) で管理します。
+
 Atomic Designはページの見出し名ではなく、依存方向の規則として使います。
 
 ```txt
