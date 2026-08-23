@@ -5,10 +5,9 @@ import { BookCover } from "@/components/book-cover";
 import { makeBook } from "@/stories/fixtures/books";
 
 const meta = {
-  title: "Components/BookCover",
+  title: "Components/Common/BookCover",
   component: BookCover,
   args: {
-    archiveNumber: "0420",
     book: makeBook({ coverImageUrl: undefined, title: "テスト書籍" }),
     variant: "detail",
   },

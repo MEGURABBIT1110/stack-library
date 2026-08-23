@@ -4,7 +4,6 @@ import type { CSSProperties } from "react";
 import type { Book } from "@/types/book";
 
 type BookCoverProps = {
-  archiveNumber?: string;
   book: BookCoverData;
   decorative?: boolean;
   priority?: boolean;
@@ -13,7 +12,7 @@ type BookCoverProps = {
 
 export type BookCoverData = Pick<
   Book,
-  "coverImageHeight" | "coverImageUrl" | "coverImageWidth" | "title"
+  "coverImageHeight" | "coverImageUrl" | "coverImageWidth" | "isbn" | "title"
 >;
 
 const sizesByVariant = {
@@ -75,7 +74,6 @@ function getCoverStyle(
 }
 
 export function BookCover({
-  archiveNumber = "0000",
   book,
   decorative = false,
   priority = false,
@@ -101,10 +99,10 @@ export function BookCover({
           className="book-cover__placeholder"
           role={decorative ? undefined : "img"}
         >
-          <span>ARCHIVE / {archiveNumber}</span>
+          {book.isbn && <span>ISBN {book.isbn}</span>}
           <i />
           <i />
-          <strong>STACK LIBRARY</strong>
+          <strong>Stack Library</strong>
         </div>
       )}
     </div>
