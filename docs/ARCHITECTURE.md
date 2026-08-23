@@ -31,20 +31,41 @@ src/
     books/[contentId]/page.tsx
   components/
     common/
+      book-cover.tsx
+      book-cover.stories.tsx
+      book-status.tsx
+      favorite-badge.stories.tsx
       heading.tsx
+      heading.stories.tsx
       status-badge.tsx
+      status-badge.stories.tsx
       technical-area-tags.tsx
+      technical-area-tags.stories.tsx
       theme-switch.tsx
-    app-shell.tsx
-    library-header.tsx
-    library-bank.tsx
-    book-list.tsx
-    book-shelf.tsx
-    book-shelf-section.tsx
-    book-card.tsx
-    book-cover.tsx
-    book-detail-identity.tsx
-    scroll-context-bar.tsx
+      theme-switch.stories.tsx
+    card/
+      book-card.tsx
+      book-card.stories.tsx
+    section/
+      book-detail-identity.tsx
+      book-detail-identity.stories.tsx
+      book-list.tsx
+      book-shelf-section.tsx
+      book-shelf-section.stories.tsx
+      book-text-section.tsx
+      connection-error.tsx
+      connection-error.stories.tsx
+      library-bank.tsx
+      library-bank.stories.tsx
+    layout/
+      app-shell.tsx
+      archive-footer.tsx
+      book-shelf.tsx
+      book-shelf.stories.tsx
+      library-header.tsx
+      library-header.stories.tsx
+      scroll-context-bar.tsx
+      scroll-context-bar.stories.tsx
   lib/
     microcms/client.ts
     books/queries.ts
@@ -82,7 +103,7 @@ Figma、React、Storybookは同じものの複製ではなく、責務の異な�
 
 Storybookは`@storybook/nextjs-vite`で導入しています。Figmaの見た目をそのままComponent propsへ変換せず、Reactの再利用単位と責務を基準にStoryを作ります。
 
-Figma・React・Storybook・検証状態の対応は、初期対象4部品を [Component Traceability Registry](./COMPONENT_TRACEABILITY.md) で管理します。
+本棚・書影の設計判断は [本棚・書影設計正本](./DESIGN.md) に集約し、Figma・React・Storybook・検証状態の対応は [Component Traceability Registry](./COMPONENT_TRACEABILITY.md) で管理します。台帳の初期4部品に加えて、`BookShelf`、`BookShelfSection`、`BookCard`、`BookCover`を追跡対象とします。
 
 Atomic Designはページの見出し名ではなく、依存方向の規則として使います。
 
@@ -120,6 +141,8 @@ src/components/
 - `TechnicalAreaTags`は確定済みPrimitiveであり、`components/common/technical-area-tags.tsx`を正規のimport先とする。各タグは`max-content`で内容幅に追従し、分類色を増やさず、複数時はwrapする
 - `ThemeSwitch`は確定済みPrimitiveであり、`components/common/theme-switch.tsx`を正規のimport先とする
 - `BookShelf`は何も収納していない1段分の棚枠・棚面だけを提供するLayoutであり、書籍データや見出しを持たない。`BookShelfSection`は書影一覧の行数に応じて棚本体を伸ばし、見出し・冊数・`BookCard`を組み合わせるBook ListのPatternとする
+
+本棚・書影の寸法、背景、クリック領域、PC/SP・Light/Dark、Storybook検証面の正本は [本棚・書影設計正本](./DESIGN.md) を参照します。Figmaのexact nodeが割り当てられていない状態では、現行実装にない視覚差分をArchitectureへ追加しません。
 
 Storybookのtitleは、確定したReactの責務別ディレクトリと同じ階層を使います。Atomic Design上の層名はナビゲーション階層へ重ねず、各Storyの説明とArchitectureで追跡します。
 

@@ -1,6 +1,6 @@
 # Component Traceability Registry
 
-Stack Libraryの再利用コンポーネントについて、Figma・React・Storybook・検証状態を追跡する台帳です。対象はIssue #15で確定した4部品から開始します。
+Stack Libraryの再利用コンポーネントについて、Figma・React・Storybook・検証状態を追跡する台帳です。初期4部品に加えて、本棚・書影設計で確定した `BookShelf`、`BookShelfSection`、`BookCard`、`BookCover`を対象とします。
 
 ## Authority and evidence
 
@@ -20,6 +20,10 @@ Stack Libraryの再利用コンポーネントについて、Figma・React・Sto
 | Heading | 文書構造の見出しlevelと視覚scaleを分離するPrimitive | Main `663:247` / specimen `750:117` | `Heading` / `src/components/common/heading.tsx` | `Components/Common/Heading` / `Default`, `ScaleGuide` | `as`でnative headingを選び、`scale`は視覚値だけを担う。見出し階層を保持 | 長い日本語は`overflow-wrap`でreflow。Reuse。汎用見出しの正規export | PR #16 read-back・Story確認済み。fresh screenshot `PENDING` |
 | StatusBadge | 読書状態を日本語ラベルとsignalで示すPrimitive | Main `257:17` / specimen `750:148` | `StatusBadge` / `src/components/common/status-badge.tsx` | `Components/Common/StatusBadge` / `Reading`, `AllReadingStates` | 5状態、テキストラベルとsignalを併用し、色だけに依存しない | Light / Darkでsemantic colorを切替。Extend済み。状態定義は`lib/books/labels.ts`に従う | PR #16 read-back・Story確認済み。fresh screenshot `PENDING` |
 | TechnicalAreaTags | 技術分野を中立的な複数タグで示すPrimitive | Main `258:12` / specimen `750:165` | `TechnicalAreaTags` / `src/components/common/technical-area-tags.tsx` | `Components/Common/TechnicalAreaTags` / `Default`, `Wrapped`, `Empty` | `ul`と`aria-label`で分野を伝達。色分けに依存しない。空配列は非表示 | `max-content`、26px高、複数時wrap。Reuse。分類語彙は`lib/books/labels.ts`に従う | PR #16 read-back・Story確認済み。fresh screenshot `PENDING` |
+| BookShelf | 1段分の空の棚本体を提供するLayout | not assigned / not assigned | `BookShelf` / `src/components/layout/book-shelf.tsx` | `Components/Layout/BookShelf` / `Default` | データ、見出し、リンクを持たない。空でも1行分の棚面を提供 | Desktop 225px、SP 168px。テーマごとの背景は現行実装に従う | Figma exact node / fresh screenshot `PENDING` |
+| BookShelfSection | 見出し・冊数・棚行・書影一覧を組み合わせるPattern | not assigned / not assigned | `BookShelfSection` / `src/components/section/book-shelf-section.tsx` | `Components/Section/BookShelfSection` / `Default`, `LongJapaneseTitles` | `aria-labelledby`、冊数表示、書影一覧の意味付け。SPでも同じDOM構造 | Desktop 6冊/行、SP 3冊/行。登録冊数に応じて行数を表示 | Figma exact node / fresh screenshot `PENDING` |
+| BookCard | 書影だけを詳細へ結ぶCard / Composite | not assigned / not assigned | `BookCard` / `src/components/card/book-card.tsx` | `Components/Card/BookCard` / `CoverAvailable`, `CoverUnavailable`, `Hover`, `LongJapaneseTitle` | リンクのaccessible nameに書名を含める。PCのみ書名tooltip。クリックで移動しない | Desktop 110×170px・下端余白38px、SP 82×135px・下端余白25px。cell全体はリンクにしない | Figma exact node / fresh screenshot `PENDING` |
+| BookCover | 固有比率を維持する書影表示と代替表示 | not assigned / not assigned | `BookCover` / `src/components/common/book-cover.tsx` | `Components/Common/BookCover` / `Placeholder`, `DecorativePlaceholder` | `decorative`を受け、一覧ではBookCardのaccessible nameへ責務を委譲。画像未取得時も代替表示 | shelf最大枠 Desktop 110×170px、SP 82×135px。追加情報や浮遊表現なし | Figma exact node / fresh screenshot `PENDING` |
 
 ### Figma evidence fields
 
@@ -52,5 +56,5 @@ These fields must be replaced only by a fresh read-back from the assigned Figma 
 ## Known gaps
 
 - 現行Figmaのfresh screenshotと構造read-backは、Figma作業保留のため未取得。
-- この台帳はIssue #15の4部品を初期範囲とし、Book Cardや画面Patternは別Issueで追加する。
+- 本棚・書影の設計判断、寸法、Storybook検証面は [本棚・書影設計正本](./DESIGN.md) を参照する。Figmaのexact node assignmentがない4部品は、現在のFigma構造を推測せず `PENDING` のまま保持する。
 - Figma nodeの移転・削除が判明した場合は、旧IDを再利用せず、新しいexact assignmentを受けてから更新する。

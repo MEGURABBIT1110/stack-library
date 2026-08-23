@@ -20,6 +20,8 @@ Resolve decisions in this order:
 
 Treat older proposals and unlinked Figma frames as history. Treat implementation as evidence, not authority to preserve a defect.
 
+For the Book List shelf and covers, the user-confirmed shelf contract and [DESIGN.md](../../../docs/DESIGN.md) are project truth. Do not re-infer or redesign that contract from generic taste; keep its exact measurements, assets, and viewport rules in `DESIGN.md`.
+
 When the Issue and its linked Figma target conflict, stop. Report the exact conflict and request resolution from the Issue owner; do not invent a compromise or silently choose one.
 
 Stay inside the frozen Issue. Correct a nearby defect only when required to satisfy acceptance criteria or prevent a direct regression. Record broader findings for separate scope.
@@ -59,6 +61,15 @@ Before designing, state a compact brief:
 - generic patterns to reject.
 
 Treat a technical book as a knowledge node, not an e-commerce product. Treat metrics as evidence, not decoration. Use direct, natural Japanese labels; reserve English for the product name and established technical terms.
+
+For the confirmed Book List shelf, treat the shelf surface as functional spatial containment for covers, not decorative nostalgia. Rejecting Booklog-like imitation does not authorize removing or redesigning the accepted shelf surface.
+
+Preserve these component responsibilities; defer their exact values to `DESIGN.md`:
+
+- `BookShelf` provides an empty, one-row shelf body that contains children but no data, heading, or links.
+- `BookShelfSection` composes the heading, count, shelf rows, and cards, and derives row count from the registered books.
+- `BookCard` is a cover-sized link to the detail view; it exposes a title-only tooltip on desktop hover and keyboard focus, not on mobile.
+- `BookCover` renders an available or unavailable cover at its intrinsic ratio within the semantic maximum frame.
 
 Define the data contract before polishing numeric or status UI. Preserve distinct meanings for zero, missing, unknown, unavailable, error, and not applicable.
 
