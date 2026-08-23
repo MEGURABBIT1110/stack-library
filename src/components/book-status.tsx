@@ -2,12 +2,7 @@ import { StatusBadge } from "@/components/common/status-badge";
 import type { Book } from "@/types/book";
 
 export function FavoriteBadge() {
-  return (
-    <span className="favorite-badge">
-      <span aria-hidden="true">★</span>
-      お気に入り
-    </span>
-  );
+  return <span className="favorite-badge">お気に入り</span>;
 }
 
 export function BookStatusLine({ book }: { book: Book }) {

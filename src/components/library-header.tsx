@@ -35,7 +35,7 @@ export function LibraryHeader({
                 aria-current={currentPage === "bank" ? "page" : undefined}
                 href="/bank"
               >
-                Library Bank
+                価格台帳
               </Link>
             </nav>
             <ThemeSwitch />

@@ -9,28 +9,25 @@ type CatalogItem = { label: string; value: string };
 
 function getCatalogItems(book: Book): CatalogItem[] {
   return [
-    book.publisher && { label: "PUBLISHER", value: book.publisher },
+    book.publisher && { label: "出版社", value: book.publisher },
     book.publishedDate && {
-      label: "PUBLISHED",
+      label: "刊行日",
       value: formatDate(book.publishedDate),
     },
     book.pageCount !== undefined && {
-      label: "PAGES",
-      value: `${book.pageCount} pages`,
+      label: "ページ数",
+      value: `${book.pageCount}ページ`,
     },
-    book.edition !== undefined && {
-      label: "EDITION",
-      value: String(book.edition),
-    },
+    book.edition !== undefined && { label: "版", value: `${book.edition}版` },
     book.isbn && { label: "ISBN", value: book.isbn },
     book.languages.length > 0 && {
-      label: "LANGUAGE",
+      label: "言語",
       value: book.languages.join("、"),
     },
-    book.level && { label: "LEVEL", value: LEVEL_LABELS[book.level] },
+    book.level && { label: "難易度", value: LEVEL_LABELS[book.level] },
     book.rating !== undefined && {
-      label: "RATING",
-      value: `${book.rating.toFixed(1)} / 5`,
+      label: "評価",
+      value: `${book.rating.toFixed(1)} / 5点`,
     },
     {
       label: "登録価格（税込）",
@@ -40,10 +37,8 @@ function getCatalogItems(book: Book): CatalogItem[] {
 }
 
 export function BookDetailIdentity({
-  archiveNumber,
   book,
 }: {
-  archiveNumber: string;
   book: Book;
 }) {
   const catalogItems = getCatalogItems(book);
@@ -51,9 +46,8 @@ export function BookDetailIdentity({
   return (
     <section aria-labelledby="book-record-title" className="book-identity">
       <div className="book-identity__profile">
-        <BookCover archiveNumber={archiveNumber} book={book} priority variant="detail" />
+        <BookCover book={book} priority variant="detail" />
         <div className="book-identity__primary">
-          <p className="section-code">ARCHIVE ENTRY / {archiveNumber}</p>
           <h1 id="book-record-title">{book.title}</h1>
           {book.subtitle && <p className="book-identity__subtitle">{book.subtitle}</p>}
           <p className="book-identity__authors">
@@ -63,10 +57,10 @@ export function BookDetailIdentity({
         <div className="book-identity__secondary">
           <BookStatusLine book={book} />
           <TechnicalAreaTags areas={book.technicalAreas} />
-          <div className="book-identity__archive-meta">
-            <span>REGISTERED / {formatDate(book.createdAt)}</span>
+          <div className="book-identity__meta">
+            <span>登録日：{formatDate(book.createdAt)}</span>
             {book.keywords.length > 0 && (
-              <span>KEYWORDS / {book.keywords.join("　")}</span>
+              <span>キーワード：{book.keywords.join("　")}</span>
             )}
           </div>
         </div>
@@ -74,7 +68,7 @@ export function BookDetailIdentity({
 
       {catalogItems.length > 0 && (
         <div className="catalog-record">
-          <h2 className="section-code">CATALOG / BIBLIOGRAPHIC RECORD</h2>
+          <h2 className="catalog-record__heading">書誌情報</h2>
           <dl>
             {catalogItems.map((item) => (
               <div className="catalog-record__field" key={item.label}>

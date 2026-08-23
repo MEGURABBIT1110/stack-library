@@ -14,6 +14,7 @@ type ContextBook = Pick<
   | "coverImageHeight"
   | "coverImageUrl"
   | "coverImageWidth"
+  | "isbn"
   | "readingStatus"
   | "title"
 >;

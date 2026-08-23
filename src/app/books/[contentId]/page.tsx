@@ -7,8 +7,7 @@ import { BookTextSection } from "@/components/book-text-section";
 import { ConnectionError } from "@/components/connection-error";
 import { LibraryHeader } from "@/components/library-header";
 import { ScrollContextBar } from "@/components/scroll-context-bar";
-import { formatArchiveNumber } from "@/lib/books/labels";
-import { getBook, getBooks } from "@/lib/books/queries";
+import { getBook } from "@/lib/books/queries";
 
 type BookDetailPageProps = { params: Promise<{ contentId: string }> };
 
@@ -20,8 +19,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
 
   try {
     const book = await getBook(contentId);
-    const books = await getBooks().catch(() => undefined);
-    result = { book, books };
+    result = { book };
   } catch (error) {
     if (typeof error === "object" && error !== null && "status" in error && error.status === 404) {
       notFound();
@@ -39,14 +37,13 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
       </AppShell>
     );
   }
-  const { book, books } = result;
-  const archiveIndex = books?.findIndex((item) => item.contentId === book.contentId) ?? -1;
-  const archiveNumber = archiveIndex >= 0 ? formatArchiveNumber(archiveIndex) : "----";
+  const { book } = result;
   const contextBook = {
     authors: book.authors,
     coverImageHeight: book.coverImageHeight,
     coverImageUrl: book.coverImageUrl,
     coverImageWidth: book.coverImageWidth,
+    isbn: book.isbn,
     readingStatus: book.readingStatus,
     title: book.title,
   };
@@ -69,10 +66,9 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
           蔵書一覧へ
         </Link>
       </nav>
-      <BookDetailIdentity archiveNumber={archiveNumber} book={book} />
+      <BookDetailIdentity book={book} />
       {book.summary && (
         <BookTextSection
-          code="ABSTRACT / SUMMARY"
           heading="概要"
           text={book.summary}
           variant="summary"
@@ -82,7 +78,6 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
         <div className="book-notes">
           {book.readingPurpose && (
             <BookTextSection
-              code="READING / PURPOSE"
               heading="この本を読む目的"
               text={book.readingPurpose}
               variant="note"
@@ -90,7 +85,6 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
           )}
           {book.usageMemo && (
             <BookTextSection
-              code="PRACTICE / REFERENCE"
               heading="実務での参照メモ"
               text={book.usageMemo}
               variant="note"

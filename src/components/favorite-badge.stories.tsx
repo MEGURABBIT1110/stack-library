@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { FavoriteBadge } from "@/components/book-status";
 
 const meta = {
-  title: "Components/Primitives/FavoriteBadge",
+  title: "Components/Common/FavoriteBadge",
   component: FavoriteBadge,
   parameters: {
     docs: {

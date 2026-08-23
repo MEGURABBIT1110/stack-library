@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { LibraryHeader } from "@/components/library-header";
 
 const meta = {
-  title: "Patterns/LibraryHeader",
+  title: "Components/Layout/LibraryHeader",
   component: LibraryHeader,
   args: {
     currentPage: "library",

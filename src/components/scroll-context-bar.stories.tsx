@@ -5,7 +5,7 @@ import { ScrollContextBar } from "@/components/scroll-context-bar";
 import { makeBook } from "@/stories/fixtures/books";
 
 const meta = {
-  title: "Components/ScrollContextBar",
+  title: "Components/Layout/ScrollContextBar",
   component: ScrollContextBar,
   parameters: {
     layout: "fullscreen",

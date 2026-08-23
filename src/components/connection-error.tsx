@@ -7,7 +7,6 @@ export function ConnectionError({ error }: ConnectionErrorProps) {
 
   return (
     <section className="message-state" role="alert">
-      <p className="section-code">CONNECTION / ERROR</p>
       <h1>蔵書データを読み込めませんでした</h1>
       {isConfigurationError ? (
         <>

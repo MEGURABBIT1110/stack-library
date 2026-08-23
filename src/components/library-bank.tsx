@@ -33,8 +33,7 @@ export function LibraryBank({
   if (error) {
     return (
       <section className="bank-message" role="alert">
-        <p className="section-code">LIBRARY BANK / CONNECTION ERROR</p>
-        <h1>Library Bankを読み込めませんでした</h1>
+        <h1>価格台帳を読み込めませんでした</h1>
         <p>
           microCMSとの通信に失敗したため、登録価格の集計結果を表示できません。
         </p>
@@ -52,23 +51,14 @@ export function LibraryBank({
   return (
     <div className="library-bank">
       <header className="bank-introduction">
-        <p className="section-code">
-          <span className="bank-introduction__desktop-code">
-            LIBRARY BANK / REGISTERED PRICE LEDGER
-          </span>
-          <span className="bank-introduction__mobile-code">
-            LIBRARY BANK / PRICE LEDGER
-          </span>
-        </p>
-        <h1>蔵書価格の記録</h1>
+        <h1>価格台帳</h1>
       </header>
 
       {!hasBooks ? (
         <section className="bank-message" aria-labelledby="bank-empty-title">
-          <p className="section-code">LEDGER / EMPTY</p>
           <h2 id="bank-empty-title">集計する蔵書がありません</h2>
           <p>
-            microCMSに技術書を登録すると、ここに価格台帳が表示されます。
+            技術書を登録すると、ここに価格台帳が表示されます。
           </p>
         </section>
       ) : (

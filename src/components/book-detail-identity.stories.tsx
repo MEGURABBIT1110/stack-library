@@ -6,10 +6,9 @@ import { BookDetailIdentity } from "@/components/book-detail-identity";
 import { makeBook } from "@/stories/fixtures/books";
 
 const meta = {
-  title: "Components/BookDetailIdentity",
+  title: "Components/Section/BookDetailIdentity",
   component: BookDetailIdentity,
   args: {
-    archiveNumber: "0420",
     book: makeBook({
       coverImageUrl: undefined,
       title: "長い日本語とTypeScriptを含む技術書タイトルの判読性を確認する記録",

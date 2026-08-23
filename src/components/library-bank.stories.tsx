@@ -5,7 +5,7 @@ import { libraryBooks, makeBook } from "@/stories/fixtures/books";
 import type { Book } from "@/types/book";
 
 const meta = {
-  title: "Patterns/LibraryBank",
+  title: "Components/Section/LibraryBank",
   component: LibraryBank,
   args: { books: libraryBooks },
   decorators: [

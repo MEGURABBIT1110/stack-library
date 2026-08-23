@@ -5,7 +5,7 @@ import { ConnectionError } from "@/components/connection-error";
 import { MicroCMSConfigurationError } from "@/lib/microcms/client";
 
 const meta = {
-  title: "Components/ConnectionError",
+  title: "Components/Section/ConnectionError",
   component: ConnectionError,
   args: {
     error: new Error("storybook connection failure"),

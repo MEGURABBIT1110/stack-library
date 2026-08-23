@@ -10,7 +10,6 @@ export default function NotFound() {
       variant="message"
     >
       <section className="message-state">
-        <p className="section-code">ARCHIVE / NOT FOUND</p>
         <h1>技術書が見つかりません</h1>
         <p>指定された蔵書は存在しないか、公開されていません。</p>
         <Link className="text-link" href="/">
