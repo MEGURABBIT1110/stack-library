@@ -1,5 +1,5 @@
-import { BookCover } from "@/components/book-cover";
-import { BookStatusLine } from "@/components/book-status";
+import { BookCover } from "@/components/common/book-cover";
+import { BookStatusLine } from "@/components/common/book-status";
 import { TechnicalAreaTags } from "@/components/common/technical-area-tags";
 import { formatRegisteredPrice } from "@/lib/books/bank";
 import { formatDate, LEVEL_LABELS } from "@/lib/books/labels";

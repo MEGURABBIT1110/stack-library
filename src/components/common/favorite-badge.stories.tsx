@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { FavoriteBadge } from "@/components/book-status";
+import { FavoriteBadge } from "@/components/common/book-status";
 
 const meta = {
   title: "Components/Common/FavoriteBadge",

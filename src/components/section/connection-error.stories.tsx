@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
 
-import { ConnectionError } from "@/components/connection-error";
+import { ConnectionError } from "@/components/section/connection-error";
 import { MicroCMSConfigurationError } from "@/lib/microcms/client";
 
 const meta = {

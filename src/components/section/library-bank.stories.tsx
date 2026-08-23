@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { LibraryBank } from "@/components/library-bank";
+import { LibraryBank } from "@/components/section/library-bank";
 import { libraryBooks, makeBook } from "@/stories/fixtures/books";
 import type { Book } from "@/types/book";
 

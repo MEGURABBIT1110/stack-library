@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { ArchiveFooter } from "@/components/archive-footer";
+import { ArchiveFooter } from "@/components/layout/archive-footer";
 
 type AppShellProps = {
   children: ReactNode;

@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { AppShell } from "@/components/app-shell";
-import { BookDetailIdentity } from "@/components/book-detail-identity";
-import { BookTextSection } from "@/components/book-text-section";
-import { ConnectionError } from "@/components/connection-error";
-import { LibraryHeader } from "@/components/library-header";
-import { ScrollContextBar } from "@/components/scroll-context-bar";
+import { AppShell } from "@/components/layout/app-shell";
+import { BookDetailIdentity } from "@/components/section/book-detail-identity";
+import { BookTextSection } from "@/components/section/book-text-section";
+import { ConnectionError } from "@/components/section/connection-error";
+import { LibraryHeader } from "@/components/layout/library-header";
+import { ScrollContextBar } from "@/components/layout/scroll-context-bar";
 import { getBook } from "@/lib/books/queries";
 
 type BookDetailPageProps = { params: Promise<{ contentId: string }> };

@@ -1,4 +1,4 @@
-import { BookShelfSection } from "@/components/book-shelf-section";
+import { BookShelfSection } from "@/components/section/book-shelf-section";
 import type { Book } from "@/types/book";
 
 export function BookList({ books }: { books: Book[] }) {

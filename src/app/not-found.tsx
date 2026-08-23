@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import { AppShell } from "@/components/app-shell";
-import { LibraryHeader } from "@/components/library-header";
+import { AppShell } from "@/components/layout/app-shell";
+import { LibraryHeader } from "@/components/layout/library-header";
 
 export default function NotFound() {
   return (

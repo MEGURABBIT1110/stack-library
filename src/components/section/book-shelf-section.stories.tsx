@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { BookShelfSection } from "@/components/book-shelf-section";
+import { BookShelfSection } from "@/components/section/book-shelf-section";
 import { libraryBooks, makeBook } from "@/stories/fixtures/books";
 
 const shelfBooks = Array.from({ length: 9 }, (_, index) => {
