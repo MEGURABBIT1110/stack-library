@@ -40,14 +40,6 @@ export const LEVEL_LABELS: Record<BookLevel, string> = {
   reference: "リファレンス",
 };
 
-export function formatArchiveNumber(index: number): string {
-  return String(index + 1).padStart(4, "0");
-}
-
-export function formatCount(value: number): string {
-  return String(value).padStart(2, "0");
-}
-
 export function formatDate(value: string): string {
   const date = new Date(value);
 

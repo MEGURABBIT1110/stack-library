@@ -168,7 +168,9 @@ Booklog、Notion、一般的なSaaSダッシュボードのコピーにはしま
 
 - [Development](./docs/DEVELOPMENT.md)
 - [Architecture](./docs/ARCHITECTURE.md)
+- [Design: 本棚・書影](./docs/DESIGN.md)
 - [Content Model](./docs/CONTENT_MODEL.md)
 - [Routing](./docs/ROUTING.md)
+- [Component Traceability Registry](./docs/COMPONENT_TRACEABILITY.md)
 
 microCMSのスキーマバックアップは [`microcms/api-books-import.json`](./microcms/api-books-import.json) にあります。

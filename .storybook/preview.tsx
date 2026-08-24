@@ -6,6 +6,24 @@ import "../src/stories/storybook.css";
 
 type Theme = "light" | "dark";
 
+const viewportOptions = {
+  desktop: {
+    name: "デスクトップ",
+    styles: { height: "1024px", width: "1280px" },
+    type: "desktop",
+  },
+  tablet: {
+    name: "タブレット",
+    styles: { height: "1112px", width: "834px" },
+    type: "tablet",
+  },
+  mobile: {
+    name: "スマートフォン",
+    styles: { height: "844px", width: "390px" },
+    type: "mobile",
+  },
+} as const;
+
 function ThemeBoundary({
   children,
   theme,
@@ -54,6 +72,7 @@ const preview: Preview = {
   },
   initialGlobals: {
     theme: "light",
+    viewport: { value: "desktop", isRotated: false },
   },
   parameters: {
     a11y: {
@@ -68,13 +87,15 @@ const preview: Preview = {
     nextjs: {
       appDirectory: true,
     },
+    viewport: {
+      options: viewportOptions,
+    },
     options: {
       storySort: {
         order: [
           "Foundations",
           "Components",
-          ["Primitives", "Composites"],
-          "Patterns",
+          ["Common", "Card", "Section", "Layout"],
         ],
       },
     },

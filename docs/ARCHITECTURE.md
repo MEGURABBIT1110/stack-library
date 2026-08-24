@@ -31,17 +31,41 @@ src/
     books/[contentId]/page.tsx
   components/
     common/
+      book-cover.tsx
+      book-cover.stories.tsx
+      book-status.tsx
+      favorite-badge.stories.tsx
       heading.tsx
+      heading.stories.tsx
       status-badge.tsx
+      status-badge.stories.tsx
       technical-area-tags.tsx
+      technical-area-tags.stories.tsx
       theme-switch.tsx
-    app-shell.tsx
-    library-header.tsx
-    library-bank.tsx
-    book-list.tsx
-    book-card.tsx
-    book-detail-identity.tsx
-    scroll-context-bar.tsx
+      theme-switch.stories.tsx
+    card/
+      book-card.tsx
+      book-card.stories.tsx
+    section/
+      book-detail-identity.tsx
+      book-detail-identity.stories.tsx
+      book-list.tsx
+      book-shelf-section.tsx
+      book-shelf-section.stories.tsx
+      book-text-section.tsx
+      connection-error.tsx
+      connection-error.stories.tsx
+      library-bank.tsx
+      library-bank.stories.tsx
+    layout/
+      app-shell.tsx
+      archive-footer.tsx
+      book-shelf.tsx
+      book-shelf.stories.tsx
+      library-header.tsx
+      library-header.stories.tsx
+      scroll-context-bar.tsx
+      scroll-context-bar.stories.tsx
   lib/
     microcms/client.ts
     books/queries.ts
@@ -79,7 +103,7 @@ Figma、React、Storybookは同じものの複製ではなく、責務の異な�
 
 Storybookは`@storybook/nextjs-vite`で導入しています。Figmaの見た目をそのままComponent propsへ変換せず、Reactの再利用単位と責務を基準にStoryを作ります。
 
-Figma・React・Storybook・検証状態の対応は、初期対象4部品を [Component Traceability Registry](./COMPONENT_TRACEABILITY.md) で管理します。
+本棚・書影の設計判断は [本棚・書影設計正本](./DESIGN.md) に集約し、Figma・React・Storybook・検証状態の対応は [Component Traceability Registry](./COMPONENT_TRACEABILITY.md) で管理します。台帳の初期4部品に加えて、`BookShelf`、`BookShelfSection`、`BookCard`、`BookCover`を追跡対象とします。
 
 Atomic Designはページの見出し名ではなく、依存方向の規則として使います。
 
@@ -94,7 +118,7 @@ Foundations
 - Foundations: 色、文字、余白、罫線など。React Componentとしてexportしない
 - Primitives: Button、Link、Statusなど、単独責務の小さな部品
 - Composites: Book Cardなど、Primitiveを組み合わせた再利用部品
-- Patterns: Header、Context Bar、Book Listなど、ページ領域として振る舞う構造
+- Patterns: Header、Context Bar、Book List、Book Shelfなど、ページ領域として振る舞う構造
 - Screens: App Router上の実ページ。部品ライブラリへ混ぜず、統合例として扱う
 
 下位層が上位層へ依存しないようにします。粒度だけを理由にComponentを分割せず、独立した責務、再利用性、検証価値がある場合に抽出します。
@@ -116,6 +140,9 @@ src/components/
 - `StatusBadge`は確定済みPrimitiveであり、`components/common/status-badge.tsx`を正規のimport先とする。読書状態は日本語ラベルとsignalを併用し、色だけに依存しない
 - `TechnicalAreaTags`は確定済みPrimitiveであり、`components/common/technical-area-tags.tsx`を正規のimport先とする。各タグは`max-content`で内容幅に追従し、分類色を増やさず、複数時はwrapする
 - `ThemeSwitch`は確定済みPrimitiveであり、`components/common/theme-switch.tsx`を正規のimport先とする
+- `BookShelf`は何も収納していない1段分の棚枠・棚面だけを提供するLayoutであり、書籍データや見出しを持たない。`BookShelfSection`は書影一覧の行数に応じて棚本体を伸ばし、見出し・冊数・`BookCard`を組み合わせるBook ListのPatternとする
+
+本棚・書影の寸法、背景、クリック領域、PC/SP・Light/Dark、Storybook検証面の正本は [本棚・書影設計正本](./DESIGN.md) を参照します。Figmaのexact nodeが割り当てられていない状態では、現行実装にない視覚差分をArchitectureへ追加しません。
 
 Storybookのtitleは、確定したReactの責務別ディレクトリと同じ階層を使います。Atomic Design上の層名はナビゲーション階層へ重ねず、各Storyの説明とArchitectureで追跡します。
 
@@ -127,12 +154,14 @@ Components/Common/TechnicalAreaTags
 Components/Common/ThemeSwitch
 Components/Card/BookCard
 Components/Section/SectionName
+Components/Section/BookShelfSection
+Components/Layout/BookShelf
 Components/Layout/LayoutName
 ```
 
 - 未整理のStoryは、対象コンポーネントの責務と契約が確定した時点で責務別階層へ移す
 - Light / DarkはStorybook globalとして切り替える
-- Desktop / Mobileはviewportまたはcontainerで検証する
+- Desktop / MobileはStorybook標準のViewport機能またはcontainerで検証する。Viewportは日本語のデスクトップ、タブレット、スマートフォンを用意し、別パッケージのViewport addonは追加しない
 - Responsive専用ComponentやTheme専用variantを作らない
 - Figma名、React export名、Storybook titleの対応を追跡できるようにする
 - 画面固有のfixtureと公開Componentを分離する
@@ -145,7 +174,7 @@ Components/Layout/LayoutName
 
 `/` はサーバー側で microCMS から `books` を取得します。
 
-蔵書は状態別の棚へ分割せず、書名・著者・技術領域を優先する単一のカタログとして表示します。読書状態はBook Card内の補助メタデータです。将来の絞り込みは `/` の検索パラメータとして扱い、状態別の独立ページは作りません。
+蔵書は状態別の棚へ分割せず、実際の棚壁紙に書影だけを並べる単一のカタログとして表示します。`BookShelf`は棚枠・棚面・書影を置く行だけを担当し、`BookShelfSection`が見出し・冊数・`BookCard`を組み合わせます。`BookCard`は詳細へのリンク、`BookCover`は書影の表示を担当します。書影を選ぶとBook Detailへ遷移し、書誌情報・読書状態・技術領域などを確認します。将来の絞り込みは `/` の検索パラメータとして扱い、状態別の独立ページは作りません。
 
 ### Book Detail
 
