@@ -181,9 +181,9 @@ UIは日本語ファーストで設計してください。
 
 ### Internal development organization
 
-外部の親エージェントを開発リードとする31職能（`development_lead`と30専門職）の仮想開発組織を想定します。31職能を常時稼働させるのではなく、登録職能と同時稼働数を区別し、4つの同時実行枠は親と最大3担当で使用します。完了した担当は枠を解放し、次工程の担当へ交代します。
+外部の親エージェントを開発リードとする32 registered specialists（既存30 canonical roleとtask-scoped operational role 2職能）の仮想開発組織を想定します。32職能を常時稼働させるのではなく、登録職能と同時稼働数を区別し、4つの同時実行枠は親と最大3担当で使用します。完了した担当は枠を解放し、次工程の担当へ交代します。
 
-30専門職は`.codex/config.toml`から明示登録し、`.codex/agents/<group>/`へ配置します。group directoryは人間が上流・下流を理解するための分類であり、指揮命令、起動順、権限、承認を自動的には強制しません。実際の起動と依存順はteam packet、権限とhandoffは各TOMLの`ORGANIZATION CONTRACT`に従います。各groupの目的、全職能のActivation Gate、上流入力、下流handoffは[Agent Organization](docs/AGENT_ORGANIZATION.md)を参照してください。
+既存30 canonical roleと2つのtask-scoped operational roleは`.codex/config.toml`から明示登録し、`.codex/agents/<group>/`へ配置します。group directoryは人間が上流・下流を理解するための分類であり、指揮命令、起動順、権限、承認を自動的には強制しません。実際の起動と依存順はteam packet、権限とhandoffは各TOMLの`ORGANIZATION CONTRACT`に従います。各groupの目的、全職能のActivation Gate、上流入力、下流handoffは[Agent Organization](docs/AGENT_ORGANIZATION.md)を参照してください。
 
 | Group | Specialists | Responsibility |
 |---|---|---|
@@ -196,8 +196,11 @@ UIは日本語ファーストで設計してください。
 | `build` | `skill_writer`, `documentation_writer`, `component_implementer`, `application_implementer`, `data_implementer` | exact pathを割り当てられたtracked repository実装 |
 | `assurance` | `code_reviewer`, `test_engineer`, `debugger`, `figma_design_qa`, `epistemic_red_team_analyst`, `human_factors_error_specialist`, `security_privacy_risk_steward` | code/test/debug/Figma parity、証拠品質、human error、security/privacyの独立監査 |
 | `delivery` | `release_manager` | authorized pathのstage、commit、push、Draft PR、remote整合、merge handoff |
+| `operations` | `microcms_operator`, `microcms_observer` | 公式microCMS MCPの`books` APIに対する承認済みone-shot実行と、read-only監視。repository、Issue、Figma、Git、PR、permissionは変更しない |
 
-5つの`apex`職能は対等な独立視点であり、常設の承認会議でも互いの代役でもありません。該当するActivation Gateを満たす職能だけを起動し、見解の衝突は多数決で解消せず、根拠とともに`development_lead`へ返します。新設された12職能はすべてread-only advisory roleであり、gate外では`NOT_REQUIRED`を返し、repository、Issue、Figma、Git、PR、permission、external serviceのmutation authorityを持ちません。
+5つの`apex`職能は対等な独立視点であり、常設の承認会議でも互いの代役でもありません。該当するActivation Gateを満たす職能だけを起動し、見解の衝突は多数決で解消せず、根拠とともに`development_lead`へ返します。既存30 canonical roleのうち新設された12職能はread-only advisory roleであり、gate外では`NOT_REQUIRED`を返します。operationsの2職能は別のtask-scoped operational roleで、microCMS外部操作以外のmutation authorityを持ちません。
+
+operationsの2職能は、公式MCP endpoint `https://mcp.microcms.io/mcp/meguru-stack-library`を使います。HobbyプランのAPIキーは1本だけで、host processが`MICROCMS_API_KEY`を秘密として供給します。`.env.local`の自動ロードを前提にせず、キー値はshell、model context、repository、Issue、ログ、handoffへ記録しません。app runtimeとdevelopment MCPは分離し、同一キーは権限分離の代替にしません。operatorはclient-side allowlistで`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`だけを`books` APIに対して使い、observerは前2つだけを使います。observerの全mutation/未知toolはfail-closedで拒否し、変更要求はoperatorまたは`development_lead`へ返します。operatorのmutationは同一serviceの`microcms_get_content` read-backが期待/観測状態のMATCHとなった場合だけ`mutation_verified=VERIFIED`です。
 
 開発リードは作業開始時にteam packetを作り、各担当へ同じ前提を渡します。
 
@@ -232,7 +235,9 @@ required live mutationに使うMCP-backed toolがunavailableまたはundiscovera
 
 live mutationは、同じserviceのMCP-backed readを使い、変更したexact targetの期待状態をread-backで確認した場合だけ完了と報告できます。read-back entryには、実際に使ったfully qualified read-back tool identifier、exact target ID/URL、revisionまたはretrieval timestamp、expected state、observed state、`comparison result=MATCH | MISMATCH`を記録します。`comparison result=MATCH`の場合だけ`mutation_verified=VERIFIED`にできます。read-backできない、権限がない、または期待状態と一致しない場合は`mutation_verified=UNVERIFIED`として、該当職能の契約に従い`BLOCKED`または未検証を報告します。CLI、browser、直接API、画面表示、過去のhandoffだけではMCP invocationまたはmutation verificationの証拠になりません。
 
-同じFigma node、同じtracked repository file、同じIssue specificationを複数担当へ同時に割り当てません。Figmaを編集するのはexact nodeを割り当てられた`figma_designer`、tracked repository fileの内容を編集するのはteam packetでexact pathを割り当てられた5種のwriter、Issueのtitle、body、Acceptance Criteria、priority、decision history、labelを編集するのは明示的にauthorizedされた`product_owner`だけです。`release_manager`はpublication authorization後に承認済みpathのGit index/history、push、PR metadataだけを変更でき、working-tree fileやIssueは編集しません。5種のwriter、`figma_designer`、`product_owner`、`release_manager`以外の専門職はadvisory、review、verification、diagnosisだけを行い、tracked file、Issue、Figma、Git、PR、permission、external serviceを変更しません。検証・診断のtask固有成果物はOSの一時ディレクトリへ置き、repositoryへ残しません。必須コマンドが更新する既存ignore対象cacheは許容します。修正はfindingごとに元のwriterへ戻します。
+同じFigma node、同じtracked repository file、同じIssue specificationを複数担当へ同時に割り当てません。Figmaを編集するのはexact nodeを割り当てられた`figma_designer`、tracked repository fileの内容を編集するのはteam packetでexact pathを割り当てられた5種のwriter、Issueのtitle、body、Acceptance Criteria、priority、decision history、labelを編集するのは明示的にauthorizedされた`product_owner`だけです。`release_manager`はpublication authorization後に承認済みpathのGit index/history、push、PR metadataだけを変更でき、working-tree fileやIssueは編集しません。既存30 canonical roleを含むこれらの職能以外はadvisory、review、verification、diagnosisだけを行い、tracked file、Issue、Figma、Git、PR、permission、external serviceを変更しません。検証・診断のtask固有成果物はOSの一時ディレクトリへ置き、repositoryへ残しません。必須コマンドが更新する既存ignore対象cacheは許容します。修正はfindingごとに元のwriterへ戻します。
+
+例外はtask-scoped operations roleの公式microCMS MCP操作だけです。`microcms_observer`はread-only advisory/verificationでありexternal mutation権限を持ちません。`microcms_operator`だけは、team packetにexact target、allowed tool、payload digest、expected state、explicit mutation authorizationが明示されている場合に限り、公式MCP endpointの`books` APIへ`microcms_create_content_published`を一回だけ実行できます。この権限は同endpointの`books` APIに対するone-shot操作に限られ、Issue、Figma、Git、PR、permission、別のexternal service、bulk、draft、update、delete、status、reservation、media、Management、memberは変更できません。同じserviceのread-backがexpected/observed stateの`MATCH`になるまでmutationは検証済みとせず、未検証の場合は`BLOCKED`または`UNVERIFIED`として扱います。
 
 writerの標準所有範囲は次のとおりです。実際の編集権限はteam packetのexact path manifestでさらに狭めます。
 

@@ -224,12 +224,18 @@ MICROCMS_API_KEY=
 
 Hobbyプランでは作成可能なAPIキーが1本のため、読み取りと登録で同じキーを使用します。
 
+開発時のmicroCMS操作は、公式MCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）を使うdevelopment MCP境界に分離します。app runtimeとdevelopment MCPは同じmicroCMSを参照しても実行経路を共有せず、Hobby単一キーは権限分離の代替ではありません。MCP clientが`.env.local`を自動ロードするとは限らないため、host processから`MICROCMS_API_KEY`を秘密として供給し、値をshell、model context、repository、Issue、ログ、handoffへ記録しません。
+
+task-scoped operational roleは`microcms_operator`と`microcms_observer`です。operatorはclient-side allowlistで`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`だけを`books` APIに対して使い、明示承認・exact target・payload digest・expected stateが揃うone-shot mutationに限定します。observerは`microcms_get_list`と`microcms_get_content`だけを許可し、全mutation toolと未知の追加toolをfail-closedで拒否します。既存の`data_implementer`はrepository内のdata writerであり、live microCMS operatorではありません。
+
+operatorがmutationを検証済みと扱えるのは、同じMCP serviceの`microcms_get_content`でreturned content IDをexact targetとしてread-backし、expected stateとobserved stateがMATCHした場合だけです。observerのhandoffは取得時刻またはrevision、exact target、実データ本文を複製しないsanitized read summary、異常/未確認状態、handoff先だけを含めます。失敗・不明応答・read-back不一致では後続mutationや直接API/CLI/browser fallbackを行いません。
+
 推奨権限:
 
 - デフォルト権限はすべて無効
 - `books` APIの個別権限で `GET` と `POST` のみ有効
 - `PUT`、`PATCH`、`DELETE` は対応機能を実装するまで無効
-- APIキーはServer ComponentとServer Actionからだけ利用する
+- app runtimeのAPIキーはServer ComponentとServer Actionからだけ利用する。開発時の公式MCPは別のdevelopment MCP境界として、host processからAPIキーを秘密として供給する例外であり、browser/clientへ公開しない
 
 ## バリデーション
 

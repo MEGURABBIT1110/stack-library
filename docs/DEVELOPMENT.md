@@ -312,7 +312,7 @@ Storyは`Foundations / Components / Patterns`の責務に沿って配置しま�
 
 条件を満たさなくなった場合も、すべてをやり直さず、影響する検証だけを再実行します。`git diff --check`、同じスクリーンショット取得、同じlintなどを、根拠なく途中で反復しません。
 
-ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run lint`と`npm run build`は必須ではありません。
+ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run lint`と`npm run build`は必須ではありません。Issue #54のようなdocs/config-only変更はRisk Aとし、TOML parse、agent roster、client-side allowlist、secret literal不在、diff scope、links、用語整合を優先します。ただし、これらの静的チェックは、Codex実行時のeffective tool inventory、host secret non-visibility、実際のmutation approval/read-backを証明しません。effective inventory、秘密のhost外非可視性、実mutationのapprovalとread-backは別のsecurity gateで確認します。今回のセッションではcustom role runtime inventoryの再読込とlive mutationを実施していないため、いずれも未検証として扱い、実装済みと解釈しません。アプリlint/build、UI/Figma確認は、アプリコード・画面・Figmaを変更しないことを根拠に不要とします。
 
 ## ドキュメントの責務
 

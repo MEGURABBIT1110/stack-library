@@ -123,3 +123,11 @@ config_file = "agents/assurance/security-privacy-risk-steward.toml"
 [agents.release_manager]
 description = "Publishes approved changes through authorized Git and GitHub PR operations without editing working-tree files."
 config_file = "agents/delivery/release-manager.toml"
+
+[agents.microcms_operator]
+description = "Performs explicitly authorized one-shot books API operations through the official microCMS MCP with read-back verification."
+config_file = "agents/operations/microcms-operator.toml"
+
+[agents.microcms_observer]
+description = "Reads and reports sanitized books API state through the official microCMS MCP without mutation capability."
+config_file = "agents/operations/microcms-observer.toml"
