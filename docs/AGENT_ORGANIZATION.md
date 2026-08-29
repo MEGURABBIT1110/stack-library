@@ -1,12 +1,12 @@
 # Agent Organization
 
-Stack Libraryの開発組織は、外部の親エージェント`development_lead`と、`.codex/config.toml`へ明示登録した32 registered specialists（既存30 canonical roleとtask-scoped operational role 2職能）で構成します。専門職は常設の判断能力であり、32職能を同時に起動するものではありません。1セッションの4実行枠は親1枠と専門職最大3枠で使い、Waveの完了ごとに担当を交代します。
+Stack Libraryの開発組織は、外部の親エージェント`development_lead`と、`.codex/config.toml`へ明示登録した30 canonical specialistsで構成します。専門職は常設の判断能力であり、30職能を同時に起動するものではありません。1セッションの4実行枠は親1枠と専門職最大3枠で使い、Waveの完了ごとに担当を交代します。
 
-`.codex/agents/<group>/`の9グループは、人間が責務、上流入力、下流handoffを理解するための組織図です。ファイルシステムの階層自体は、指揮命令、起動順、権限、承認、継承を強制しません。実際の登録は`.codex/config.toml`、実行制御は`development_lead`のteam packet、各職能の責務はTOML内の`ORGANIZATION CONTRACT`を正本とします。
+`.codex/agents/<group>/`の8グループは、人間が責務、上流入力、下流handoffを理解するための組織図です。ファイルシステムの階層自体は、指揮命令、起動順、権限、承認、継承を強制しません。実際の登録は`.codex/config.toml`、実行制御は`development_lead`のteam packet、各職能の責務はTOML内の`ORGANIZATION CONTRACT`を正本とします。
 
 ## Parent chat and internal specialists
 
-組織の実行単位は、`1 GitHub Issue / 1 coherent outcome / 1 parent Codex chat`です。`development_lead`であるparent chatが、同じIssue、branch、outcomeをrequirements、implementation、review、fix、delivery、mergeまで保持します。既存30 canonical roleとoperationsの2職能はbounded internal subagentであり、職能ごとのuser-visible chatではありません。Waveの交代やfindingのwriter返却も同じparent chat内で行います。
+組織の実行単位は、`1 GitHub Issue / 1 coherent outcome / 1 parent Codex chat`です。`development_lead`であるparent chatが、同じIssue、branch、outcomeをrequirements、implementation、review、fix、delivery、mergeまで保持します。既存30 canonical roleはbounded internal subagentであり、職能ごとのuser-visible chatではありません。全30 custom agent TOMLはmicroCMS serverを明示的に無効化します。live microCMS MCP操作はsubagentへ委譲せず、親の`development_lead`だけが公式リモートMCPへ直接接続します。詳細は[AGENTS.md](../AGENTS.md)を正本とします。
 
 別Issueまたは別outcomeは新しいparent chatを使います。forkはshared contextからgenuine alternativeが分岐する場合だけに限定し、role、Wave、reviewの分割には使いません。軽量なread-only question、説明、state check、reportはIssueなしで開始できますが、mutation前にIssue、outcome、branch、ownershipを確定します。merge後はparent chatをcompleteかつarchive candidateとし、通常のfollow-up changeは新しいIssueとparent chatへ分けます。
 
@@ -26,7 +26,6 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 | `build` | team packetで割り当てられたexact pathだけをtracked repositoryへ実装する | `skill_writer`, `documentation_writer`, `component_implementer`, `application_implementer`, `data_implementer` |
 | `assurance` | 凍結差分、検証、原因、視覚一致、証拠品質、ヒューマンエラー、security/privacy riskを独立監査する | `code_reviewer`, `test_engineer`, `debugger`, `figma_design_qa`, `epistemic_red_team_analyst`, `human_factors_error_specialist`, `security_privacy_risk_steward` |
 | `delivery` | 承認済み差分だけをstage、commit、pushしてDraft PRへ反映し、別途承認・記録された方法だけでmergeする | `release_manager` |
-| `operations` | 公式microCMS MCPの`books` APIに対するtask-scopedな承認済み実行とread-only監視を分離する | `microcms_operator`, `microcms_observer` |
 
 ## Five independent apex lenses
 
@@ -114,15 +113,6 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 |---|---|---|
 | `release_manager` | publication authorization後、承認済みpathのGit index/history、push、PR metadataだけを変更する。working treeとIssueは編集しない。mergeは明示的なuser承認、`development_lead`が記録した`merge_method=merge|squash|rebase`、authorized/frozen `expected_head_sha`が揃う場合だけ、その方法とSHAを明示して実行する | commit/push/PR/merge read-backを含むhandoff。方法またはSHAを推測せず、missing、ambiguous、mismatchまたはparameter省略は`BLOCKED` |
 
-### Operations
-
-| Role | Authority and activation | Contract / return |
-|---|---|---|
-| `microcms_operator` | frozen authorizationにあるmicroCMS公式MCPの`books` API one-shot操作だけを実行する。client-side allowlistはlist/content/published createの3 tool。repository、Issue、Figma、Git、PR、permissionは変更しない | 同一serviceのcontent read-backがexpected/observed `MATCH`のときだけ`mutation_verified=VERIFIED`; それ以外は`UNVERIFIED`/`BLOCKED` |
-| `microcms_observer` | 公式MCPの`books` APIをread-onlyで観測する。client-side allowlistはlist/contentの2 toolで、mutationと未知toolはfail-closed。変更要求はoperatorまたは`development_lead`へ返す | timestamp/revision、exact target、sanitized read summary、異常/未確認状態、handoff先。実データ本文は複製しない |
-
-両roleは公式endpoint `https://mcp.microcms.io/mcp/meguru-stack-library`とHobby単一APIキーを共有するが、app runtimeとdevelopment MCPは分離する。キーはhost processから`MICROCMS_API_KEY`として秘密供給し、shell/model context、repository、Issue、ログ、handoffへ露出させない。
-
 ## Activation and Wave overlay
 
 グループはWaveの固定順ではありません。`development_lead`はIssue、Acceptance Matrix、変更面、risk、各`ACTIVATION_GATE`から必要な職能だけを選びます。同一targetのownerを並列起動せず、完了した専門職を停止して枠を次へ渡します。
@@ -161,7 +151,7 @@ development_lead
 - Figma mutationは、exact file/nodeを割り当てられた`figma_designer`だけが行います。
 - tracked repository fileの内容は、ownership ledgerでexact pathを割り当てられた5 writerだけが編集します。
 - Git index/history、push、PR metadataは、publication authorization後の`release_manager`だけが変更します。status、diff、branch、stage、commit、push、local/remote ref alignmentにはlocal `git`を使い、PRなどGitHub service上の対象にはcallableなGitHub MCP-backed toolを使います。mergeには別のuser承認、`development_lead`が記録した`merge_method`、authorized/frozen `expected_head_sha`が必要です。`release_manager`は設定、UI、履歴から方法やSHAを推測せず、既存履歴をamend、local rebase、force-pushその他の方法で書き換えません。GitHub Rebase mergeは名前付きmerge方法であり、history rewriteの許可ではありません。`release_manager`はworking-tree fileやIssueを編集しません。
-- 既存30 canonical roleのうち新設された12職能はすべてread-only advisory roleであり、repository、Issue、Figma、Git、PR、permission、external serviceのmutation authorityを持ちません。これとは別のoperations roleでは、凍結されたauthorizationの範囲に限り`microcms_operator`だけが公式microCMS MCPの`books` APIをmutationできます。`microcms_observer`はread-onlyであり、operations roleもmicroCMS以外のmutation authorityを持ちません。
+- 既存30 canonical roleのうち新設された12職能はすべてread-only advisory roleであり、repository、Issue、Figma、Git、PR、permission、external serviceのmutation authorityを持ちません。live microCMS MCP操作はこの組織外の親`development_lead`がAGENTS.mdの規則に従って直接実行します。
 
 ## MCP evidence
 

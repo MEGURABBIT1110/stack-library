@@ -65,15 +65,13 @@ MICROCMS_API_KEY=your-api-key
 
 Hobbyプランでは1本のAPIキーを使用し、`books` APIに対して必要最小限の `GET` と `POST` 権限を付与します。
 
-`.env.local` はGit管理対象外です。環境変数名だけを示す `.env.example` には秘密値を記載しません。
+`.env.local` はアプリruntime用で、Git管理対象外です。環境変数名だけを示す `.env.example` には秘密値を記載しません。
 
 ### microCMS MCP
 
-microCMSの開発時操作には公式MCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）を使用します。HobbyプランのAPIキーは1本だけとし、アプリのruntimeと開発用MCP clientは別の実行境界として扱います。同じキーを使うことは権限分離の代替ではありません。
+開発時のmicroCMS操作は、親のdevelopment_leadが公式リモートMCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）へ直接接続して行います。直接認証には`MICROCMS_API_KEY`をCodex host/user environment variableとして設定する必要があり、アプリruntime用の`.env.local`だけではMCP credential sourceになりません。利用可能な親ツールは`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`だけで、後者は毎回プロンプト承認を求めます。対象は`books` APIに限ります。
 
-MCPのtask-scoped operational roleは、承認済みの登録を実行する`microcms_operator`と、読み取り・監視だけを行う`microcms_observer`です。operatorのclient-side allowlistは`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`、observerは前2つだけで、対象は`books` APIに限定します。observerにはmutation toolを許可せず、未知の追加toolもfail-closedで拒否します。
-
-MCP clientが`.env.local`を自動ロードするとは限らないため、`MICROCMS_API_KEY`はhost processから秘密として供給します。キーの値はshell、model context、repository、Issue、ログ、handoffへ露出・記録しません。operatorのlive mutationは明示承認とexact targetを必須とし、同じMCP serviceの`microcms_get_content`によるread-backが期待状態と一致した場合だけ検証済みとします。observerは実データ本文をhandoffへ複製せず、変更要求をoperatorまたはdevelopment_leadへ返します。
+APIキー、one-shot mutation、read-back検証、禁止操作、MCP evidenceの規則は[AGENTS.md](./AGENTS.md)を正本とします。キー値を表示・記録せず、ローカルMCPサーバーやCLI・ブラウザ・直接HTTPへのfallbackを行いません。
 
 ## Development
 

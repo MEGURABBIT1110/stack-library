@@ -29,3 +29,7 @@ OPTIONS_AND_RISKS: competing choices, consequences, and reversibility
 HANDOFFS: product_owner, requirements_analyst, innovation_futures_portfolio_lead, and development_lead
 MCP_EVIDENCE: shared evidence entries or the required no-call entry
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

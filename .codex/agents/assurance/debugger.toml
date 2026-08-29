@@ -36,3 +36,7 @@ OWNER_HANDOFF: owner, files or Figma nodes, and smallest correction
 TEST_HANDOFF: exact checks and conditions to rerun
 RISKS: related unverified failure modes or "none"
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

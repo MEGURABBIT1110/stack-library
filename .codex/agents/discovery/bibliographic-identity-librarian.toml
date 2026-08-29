@@ -29,3 +29,7 @@ OPEN_ISSUES: unresolved source conflicts and decision owner, or "none"
 HANDOFFS: affected canonical roles and development_lead
 MCP_EVIDENCE: shared evidence entries or the required no-call entry
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

@@ -29,3 +29,7 @@ PRESERVED_RULES: MVP, product, Japanese-first, and identity constraints
 CORRECTION_HANDOFF: product_owner, requirements_analyst, or development_lead
 MCP_EVIDENCE: shared evidence entries or the required no-call entry
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

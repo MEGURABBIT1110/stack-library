@@ -29,3 +29,7 @@ ASSUMPTIONS_AND_RISKS: uncertainties, common-mode dependencies, and capacity cos
 HANDOFFS: principal_product_strategist, product_owner, software_architect, and development_lead
 MCP_EVIDENCE: shared evidence entries or the required no-call entry
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

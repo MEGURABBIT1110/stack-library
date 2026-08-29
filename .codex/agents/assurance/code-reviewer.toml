@@ -39,3 +39,7 @@ TEST_GAPS: focused missing coverage or "none"
 QA_HANDOFF: risks and exact checks for test_engineer
 RERUN_SCOPE: files requiring re-review after correction
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

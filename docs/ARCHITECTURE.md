@@ -224,11 +224,7 @@ MICROCMS_API_KEY=
 
 Hobbyプランでは作成可能なAPIキーが1本のため、読み取りと登録で同じキーを使用します。
 
-開発時のmicroCMS操作は、公式MCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）を使うdevelopment MCP境界に分離します。app runtimeとdevelopment MCPは同じmicroCMSを参照しても実行経路を共有せず、Hobby単一キーは権限分離の代替ではありません。MCP clientが`.env.local`を自動ロードするとは限らないため、host processから`MICROCMS_API_KEY`を秘密として供給し、値をshell、model context、repository、Issue、ログ、handoffへ記録しません。
-
-task-scoped operational roleは`microcms_operator`と`microcms_observer`です。operatorはclient-side allowlistで`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`だけを`books` APIに対して使い、明示承認・exact target・payload digest・expected stateが揃うone-shot mutationに限定します。observerは`microcms_get_list`と`microcms_get_content`だけを許可し、全mutation toolと未知の追加toolをfail-closedで拒否します。既存の`data_implementer`はrepository内のdata writerであり、live microCMS operatorではありません。
-
-operatorがmutationを検証済みと扱えるのは、同じMCP serviceの`microcms_get_content`でreturned content IDをexact targetとしてread-backし、expected stateとobserved stateがMATCHした場合だけです。observerのhandoffは取得時刻またはrevision、exact target、実データ本文を複製しないsanitized read summary、異常/未確認状態、handoff先だけを含めます。失敗・不明応答・read-back不一致では後続mutationや直接API/CLI/browser fallbackを行いません。
+開発時のmicroCMS操作は、親の`development_lead`だけが公式リモートMCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）へ直接接続して行います。全30 custom agent TOMLはmicroCMS serverを明示的に無効化します。親に公開するツールは`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`だけで、createはプロンプト承認を必須とします。Codex MCP認証はhost/user environment variableの`MICROCMS_API_KEY`を使い、アプリruntime用の`.env.local`だけをcredential sourceとして扱いません。対象は`books` APIに限り、APIキーの扱い、one-shot mutation、read-back検証、禁止操作、MCP evidenceは[AGENTS.md](../AGENTS.md)を正本とします。
 
 推奨権限:
 

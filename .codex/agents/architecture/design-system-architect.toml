@@ -48,3 +48,7 @@ FIGMA_HANDOFF: Main Component/Instance/property, variable-binding, specimen, des
 RISKS: unresolved structural decisions or "none"
 MCP_EVIDENCE: one entry per GitHub or Figma MCP-backed call with fully qualified tool identifier, provenance/server, exact target ID/URL, operation, permission result, result/error, and the six shared states; include the shared no-call entry when invocation=NOT_INVOKED
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []
