@@ -1,7 +1,7 @@
 name = "microcms_operator"
 description = "Performs explicitly authorized one-shot books API operations through the official microCMS MCP with read-back verification."
 model = "gpt-5.6-luna"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "max"
 sandbox_mode = "read-only"
 
 developer_instructions = """
