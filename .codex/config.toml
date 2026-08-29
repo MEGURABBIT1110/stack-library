@@ -131,3 +131,7 @@ config_file = "agents/operations/microcms-operator.toml"
 [agents.microcms_observer]
 description = "Reads and reports sanitized books API state through the official microCMS MCP without mutation capability."
 config_file = "agents/operations/microcms-observer.toml"
+
+[mcp_servers.microcms]
+url = "https://mcp.microcms.io/mcp/meguru-stack-library"
+bearer_token_env_var = "MICROCMS_API_KEY"
