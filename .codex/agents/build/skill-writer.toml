@@ -31,3 +31,7 @@ RISKS: known risks or "none"
 FINDING_RETURN_WRITER: skill_writer
 INVALIDATES: files, contracts, or environment changes that invalidate this handoff
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

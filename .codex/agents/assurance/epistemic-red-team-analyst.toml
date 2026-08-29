@@ -29,3 +29,7 @@ UNCERTAINTY_AND_SIGNPOSTS: unknowns, dissent, and evidence that would change the
 HANDOFFS: original owner, affected canonical roles, and development_lead
 MCP_EVIDENCE: shared evidence entries or the required no-call entry
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

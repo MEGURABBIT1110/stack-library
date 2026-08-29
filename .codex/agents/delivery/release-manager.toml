@@ -58,3 +58,7 @@ MERGE_HANDOFF: independent PR/Ready/merge authorization states; authorized and e
 NON_MCP_TOOL_USE: for each permitted `gh` exception, MCP gap, tool search, necessity, exact operation, and result, or "none"
 MCP_EVIDENCE: one entry per GitHub MCP-backed call with fully qualified tool identifier, provenance/server, exact target ID/URL, operation, permission result, result/error, and the six shared states; include the shared no-call entry when invocation=NOT_INVOKED; mutation read-back entries also include fully qualified read-back tool identifier, exact target, revision or retrieval timestamp, expected state, observed state, and comparison result
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

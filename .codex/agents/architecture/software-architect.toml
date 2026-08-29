@@ -37,3 +37,7 @@ WRITER_HANDOFF: writer-specific constraints, ownership-ledger changes, and open 
 TEST_SEAMS: focused behaviors and isolation points for test_engineer
 RISKS: unresolved technical decisions or "none"
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

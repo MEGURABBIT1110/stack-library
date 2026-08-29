@@ -37,3 +37,7 @@ HANDOFF_GAPS: missing or stale contracts, or "none"
 NEXT_TRANSITION: completion signal, role to stop, and role to start
 ESCALATIONS: decisions reserved for development lead or user, or "none"
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

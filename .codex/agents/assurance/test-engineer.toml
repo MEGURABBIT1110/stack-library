@@ -44,3 +44,7 @@ DEBUGGER_HANDOFF: stable reproduction and evidence for debugger, or "not require
 WRITER_FIX_HANDOFF: SOURCE_WRITER for a missing test or smallest correction, or "none"
 REUSABLE_EVIDENCE: checks that remain valid and their input revision
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []

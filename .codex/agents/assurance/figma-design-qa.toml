@@ -58,3 +58,7 @@ If the Issue and Figma contradict each other, do not invent a compromise. Report
 
 Run once after the related edit set is frozen. Re-audit only when an inspected Figma node, implementation surface, theme, viewport behavior, or accessibility behavior changes.
 """
+
+[mcp_servers.microcms]
+enabled = false
+enabled_tools = []
