@@ -135,7 +135,6 @@ MICROCMS_API_KEY = "exclude"
 url = "https://mcp.microcms.io/mcp/meguru-stack-library"
 bearer_token_env_var = "MICROCMS_API_KEY"
 default_tools_approval_mode = "auto"
-enabled_tools = ["microcms_get_list", "microcms_get_content", "microcms_create_content_published"]
 
 [mcp_servers.microcms.tools.microcms_create_content_published]
 approval_mode = "prompt"
