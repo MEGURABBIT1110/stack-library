@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { BookCover } from "@/components/common/book-cover";
-import { StatusBadge } from "@/components/common/status-badge";
-import { ThemeSwitch } from "@/components/common/theme-switch";
+import { BookCover } from "@/components/common/BookCover";
+import { StatusBadge } from "@/components/common/StatusBadge";
+import { ThemeSwitch } from "@/components/common/ThemeSwitch";
 import type { Book } from "@/types/book";
 
 type ContextBook = Pick<

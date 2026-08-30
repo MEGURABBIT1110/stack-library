@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, waitFor } from "storybook/test";
 
-import { ScrollContextBar } from "@/components/layout/scroll-context-bar";
+import { ScrollContextBar } from "@/components/layout/ScrollContextBar";
 import { makeBook } from "../../fixtures/books";
 
 const meta = {

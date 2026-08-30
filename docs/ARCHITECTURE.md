@@ -31,24 +31,24 @@ src/
     books/[contentId]/page.tsx
   components/
     common/
-      book-cover.tsx
-      heading.tsx
-      status-badge.tsx
-      technical-area-tags.tsx
-      theme-switch.tsx
+      BookCover.tsx
+      Heading.tsx
+      StatusBadge.tsx
+      TechnicalAreaTags.tsx
+      ThemeSwitch.tsx
     card/
-      book-card.tsx
+      BookCard.tsx
     section/
-      book-detail-identity.tsx
-      book-shelf-section.tsx
-      book-text-section.tsx
-      connection-error.tsx
-      library-bank.tsx
+      BookDetailIdentity.tsx
+      BookShelfSection.tsx
+      BookTextSection.tsx
+      ConnectionError.tsx
+      LibraryBank.tsx
     layout/
-      app-shell.tsx
-      book-shelf.tsx
-      library-header.tsx
-      scroll-context-bar.tsx
+      AppShell.tsx
+      BookShelf.tsx
+      LibraryHeader.tsx
+      ScrollContextBar.tsx
   lib/
     microcms/client.ts
     books/queries.ts
@@ -127,11 +127,12 @@ src/components/
 
 - `common/`は「何でも置く場所」ではなく、単独責務を持ち、複数の上位部品から利用される確定済みPrimitiveに限定する
 - `card/`、`section/`、`layout/`は対象コンポーネントの責務と契約が確定してから作成し、空ディレクトリは置かない
+- Reactコンポーネントと対応するStoryのファイル名は、export名に合わせたPascalCaseを正とする。fixture、CSS、設定ファイルなどの非コンポーネントはこの規則の対象外とする
 - Atomic層はFigma名、Storybookの説明、Architecture上の分類で追跡し、`atoms/`、`molecules/`、`organisms/`という重複したファイル階層は作らない
-- `Heading`は確定済みPrimitiveであり、`components/common/heading.tsx`を正規のimport先とする。HTMLの見出しレベルは`as`、視覚スケールは`scale`で独立して指定する
-- `StatusBadge`は確定済みPrimitiveであり、`components/common/status-badge.tsx`を正規のimport先とする。読書状態は日本語ラベルとsignalを併用し、色だけに依存しない
-- `TechnicalAreaTags`は確定済みPrimitiveであり、`components/common/technical-area-tags.tsx`を正規のimport先とする。各タグは`max-content`で内容幅に追従し、分類色を増やさず、複数時はwrapする
-- `ThemeSwitch`は確定済みPrimitiveであり、`components/common/theme-switch.tsx`を正規のimport先とする
+- `Heading`は確定済みPrimitiveであり、`components/common/Heading.tsx`を正規のimport先とする。HTMLの見出しレベルは`as`、視覚スケールは`scale`で独立して指定する
+- `StatusBadge`は確定済みPrimitiveであり、`components/common/StatusBadge.tsx`を正規のimport先とする。読書状態は日本語ラベルとsignalを併用し、色だけに依存しない
+- `TechnicalAreaTags`は確定済みPrimitiveであり、`components/common/TechnicalAreaTags.tsx`を正規のimport先とする。各タグは`max-content`で内容幅に追従し、分類色を増やさず、複数時はwrapする
+- `ThemeSwitch`は確定済みPrimitiveであり、`components/common/ThemeSwitch.tsx`を正規のimport先とする
 - `BookShelf`は何も収納していない1段分の棚枠・棚面だけを提供するLayoutであり、書籍データや見出しを持たない。`BookShelfSection`は書影一覧の行数に応じて棚本体を伸ばし、見出し・冊数・`BookCard`を組み合わせるBook ListのPatternとする
 
 本棚・書影の寸法、背景、クリック領域、PC/SP・Light/Dark、Storybook検証面の正本は [本棚・書影設計正本](./DESIGN.md) を参照します。Figmaのexact nodeが割り当てられていない状態では、現行実装にない視覚差分をArchitectureへ追加しません。

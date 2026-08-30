@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ThemeSwitch } from "@/components/common/theme-switch";
+import { ThemeSwitch } from "@/components/common/ThemeSwitch";
 
 type LibraryHeaderProps = {
   currentPage?: "library" | "bank";

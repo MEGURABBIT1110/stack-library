@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { Heading } from "@/components/common/heading";
+import { Heading } from "@/components/common/Heading";
 import {
   aggregateLibraryBank,
   formatRegisteredPrice,

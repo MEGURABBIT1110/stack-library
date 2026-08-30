@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { BookCover } from "@/components/common/book-cover";
+import { BookCover } from "@/components/common/BookCover";
 import type { Book } from "@/types/book";
 
 type BookCardProps = {

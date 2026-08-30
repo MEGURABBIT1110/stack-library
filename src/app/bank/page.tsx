@@ -1,6 +1,6 @@
-import { AppShell } from "@/components/layout/app-shell";
-import { LibraryBank } from "@/components/section/library-bank";
-import { LibraryHeader } from "@/components/layout/library-header";
+import { AppShell } from "@/components/layout/AppShell";
+import { LibraryBank } from "@/components/section/LibraryBank";
+import { LibraryHeader } from "@/components/layout/LibraryHeader";
 import { getAllBooks } from "@/lib/books/queries";
 
 export const dynamic = "force-dynamic";

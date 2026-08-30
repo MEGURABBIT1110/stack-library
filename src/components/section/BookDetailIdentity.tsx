@@ -1,6 +1,6 @@
-import { BookCover } from "@/components/common/book-cover";
-import { StatusBadge } from "@/components/common/status-badge";
-import { TechnicalAreaTags } from "@/components/common/technical-area-tags";
+import { BookCover } from "@/components/common/BookCover";
+import { StatusBadge } from "@/components/common/StatusBadge";
+import { TechnicalAreaTags } from "@/components/common/TechnicalAreaTags";
 import { formatRegisteredPrice } from "@/lib/books/bank";
 import { formatDate, LEVEL_LABELS } from "@/lib/books/labels";
 import type { Book } from "@/types/book";

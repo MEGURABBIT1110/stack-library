@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 
-import { BookCard } from "@/components/card/book-card";
+import { BookCard } from "@/components/card/BookCard";
 import { baseBook, makeBook } from "../../fixtures/books";
 
 const meta = {
