@@ -1,8 +1,8 @@
-import { AppShell } from "@/components/layout/app-shell";
-import { ConnectionError } from "@/components/section/connection-error";
-import { LibraryHeader } from "@/components/layout/library-header";
-import { ScrollContextBar } from "@/components/layout/scroll-context-bar";
-import { BookShelfSection } from "@/components/section/book-shelf-section";
+import { AppShell } from "@/components/layout/AppShell";
+import { ConnectionError } from "@/components/section/ConnectionError";
+import { LibraryHeader } from "@/components/layout/LibraryHeader";
+import { ScrollContextBar } from "@/components/layout/ScrollContextBar";
+import { BookShelfSection } from "@/components/section/BookShelfSection";
 import { getBooks } from "@/lib/books/queries";
 
 export const dynamic = "force-dynamic";

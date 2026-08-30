@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { cdp } from "vitest/browser";
 
-import { ThemeSwitch } from "@/components/common/theme-switch";
+import { ThemeSwitch } from "@/components/common/ThemeSwitch";
 
 const meta = {
   title: "Components/Common/ThemeSwitch",

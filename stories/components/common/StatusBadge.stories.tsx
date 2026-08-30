@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { StatusBadge } from "@/components/common/status-badge";
+import { StatusBadge } from "@/components/common/StatusBadge";
 import { READING_STATUS_DEFINITIONS } from "@/lib/books/labels";
 
 const meta = {

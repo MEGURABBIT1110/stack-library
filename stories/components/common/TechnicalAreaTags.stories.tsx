@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { TechnicalAreaTags } from "@/components/common/technical-area-tags";
+import { TechnicalAreaTags } from "@/components/common/TechnicalAreaTags";
 
 const meta = {
   title: "Components/Common/TechnicalAreaTags",

@@ -1,5 +1,5 @@
-import { BookCard } from "@/components/card/book-card";
-import { BookShelf } from "@/components/layout/book-shelf";
+import { BookCard } from "@/components/card/BookCard";
+import { BookShelf } from "@/components/layout/BookShelf";
 import type { Book } from "@/types/book";
 
 type BookShelfSectionProps = {

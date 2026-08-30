@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
 
-import { BookCover } from "@/components/common/book-cover";
+import { BookCover } from "@/components/common/BookCover";
 import { makeBook } from "../../fixtures/books";
 
 const meta = {

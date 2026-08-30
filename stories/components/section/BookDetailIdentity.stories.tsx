@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, within } from "storybook/test";
 import { page } from "vitest/browser";
 
-import { BookDetailIdentity } from "@/components/section/book-detail-identity";
+import { BookDetailIdentity } from "@/components/section/BookDetailIdentity";
 import { makeBook } from "../../fixtures/books";
 
 const meta = {

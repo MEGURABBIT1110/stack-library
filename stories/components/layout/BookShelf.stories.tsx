@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 
-import { BookShelf } from "@/components/layout/book-shelf";
+import { BookShelf } from "@/components/layout/BookShelf";
 
 const meta = {
   title: "Components/Layout/BookShelf",
