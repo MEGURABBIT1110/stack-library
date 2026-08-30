@@ -3,7 +3,7 @@ import { expect, within } from "storybook/test";
 import { page } from "vitest/browser";
 
 import { BookDetailIdentity } from "@/components/section/book-detail-identity";
-import { makeBook } from "@/stories/fixtures/books";
+import { makeBook } from "../../fixtures/books";
 
 const meta = {
   title: "Components/Section/BookDetailIdentity",

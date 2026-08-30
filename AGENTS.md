@@ -242,7 +242,7 @@ writerの標準所有範囲は次のとおりです。実際の編集権限はte
 
 - `skill_writer`: `.agents/skills/**`
 - `documentation_writer`: `README.md`、`AGENTS.md`、`docs/**`、`.codex/agents/**`、`.github/ISSUE_TEMPLATE/**`、`.github/PULL_REQUEST_TEMPLATE/**`、`.github/pull_request_template.md`
-- `component_implementer`: `src/components/**`、`src/stories/**`、コンポーネントに局所化されたstyleとtest
+- `component_implementer`: `src/components/**`、`stories/**`、コンポーネントに局所化されたstyleとtest
 - `application_implementer`: `src/app/**`と画面統合test。ただし`src/app/**/actions.ts`などのServer Action moduleは標準所有範囲から除く
 - `data_implementer`: `src/lib/**`、`src/types/**`、`src/actions/**`、`microcms/**`、data fixtureとtest。`src/app/**/actions.ts`などのcolocated Server Action moduleはteam packetでexact pathを明示した場合だけ所有する
 

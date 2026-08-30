@@ -335,7 +335,7 @@ tracked fileの内容は、team packetでexact pathを割り当てられた次�
 |---|---|
 | `skill_writer` | `.agents/skills/**` |
 | `documentation_writer` | `README.md`、`AGENTS.md`、`docs/**`、`.codex/agents/**`、Issue/PR template |
-| `component_implementer` | `src/components/**`、`src/stories/**`、局所style、component test |
+| `component_implementer` | `src/components/**`、`stories/**`、局所style、component test |
 | `application_implementer` | `src/app/**`、画面統合test。ただしcolocated Server Action moduleを除く |
 | `data_implementer` | `src/lib/**`、`src/types/**`、`src/actions/**`、`microcms/**`、data fixture/test。`src/app/**/actions.ts`などはexact pathを明示した場合だけ含む |
 

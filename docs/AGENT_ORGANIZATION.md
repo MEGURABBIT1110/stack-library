@@ -91,7 +91,7 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 |---|---|---|
 | `skill_writer` | `.agents/skills/**`のteam packet指定path | `code_reviewer`, `test_engineer` |
 | `documentation_writer` | `README.md`, `AGENTS.md`, `docs/**`, `.codex/agents/**`, Issue/PR templateのteam packet指定path | `code_reviewer`, `test_engineer` |
-| `component_implementer` | `src/components/**`, `src/stories/**`, 局所style/testのteam packet指定path | `application_implementer`, `code_reviewer`, `test_engineer`, `figma_design_qa` |
+| `component_implementer` | `src/components/**`, `stories/**`, 局所style/testのteam packet指定path | `application_implementer`, `code_reviewer`, `test_engineer`, `figma_design_qa` |
 | `application_implementer` | `src/app/**`とscreen integration testのteam packet指定path。Server Action moduleは標準範囲外 | `code_reviewer`, `test_engineer`, `figma_design_qa` |
 | `data_implementer` | `src/lib/**`, `src/types/**`, `src/actions/**`, `microcms/**`, data fixture/testのteam packet指定path | `component_implementer`, `application_implementer`, `code_reviewer`, `test_engineer` |
 

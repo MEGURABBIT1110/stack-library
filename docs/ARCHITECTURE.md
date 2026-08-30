@@ -32,40 +32,23 @@ src/
   components/
     common/
       book-cover.tsx
-      book-cover.stories.tsx
-      book-status.tsx
-      favorite-badge.stories.tsx
       heading.tsx
-      heading.stories.tsx
       status-badge.tsx
-      status-badge.stories.tsx
       technical-area-tags.tsx
-      technical-area-tags.stories.tsx
       theme-switch.tsx
-      theme-switch.stories.tsx
     card/
       book-card.tsx
-      book-card.stories.tsx
     section/
       book-detail-identity.tsx
-      book-detail-identity.stories.tsx
-      book-list.tsx
       book-shelf-section.tsx
-      book-shelf-section.stories.tsx
       book-text-section.tsx
       connection-error.tsx
-      connection-error.stories.tsx
       library-bank.tsx
-      library-bank.stories.tsx
     layout/
       app-shell.tsx
-      archive-footer.tsx
       book-shelf.tsx
-      book-shelf.stories.tsx
       library-header.tsx
-      library-header.stories.tsx
       scroll-context-bar.tsx
-      scroll-context-bar.stories.tsx
   lib/
     microcms/client.ts
     books/queries.ts
@@ -73,6 +56,15 @@ src/
     books/normalize.ts
     books/labels.ts
   types/book.ts
+stories/
+  components/
+    common/  (Heading, StatusBadge, TechnicalAreaTags, ThemeSwitch, BookCover)
+    card/    (BookCard)
+    section/ (BookDetailIdentity, BookShelfSection, ConnectionError, LibraryBank)
+    layout/  (BookShelf, LibraryHeader, ScrollContextBar)
+  fixtures/books.ts
+  foundations/color.mdx
+  storybook.css
 ```
 
 ページとmicroCMS取得はServer Componentのまま維持します。Client Componentは、ブラウザ状態が必要なTheme Switchと、`IntersectionObserver`を使うContext Barに限定します。
@@ -144,7 +136,7 @@ src/components/
 
 本棚・書影の寸法、背景、クリック領域、PC/SP・Light/Dark、Storybook検証面の正本は [本棚・書影設計正本](./DESIGN.md) を参照します。Figmaのexact nodeが割り当てられていない状態では、現行実装にない視覚差分をArchitectureへ追加しません。
 
-Storybookのtitleは、確定したReactの責務別ディレクトリと同じ階層を使います。Atomic Design上の層名はナビゲーション階層へ重ねず、各Storyの説明とArchitectureで追跡します。
+Storybookの実体はリポジトリ直下の`stories/`に置き、`stories/components/`以下は`src/components/`の責務別ディレクトリに対応させます。titleも同じ論理階層を使い、Atomic Design上の層名はナビゲーション階層へ重ねず、各Storyの説明とArchitectureで追跡します。
 
 ```txt
 Foundations/Color
@@ -159,7 +151,7 @@ Components/Layout/BookShelf
 Components/Layout/LayoutName
 ```
 
-- 未整理のStoryは、対象コンポーネントの責務と契約が確定した時点で責務別階層へ移す
+- 実装コンポーネントとStoryを同じディレクトリへ置かず、Storyは`stories/components/`以下の対応する責務別ディレクトリへ置く
 - Light / DarkはStorybook globalとして切り替える
 - Desktop / MobileはStorybook標準のViewport機能またはcontainerで検証する。Viewportは日本語のデスクトップ、タブレット、スマートフォンを用意し、別パッケージのViewport addonは追加しない
 - Responsive専用ComponentやTheme専用variantを作らない

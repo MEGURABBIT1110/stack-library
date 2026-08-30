@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 
-import { ArchiveFooter } from "@/components/layout/archive-footer";
-
 type AppShellProps = {
   children: ReactNode;
   contextBar?: ReactNode;
@@ -17,7 +15,12 @@ export function AppShell({ children, contextBar, header, variant }: AppShellProp
         {contextBar}
       </div>
       <main className="app-shell__main">{children}</main>
-      <ArchiveFooter />
+      <footer className="archive-footer">
+        <p className="archive-footer__identity">
+          <span aria-hidden="true" />
+          Stack Library
+        </p>
+      </footer>
     </div>
   );
 }

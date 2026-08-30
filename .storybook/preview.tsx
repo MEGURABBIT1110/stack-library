@@ -2,7 +2,7 @@ import type { Decorator, Preview } from "@storybook/nextjs-vite";
 import { useEffect, type ReactNode } from "react";
 
 import "../src/app/globals.css";
-import "../src/stories/storybook.css";
+import "../stories/storybook.css";
 
 type Theme = "light" | "dark";
 
