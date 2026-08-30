@@ -22,7 +22,7 @@ Stack Libraryは、1人の技術書所有者が自分の蔵書を眺め、持っ
 
 ## 本棚の構造
 
-`BookShelf`は、空の1段分の棚本体、つまり棚枠と棚面だけを提供するLayoutです。データ、見出し、リンクを持たず、子要素を収納する面だけを受け取ります。`BookShelf`単体のLayout契約として、子要素が空でも1行分の棚を表示します。これは`BookShelfSection`に0冊を渡した場合にも適用される表示契約ですが、実際のBook List `/` の0冊状態を意味しません。現在の`BookList`は0冊時に`BookShelfSection`を経由せず、空状態メッセージを表示します。
+`BookShelf`は、空の1段分の棚本体、つまり棚枠と棚面だけを提供するLayoutです。データ、見出し、リンクを持たず、子要素を収納する面だけを受け取ります。`BookShelf`単体のLayout契約として、子要素が空でも1行分の棚を表示します。これは`BookShelfSection`に0冊を渡した場合にも適用される表示契約ですが、実際のBook List `/` の0冊状態を意味しません。現在はトップページが0冊時に`BookShelfSection`を経由せず、空状態メッセージを表示します。
 
 `BookShelfSection`は、見出し、冊数、`BookCard`の一覧を組み合わせるPatternです。登録冊数から必要な行数を決め、棚本体をその行数に合わせて表示します。PCは1行6冊、SPは1行3冊です。
 
@@ -90,6 +90,6 @@ Storybookはglobal themeのLight / Darkと、desktop / tablet / mobile viewport�
 
 ## 証拠と更新条件
 
-実装基盤の挙動証拠は、移動前の実装基盤を含むcommit `3ded409af6b443493400e9cfcc101d8541889b57`（`feat(shelf): 本棚と書影表示の基盤を整備`）およびその時点の棚規則・Storybook storiesです。このcommitは移動前の実装基盤の挙動を示す履歴証拠であり、現在の作業ツリーで移動後に更新された物理パスをこのcommitに含まれるものとして扱いません。現在の作業ツリーにおける対応先は `src/components/layout/book-shelf.tsx`、`src/components/section/book-shelf-section.tsx`、`src/components/card/book-card.tsx`、`src/components/common/book-cover.tsx`、`src/app/page.tsx` などの更新済みconsumerです。文書のリンクとコンポーネント対応は [Component Traceability Registry](./COMPONENT_TRACEABILITY.md) で追跡します。
+実装基盤の挙動証拠は、移動前の実装基盤を含むcommit `3ded409af6b443493400e9cfcc101d8541889b57`（`feat(shelf): 本棚と書影表示の基盤を整備`）およびその時点の棚規則・Storybook storiesです。このcommitは移動前の実装基盤の挙動を示す履歴証拠であり、現在の作業ツリーで移動後に更新された物理パスをこのcommitに含まれるものとして扱いません。現在の作業ツリーにおける対応先は `src/components/layout/book-shelf.tsx`、`src/components/section/book-shelf-section.tsx`、`src/components/card/book-card.tsx`、`src/components/common/book-cover.tsx`、`src/app/page.tsx` などの更新済みconsumerです。トップページの0冊状態は`src/app/page.tsx`が直接扱います。Storyはリポジトリ直下の`stories/`へ分離し、文書のリンクとコンポーネント対応は [Component Traceability Registry](./COMPONENT_TRACEABILITY.md) で追跡します。
 
 この棚については、現在Figmaのexact node assignmentとfresh evidenceがありません。したがってFigma main/specimen、properties、variables、fresh screenshotは `not assigned` または `PENDING` とし、推測で補完しません。Figmaのexact node、実装変更、Storyの追加・変更、テーマ・viewport・アクセシビリティ挙動の変更が発生した場合は、該当する設計契約と本書・台帳を同じrevisionで更新します。寸法、行数、責務、ルート契約を変更する場合は、ユーザーの再確認と実装・Storybookの再検証を必要とします。

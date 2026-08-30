@@ -1,8 +1,8 @@
 import { AppShell } from "@/components/layout/app-shell";
-import { BookList } from "@/components/section/book-list";
 import { ConnectionError } from "@/components/section/connection-error";
 import { LibraryHeader } from "@/components/layout/library-header";
 import { ScrollContextBar } from "@/components/layout/scroll-context-bar";
+import { BookShelfSection } from "@/components/section/book-shelf-section";
 import { getBooks } from "@/lib/books/queries";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +36,14 @@ export default async function HomePage() {
       }
       variant="library"
     >
-      <BookList books={result.books} />
+      {result.books.length === 0 ? (
+        <section className="empty-state">
+          <h1>まだ本は登録されていません</h1>
+          <p>技術書を登録すると、ここに表示されます。</p>
+        </section>
+      ) : (
+        <BookShelfSection books={result.books} />
+      )}
     </AppShell>
   );
 }

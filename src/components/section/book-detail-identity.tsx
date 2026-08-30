@@ -1,5 +1,5 @@
 import { BookCover } from "@/components/common/book-cover";
-import { BookStatusLine } from "@/components/common/book-status";
+import { StatusBadge } from "@/components/common/status-badge";
 import { TechnicalAreaTags } from "@/components/common/technical-area-tags";
 import { formatRegisteredPrice } from "@/lib/books/bank";
 import { formatDate, LEVEL_LABELS } from "@/lib/books/labels";
@@ -55,7 +55,10 @@ export function BookDetailIdentity({
           </p>
         </div>
         <div className="book-identity__secondary">
-          <BookStatusLine book={book} />
+          <div className="book-status-line">
+            <StatusBadge status={book.readingStatus} />
+            {book.isFavorite && <span className="favorite-badge">お気に入り</span>}
+          </div>
           <TechnicalAreaTags areas={book.technicalAreas} />
           <div className="book-identity__meta">
             <span>登録日：{formatDate(book.createdAt)}</span>
