@@ -312,7 +312,7 @@ Storyは`Foundations / Components / Patterns`の責務に沿って配置しま�
 
 条件を満たさなくなった場合も、すべてをやり直さず、影響する検証だけを再実行します。`git diff --check`、同じスクリーンショット取得、同じlintなどを、根拠なく途中で反復しません。
 
-ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run lint`と`npm run build`は必須ではありません。docs/config-only変更はRisk Aとし、TOML parse、30 canonical specialist roster、全30 custom agentのmicroCMS disabled override、公式リモートMCPの3-tool allowlist、createのprompt approval、secret literal不在、diff scope、links、用語整合を優先します。これらの静的チェックは、Codex実行時のeffective tool inventory、host secret non-visibility、実際のmutation approval/read-backを証明しません。live MCP操作はこの検証では実施せず、アプリlint/build、UI/Figma確認も対象外です。
+ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run lint`と`npm run build`は必須ではありません。docs/config-only変更はRisk Aとし、TOML parse、30 canonical specialist roster、親MCPの接続設定、親MCPのtool数やallowlistを固定要件にしていないこと、全30 custom agentのmicroCMS disabled override、createのprompt approval、secret literal不在、diff scope、links、用語整合を優先します。これらの静的チェックは、Codex実行時のeffective tool inventory、host secret non-visibility、実際のmutation approval/read-backを証明しません。live MCP操作はこの検証では実施せず、アプリlint/build、UI/Figma確認も対象外です。
 
 ## ドキュメントの責務
 

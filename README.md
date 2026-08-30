@@ -69,7 +69,7 @@ Hobbyプランでは1本のAPIキーを使用し、`books` APIに対して必要
 
 ### microCMS MCP
 
-開発時のmicroCMS操作は、親のdevelopment_leadが公式リモートMCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）へ直接接続して行います。直接認証には`MICROCMS_API_KEY`をCodex host/user environment variableとして設定する必要があり、アプリruntime用の`.env.local`だけではMCP credential sourceになりません。利用可能な親ツールは`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`だけで、後者は毎回プロンプト承認を求めます。対象は`books` APIに限ります。
+開発時のmicroCMS操作は、親のdevelopment_leadが公式リモートMCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）へ直接接続して行います。直接認証には`MICROCMS_API_KEY`をCodex host/user environment variableとして設定する必要があり、アプリruntime用の`.env.local`だけではMCP credential sourceになりません。親の公式MCP inventoryは接続設定に従って実行時に確認し、tool数やallowlistを固定要件にしません。`books` APIへのcreateは毎回プロンプト承認を求めます。
 
 APIキー、one-shot mutation、read-back検証、禁止操作、MCP evidenceの規則は[AGENTS.md](./AGENTS.md)を正本とします。キー値を表示・記録せず、ローカルMCPサーバーやCLI・ブラウザ・直接HTTPへのfallbackを行いません。
 

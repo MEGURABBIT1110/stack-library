@@ -224,7 +224,7 @@ MICROCMS_API_KEY=
 
 Hobbyプランでは作成可能なAPIキーが1本のため、読み取りと登録で同じキーを使用します。
 
-開発時のmicroCMS操作は、親の`development_lead`だけが公式リモートMCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）へ直接接続して行います。全30 custom agent TOMLはmicroCMS serverを明示的に無効化します。親に公開するツールは`microcms_get_list`、`microcms_get_content`、`microcms_create_content_published`だけで、createはプロンプト承認を必須とします。Codex MCP認証はhost/user environment variableの`MICROCMS_API_KEY`を使い、アプリruntime用の`.env.local`だけをcredential sourceとして扱いません。対象は`books` APIに限り、APIキーの扱い、one-shot mutation、read-back検証、禁止操作、MCP evidenceは[AGENTS.md](../AGENTS.md)を正本とします。
+開発時のmicroCMS操作は、親の`development_lead`だけが公式リモートMCP（`https://mcp.microcms.io/mcp/meguru-stack-library`）へ直接接続して行います。全30 custom agent TOMLはmicroCMS serverを明示的に無効化します。親の公式MCP inventoryは接続設定に従って実行時に確認し、tool数やallowlistを固定要件にしません。`books` APIへのcreateはプロンプト承認を必須とします。Codex MCP認証はhost/user environment variableの`MICROCMS_API_KEY`を使い、アプリruntime用の`.env.local`だけをcredential sourceとして扱いません。対象は`books` APIに限り、APIキーの扱い、one-shot mutation、read-back検証、禁止操作、MCP evidenceは[AGENTS.md](../AGENTS.md)を正本とします。
 
 推奨権限:
 
