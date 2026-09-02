@@ -322,6 +322,7 @@ Storyは`Foundations / Components / Patterns`の責務に沿って配置しま�
 | `AGENTS.md` | エージェントが必ず守るプロジェクト固有の作業契約 |
 | `docs/DEVELOPMENT.md` | ブランチ、コミット、PR、検証の共通ルール |
 | `docs/ARCHITECTURE.md` | 技術構成、責務分離、コンポーネント設計 |
+| `docs/CODING_GUIDELINE.md` | class名、CSS、状態表現などコードの書き方 |
 | `docs/CONTENT_MODEL.md` | microCMSスキーマとTypeScript型 |
 | `docs/ROUTING.md` | URL、画面責務、ナビゲーション |
 

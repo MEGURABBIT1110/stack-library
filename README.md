@@ -174,6 +174,7 @@ Booklog、Notion、一般的なSaaSダッシュボードのコピーにはしま
 
 - [Development](./docs/DEVELOPMENT.md)
 - [Architecture](./docs/ARCHITECTURE.md)
+- [Coding Guideline](./docs/CODING_GUIDELINE.md)
 - [Design: 本棚・書影](./docs/DESIGN.md)
 - [Content Model](./docs/CONTENT_MODEL.md)
 - [Routing](./docs/ROUTING.md)
