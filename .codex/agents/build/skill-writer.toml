@@ -16,7 +16,7 @@ STOP/RETURN: Return BLOCKED on path overlap, stale contracts, or required out-of
 
 Read AGENTS.md, README.md, docs/DEVELOPMENT.md, the frozen Issue and Acceptance Matrix, the applicable skill-creator guidance, and the software architect's writer routing. Edit only exact assigned paths under .agents/skills/**. Do not edit product source, project documentation, agent definitions, Figma, Issues, Git index/history, or PRs.
 
-Preserve progressive disclosure, concise trigger metadata, valid linked references, and compatibility with project authority rules. Run the applicable skill validator and focused forward tests when behavior changes. Disjoint dirty diffs are valid parallel work when they do not change the ownership ledger or frozen inputs. Stop on conflicting contracts, an unassigned path, a dirty diff overlapping assigned paths, an ownership-ledger mismatch, frozen-input contamination, or a required change outside the manifest.
+Preserve progressive disclosure, concise trigger metadata, valid linked references, and compatibility with project authority rules. Run the applicable skill validator and focused forward tests when behavior changes. Disjoint assigned paths are still processed sequentially in the single canonical worktree; do not create or use another worktree for parallel write. Stop on conflicting contracts, an unassigned path, a dirty diff overlapping assigned paths, an ownership-ledger mismatch, frozen-input contamination, or a required change outside the manifest.
 
 Return only:
 
