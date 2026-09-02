@@ -10,7 +10,7 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 
 別Issueまたは別outcomeは新しいparent chatを使います。forkはshared contextからgenuine alternativeが分岐する場合だけに限定し、role、Wave、reviewの分割には使いません。軽量なread-only question、説明、state check、reportはIssueなしで開始できますが、mutation前にIssue、outcome、branch、ownershipを確定します。merge後はparent chatをcompleteかつarchive candidateとし、通常のfollow-up changeは新しいIssueとparent chatへ分けます。
 
-複数のparent chatによるparallel writeは、chatごとに別worktree、別branch、exact path ownershipがある場合だけ許可します。同じbranchまたは同じpathを複数chatで編集してはいけません。この分離は、下記のexclusive authorityとpath ownership ledgerを置き換えず、その前提として追加されます。
+複数のparent chatによるtracked fileへのparallel writeは禁止します。同じIssueまたは別Issueにかかわらず、正のworktreeを一つだけ使い、parent chat間はhandoffして順次作業します。同じbranchまたは同じpathを複数chatで編集してはいけません。read-onlyのreviewや検証を並行する場合も、追加worktreeを作成せず、tracked fileを変更しないことを条件とします。
 
 新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。引き継ぎにはIssue URL/revision、branch/base/head、dirty diff/owner、scope/non-goals、allowed/forbidden surfacesとownership ledger、frozen contracts、validation revisionsとinvalidation、Figma targets、publication、DraftからReady、mergeの各authorization、`merge_method`、authorized/frozen `expected_head_sha`、既存Draft PR、downstream handoff/stop conditionを含むpacketを使います。`expected_head_sha`はbranch/head観測値ではなくmerge mutation authorizationへ束縛するexact SHAであり、未割り当て時は`absent`です。packetの完全なschemaと確認手順は[Development](./DEVELOPMENT.md#new-chat-handoff-packet)を参照してください。
 
@@ -120,8 +120,8 @@ Stack Libraryの開発組織は、外部の親エージェント`development_lea
 1. Product Intake: 必要な場合だけ`principal_product_strategist`、`design_philosophy_steward`、`product_owner`を起動し、`requirements_analyst`が凍結IssueをAcceptance Matrixへ変換する。高影響時は`product_integrity_reviewer`を追加する。
 2. Discovery: 該当gateに応じて`ux_researcher`、`global_context_intelligence_lead`、`bibliographic_identity_librarian`、`authority_control_librarian`、`technology_readiness_lead`、`innovation_futures_portfolio_lead`を起動する。
 3. Architecture / Design: `design_system_architect`、`software_architect`、`figma_designer`、`design_critic`を依存順で交代する。回復性riskがあれば`adaptive_resilience_experimenter`、human-error surfaceがあれば`human_factors_error_specialist`を起動する。
-4. Build: exact path ownership ledgerに従って5 writerを依存順またはdisjoint pathだけ並列で起動する。
-5. Review / Debug / Fix: writer凍結後に`code_reviewer`と`test_engineer`、必要な場合だけ`figma_design_qa`、`security_privacy_risk_steward`、`epistemic_red_team_analyst`を起動する。原因不明FAILでは`test_engineer`を止めて`debugger`へ交代し、fixは元writerへ戻す。
+4. Build: exact path ownership ledgerに従って5 writerを依存順に、正のworktree内で順次起動する。disjoint pathであってもtracked fileへのparallel writeは行わない。
+5. Review / Debug / Fix: writer凍結後に`code_reviewer`と`test_engineer`、必要な場合だけ`figma_design_qa`、`security_privacy_risk_steward`、`epistemic_red_team_analyst`を、同じ正のworktreeでtracked fileを変更しないread-only作業として起動する。原因不明FAILでは`test_engineer`を止めて`debugger`へ交代し、fixは元writerへ戻す。
 6. Delivery / Merge: publication authorization後だけ`release_manager`を起動する。PR作成、DraftからReadyへの変更、merge authorization、merge-method authorizationは独立して扱う。方法を限定しない明示的な「マージ」承認は`development_lead`が`merge_method=merge`と記録し、SquashまたはRebaseはuserがその方法を別途指定した場合だけ記録する。`development_lead`は観測上のheadとは別にmerge authorizationへ`expected_head_sha`を束縛し、`release_manager`は記録された方法とSHAをMCP merge mutationへ明示的に渡す。
 
 `NOT_REQUIRED`は、登録職能が不要になったことではなく、そのtaskがActivation Gate外であり起動不要であることを表します。

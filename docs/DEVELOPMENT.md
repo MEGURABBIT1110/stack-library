@@ -52,7 +52,7 @@ Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 
 
 `release_manager`はこれらの状態を統合または推測せず、merge authorization、記録済み`merge_method`、authorized/frozen `expected_head_sha`が揃った場合だけ実行します。
 
-新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。並行する複数chatがtracked fileへ書く必要がある場合は、chatごとに別worktree、別branch、exact path ownershipを割り当てます。同じbranchまたは同じpathへ複数chatから書いてはいけません。read-only chatはこのwrite分離要件の対象外です。
+新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`をdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。tracked fileへの並行writeは禁止し、別Issueや別outcomeへ移る場合も正のworktreeを一つだけ使って順次handoffします。同じbranchまたは同じpathへ複数chatから書いてはいけません。read-only chatも追加worktreeを作成せず、正のworktreeまたは既存の履歴をread-onlyで確認します。開始時とbranch変更の前後に `git rev-parse --show-toplevel` と `git worktree list --porcelain` を確認し、指定rootと正のworktree一件だけに一致しない場合は停止します。
 
 ### New-chat handoff packet
 
@@ -74,7 +74,7 @@ Codexによる変更は、原則として`1 GitHub Issue / 1 coherent outcome / 
 
 受け取ったparent chatは、branch、base/head、dirty diff、ownership ledger、frozen input revisionがpacketと一致することをread-onlyで確認してから作業を続けます。不一致、同じbranch/pathへの別chatのwrite、凍結入力の更新があれば停止し、`development_lead`へ返します。
 
-ChatGPT、Codex Local、Codex Worktree、Codex Cloudは、会話履歴や未共有のファイルを自動的には引き継ぎません。会話を正本にせず、GitHub IssueとDraft PRを共有状態として使用します。
+ChatGPT、Codex Local、Codex Cloudは、会話履歴や未共有のファイルを自動的には引き継ぎません。このrepositoryではCodex Worktreeを使用せず、会話を正本にせず、GitHub IssueとDraft PRを共有状態として使用します。
 
 作業依頼には`.github/ISSUE_TEMPLATE/task.yml`を使用し、最低限以下を記録します。
 
@@ -88,7 +88,7 @@ ChatGPT、Codex Local、Codex Worktree、Codex Cloudは、会話履歴や未共�
 - 参照資料と引き継ぎ元
 - 未確定事項
 
-通常の実装は`Codex Local`を選択します。WorktreeまたはCloudを使う場合は、ローカルにしか存在しないファイルや未pushコミットを前提にせず、必要な入力と成果物の受け渡し方法をIssueへ記録します。
+通常の実装は`Codex Local`を選択します。別環境を使う場合も、追加worktreeを作成せず正のworktree一つを作業場所とし、ローカルにしか存在しないファイルや未pushコミットを前提にせず、必要な入力と成果物の受け渡し方法をIssueへ記録します。
 
 推奨する流れ:
 
@@ -312,7 +312,7 @@ Storyは`Foundations / Components / Patterns`の責務に沿って配置しま�
 
 条件を満たさなくなった場合も、すべてをやり直さず、影響する検証だけを再実行します。`git diff --check`、同じスクリーンショット取得、同じlintなどを、根拠なく途中で反復しません。
 
-ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。コードへ影響しない場合、`npm run lint`と`npm run build`は必須ではありません。docs/config-only変更はRisk Aとし、TOML parse、30 canonical specialist roster、親MCPの接続設定、親MCPのtool数やallowlistを固定要件にしていないこと、全30 custom agentのmicroCMS disabled override、createのprompt approval、secret literal不在、diff scope、links、用語整合を優先します。これらの静的チェックは、Codex実行時のeffective tool inventory、host secret non-visibility、実際のmutation approval/read-backを証明しません。live MCP操作はこの検証では実施せず、アプリlint/build、UI/Figma確認も対象外です。
+ドキュメントだけの変更では、リンク、用語、見出し構造、他文書との矛盾を確認します。class命名やagent契約を含む場合は、class命名監査、名前空間・状態表現・legacy移行境界、関連TOMLの整合も確認します。コードへ影響しない場合、`npm run lint`と`npm run build`は必須ではありません。docs/config-only変更はRisk Aとし、TOML parse、30 canonical specialist roster、親MCPの接続設定、親MCPのtool数やallowlistを固定要件にしていないこと、全30 custom agentのmicroCMS disabled override、createのprompt approval、secret literal不在、diff scope、links、用語整合を優先します。これらの静的チェックは、Codex実行時のeffective tool inventory、host secret non-visibility、実際のmutation approval/read-backを証明しません。live MCP操作はこの検証では実施せず、アプリlint/build、UI/Figma確認も対象外です。
 
 ## ドキュメントの責務
 
@@ -342,7 +342,7 @@ tracked fileの内容は、team packetでexact pathを割り当てられた次�
 
 `.storybook/**`、root設定、共有style、test infrastructureには暗黙のownerを置かず、開発リードが1名を明示します。`package.json`とlockfileは同じwriterがatomic bundleとして扱います。複数領域は原則としてdata、component、application、skill/documentationの依存順でhandoffします。
 
-同じfileの同時編集は禁止します。再割り当て時はownership ledgerへ旧owner、新owner、引き継ぎrevisionを記録し、最後のownerがfile全体のdiffとreview修正を引き受けます。互いに素なexact pathのdirty diffは、ownership ledgerと凍結入力を汚染しない限り並行作業として許容します。writerはstageやcommitを行わず、次をhandoffします。
+同じfileの同時編集は禁止します。再割り当て時はownership ledgerへ旧owner、新owner、引き継ぎrevisionを記録し、最後のownerがfile全体のdiffとreview修正を引き受けます。互いに素なexact pathであっても並行writeは許容せず、同じ正のworktree内で順次handoffします。writerはstageやcommitを行わず、次をhandoffします。
 
 - `SOURCE_WRITER`
 - input Issue revisionとinput contract revision

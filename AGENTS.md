@@ -24,6 +24,8 @@ microCMS、型定義、データ取得、モックデータを触る場合は `d
 
 コンポーネントの責務、Figmaとの対応、Storybookの構成を触る場合は `docs/ARCHITECTURE.md` を必ず確認してください。
 
+class名、CSS、状態表現、共有style、またはUIの命名整合性を触る場合は `docs/CODING_GUIDELINE.md` を必ず確認してください。
+
 ## Git workflow
 
 Git運用は `docs/DEVELOPMENT.md` に従ってください。以下は必須です。
@@ -51,6 +53,15 @@ fix(theme): preserve visible focus styles
 docs(workflow): define repository conventions
 ```
 
+### 正のworktree
+
+- 作業場所は、parent chatで指定したprimary repositoryのproject root（正のworktree）一つだけとする。作業開始時とbranch変更の前後に `git rev-parse --show-toplevel` と `git worktree list --porcelain` を確認し、前者が指定rootと一致し、後者が正のworktree一件だけを示すことを確認する。
+- `git worktree add`、IDEのworktree機能、エージェントの同等操作による追加worktree作成は禁止する。parallel writeや別Issueを理由にした例外も認めない。
+- 正のworktree以外のworktreeでは、tracked fileの読み書き、branch作成・切り替え、検証、commit、pushを行わない。既存の追加worktreeが見つかった場合は、branch、owner、dirty diffをread-onlyで確認し、正のworktreeへ戻す方針とcleanup対象を報告する。
+- 正のworktreeにdirty diffがある場合は、変更ファイル、所有者、目的、対象branchを確認する。ユーザーの未完了作業または所有者不明の差分を、branch切り替えのために無断でcommit、stash、reset、checkout、削除、上書きしてはいけない。切り替えが必要な場合は、現在作業のhandoffと、必要なpublication authorization後に `release_manager` がcommitする方針を先に相談する。
+- branch変更や別Issueへの移行は、現在作業を完了またはhandoffして正のworktreeを安全な状態にしてから行う。dirty diffを避けるために追加フォルダを作成してはいけない。
+- 追加worktreeのcleanupは、対象のbranch、owner、dirty diff、削除根拠を確認し、ユーザーまたは開発リードから明示的にcleanupを受けた場合だけ行う。フォルダが既に存在しない登録は対象パスの欠落を確認したうえで `git worktree prune` を使い、作業前後の `git worktree list` と結果を報告する。worktreeフォルダを直接再帰削除してGit登録だけを残してはいけない。
+
 ### Stacked PRとVercel review
 
 Stacked PRは任意です。2つ以上のcode-bearing outcomeが依存順を持ち、各outcomeを独立してレビュー・検証・mergeできる場合だけ使用します。
@@ -71,11 +82,11 @@ Codex作業の既定単位は、`1 GitHub Issue / 1 coherent outcome / 1 parent 
 
 - 別のIssueまたは別のoutcomeは、新しいparent chatで開始する
 - forkは、shared contextからgenuine alternativeを比較・追跡する場合だけ使う。工程分割や職能分割の代わりにしない
-- 複数のparent chatが並行してtracked fileへ書く場合は、chatごとに別worktreeとexact path ownershipが必要。同じbranchまたは同じpathを複数chatから編集しない
+- 複数のparent chatによるtracked fileへの並行writeは禁止する。同じIssueまたは別Issueにかかわらず、正のworktreeを一つだけ使い、parent chat間はhandoffして順次作業する
 - merge後はparent chatをcompleteかつarchive candidateとして扱う。通常のfollow-up changeは新しいIssueとparent chatを使う
 - 軽量なread-only question、説明、state check、reportはIssueなしで扱える。mutationへ移る前にIssue、outcome、branch、ownershipを確定し、そのcoherent outcomeのparent chatとして継続する
 
-新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`を確実にdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。別worktreeが必要な並行writeは、parent chat開始後にownershipとbranchを分離して割り当てます。
+新しいparent chatは、root `AGENTS.md`と`.codex/config.toml`を確実にdiscoverできるよう、同じlocal projectを開き、primary repositoryのproject rootから開始します。tracked fileへの並行writeは行わず、別Issueや別outcomeへ移る場合も正のworktreeで順次handoffします。
 
 新しいchatへ引き継ぐ場合は、次を含むhandoff packetを渡します。
 
@@ -248,7 +259,7 @@ writerの標準所有範囲は次のとおりです。実際の編集権限はte
 
 `.storybook/**`、`.codex/config.toml`、repository rootの設定、共有style、test infrastructure、`package.json`とlockfileなどの横断面は暗黙のownerを持ちません。開発リードが1名のwriterとexact pathを明示します。`package.json`とlockfileを変更する場合は同じwriterへ一体のatomic bundleとして割り当て、片方だけをhandoffしません。
 
-1つのfileを複数writerへ順次再割り当てる必要がある場合、ownership ledgerへ旧owner、新owner、引き継ぎrevisionを記録します。最後に明示されたownerがそのfileの全diffとreview修正を所有し、以前のownerはconsult-onlyになります。ledger更新なしの共同編集は禁止します。writer開始時に存在するdirty diffが自身のexact pathと重ならず、ownership ledgerと凍結入力を変更しない場合は、正当な並行作業として停止理由にしません。pathの重複、ledger不一致、入力contractの汚染がある場合だけ該当writerを停止します。
+1つのfileを複数writerへ順次再割り当てる必要がある場合、ownership ledgerへ旧owner、新owner、引き継ぎrevisionを記録します。最後に明示されたownerがそのfileの全diffとreview修正を所有し、以前のownerはconsult-onlyになります。ledger更新なしの共同編集は禁止します。writer開始時に存在するdirty diffは、所有者と対象branchを確認して同じ正のworktreeで順次handoffします。pathの重複、ledger不一致、入力contractの汚染がある場合は該当writerを停止します。
 
 writer handoffはwriter自身のcommitを前提にしません。`SOURCE_WRITER`、base HEAD、exact path list、各fileのSHA-256、frozen diff revision、実行した検証、既知のrisk、無効化条件を返します。stage、commit、push、PR操作はpublication authorization後の`release_manager`だけが行います。
 
@@ -261,8 +272,8 @@ writer handoffはwriter自身のcommitを前提にしません。`SOURCE_WRITER`
 3. Architecture: `ux_researcher`の完了後、Component、Variant、Tokenまたは再利用構造を変更する場合は`design_system_architect`がComponent Contractを作る。`figma_designer`は既存Figmaの読み取り調査だけを並行できる。
 4. Design: 必要なbriefとcontractの確定後、`figma_designer`がFigma実装とDesign Contractを凍結して担当を終了する。`design_critic`が独立批評し、承認されるまでコードの視覚実装へ進まない。指摘修正時は`figma_designer`だけを再起動し、影響範囲を`design_critic`が再確認する。
 5. Technical Design: デザイン承認後、`software_architect`が複数案とtradeoff、writer routing、依存順、file planを含むTechnical Planを凍結する。critical dependency、unproven recovery、migration、高risk launchでは`adaptive_resilience_experimenter`が安全な実験契約を作り、Server Action、API、external service、secret、personal data、write、trust-boundary changeでは`security_privacy_risk_steward`がrisk contractを作る。writerは契約確定前に視覚値やAPI境界を推測しない。
-6. Build: 割り当てられたwriterが承認済みDesign ContractとTechnical Planからrepository実装を行う。複数writerが必要な場合は原則として`data_implementer`、`component_implementer`、`application_implementer`、`skill_writer`または`documentation_writer`の依存順でhandoffし、独立したexact pathだけを並行できます。非視覚部分が両契約へ依存しない場合だけ、開発リードが所有範囲を分けて先行実装を許可できます。
-7. Review: writerの編集凍結後、`code_reviewer`、`test_engineer`、必要な場合だけ`figma_design_qa`を並行起動する。human-error surfaceがある場合は`human_factors_error_specialist`、高影響で証拠が不完全、単一仮説、source相関、説明されない不一致がある場合は`epistemic_red_team_analyst`を起動する。`test_engineer`は計画済み検証を進められるが、開発リードが`code_reviewer`の`QA_HANDOFF`または「追加なし」を転送するまで最終判定しません。追加riskがあれば対象検証だけを継続します。
+6. Build: 割り当てられたwriterが承認済みDesign ContractとTechnical Planからrepository実装を行う。複数writerが必要な場合は原則として`data_implementer`、`component_implementer`、`application_implementer`、`skill_writer`または`documentation_writer`の依存順で、正のworktree内でhandoffする。独立したexact pathであっても並行writeは行わず、非視覚部分が両契約へ依存しない場合も開発リードが順次実装の依存順を確定する。
+7. Review: writerの編集凍結後、`code_reviewer`、`test_engineer`、必要な場合だけ`figma_design_qa`を、同じ正のworktreeでtracked fileを変更しないread-only作業として並行起動する。human-error surfaceがある場合は`human_factors_error_specialist`、高影響で証拠が不完全、単一仮説、source相関、説明されない不一致がある場合は`epistemic_red_team_analyst`を起動する。`test_engineer`は計画済み検証を進められるが、開発リードが`code_reviewer`の`QA_HANDOFF`または「追加なし」を転送するまで最終判定しません。追加riskがあれば対象検証だけを継続します。
 8. Debug: `test_engineer`が原因不明のFAILと安定再現を返して停止した後、その枠を`debugger`へ交代します。同じ再現に対して両者を同時起動せず、`debugger`は根本原因と最小修正をwriterへ返します。
 9. Fix: findingを元のwriterへ戻し、変更で無効になった批評、レビューまたは検証だけを再実行する。複数回の差し戻し、blocker、scope driftがあれば`scrum_master`を再起動する。
 10. Delivery: ユーザーまたは開発リードからpublication authorizationを受けた後、`release_manager`が承認済みpathだけをstageし、commit、push、既存Draft PRの更新または新規Draft PR作成、remote整合確認を行う。既存PRが指定されている場合はそのPRだけを更新し、代替PRを作らない。

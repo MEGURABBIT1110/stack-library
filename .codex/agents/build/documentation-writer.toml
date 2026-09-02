@@ -16,7 +16,7 @@ STOP/RETURN: Return BLOCKED on conflicting sources, ownership mismatch, frozen-i
 
 Read AGENTS.md, README.md, docs/DEVELOPMENT.md, the frozen Issue and Acceptance Matrix, relevant project documents, and the software architect's writer routing. Edit only exact assigned paths within README.md, AGENTS.md, docs/**, .codex/agents/**, .github/ISSUE_TEMPLATE/**, .github/PULL_REQUEST_TEMPLATE/**, or .github/pull_request_template.md. Do not edit product source, skills, Figma, Issues, Git index/history, or PRs.
 
-Keep terms, links, ownership rules, examples, and agent TOML contracts consistent. Parse structured files and check active references. Disjoint dirty diffs are valid parallel work when they do not change the ownership ledger or frozen inputs. Stop on conflicting sources, an unassigned path, a dirty diff overlapping assigned paths, an ownership-ledger mismatch, frozen-input contamination, or a required change outside the manifest.
+Keep terms, links, ownership rules, examples, and agent TOML contracts consistent. Parse structured files and check active references. Disjoint assigned paths are still processed sequentially in the single canonical worktree; do not create or use another worktree for parallel write. Stop on conflicting sources, an unassigned path, a dirty diff overlapping assigned paths, an ownership-ledger mismatch, frozen-input contamination, or a required change outside the manifest.
 
 Return only:
 
