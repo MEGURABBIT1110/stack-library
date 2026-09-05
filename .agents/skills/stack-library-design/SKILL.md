@@ -13,7 +13,7 @@ Separate product intent, task scope, visual specification, and implementation ev
 
 1. Use the user's current instruction to understand the desired direction. If it changes a frozen Issue, treat it as a scope change: update and re-freeze the Issue before implementation.
 2. Use the frozen GitHub Issue for purpose, scope, exclusions, and acceptance criteria.
-3. Use the Issue-linked target Figma node for visual specification.
+3. Use an Issue-linked Figma target for visual specification only when one is assigned and the task has visual scope.
 4. Use `AGENTS.md` and applicable project documents for governance, architecture, content, and routing.
 5. Use the current implementation, Storybook, and fresh render evidence to understand actual behavior, not to preserve a defect.
 6. Use this skill's references as durable guidance, never as competing project truth.
@@ -22,7 +22,14 @@ Treat older proposals and unlinked Figma frames as history. When an Issue and it
 
 Stay inside the frozen Issue. Correct a nearby defect only when required to satisfy acceptance criteria or prevent a direct regression. Record broader findings for separate scope.
 
-Follow the `AGENTS.md` team packet, assigned writer, ownership ledger, forbidden surfaces, publication authorization, and handoff conditions. This skill does not redefine repository governance. Return findings to the owning writer, and stop before writing when a required contract, target revision, or ownership boundary is missing or contradictory.
+Follow the `AGENTS.md` team packet and applicable role contract for ownership, forbidden surfaces, publication, and handoff. This skill does not redefine repository governance. Retain only the source order and stop on a missing or contradictory contract, target revision, or ownership boundary; return findings to the owning writer.
+
+### Skill and agent boundary
+
+`Skill = reusable knowledge / procedure / project-specific heuristic.`
+`Agent = role / authority / task executor.`
+
+Loading this skill does not activate an agent, approve work, authorize mutation, assign ownership, authorize publication, or authorize merge. Those decisions come from `AGENTS.md`, the team packet, the applicable role TOML, and user authorization where required.
 
 Read project documents in the order required by `AGENTS.md`. Read `docs/CONTENT_MODEL.md` for data, type, microCMS, or fixture changes and `docs/ROUTING.md` for route or page-responsibility changes.
 
@@ -101,16 +108,17 @@ Define wrapping, stacking, scrolling, truncation, and disclosure explicitly. Ver
 
 ## Work in Figma
 
-Before any Figma tool call, load and follow every applicable Figma prerequisite skill.
+Use this section only when both an Issue-linked Figma target is assigned and the task has visual scope. `Figma: none` is a valid non-blocking path; docs-only and nonvisual tasks do not inherit Figma obligations.
 
-1. Confirm the Issue-linked file and node IDs, revision, themes, viewports, and states.
+Before any Figma tool call, load and follow every applicable Figma prerequisite skill. Those skills, `AGENTS.md`, `figma_designer`, and `figma_design_qa` define mutation, read-back, fresh screenshot, and QA procedure; this skill supplies the design heuristics only.
+
+1. Confirm the assigned file and node context before designing.
 2. Inspect relevant variables, component sets, neighboring structure, and current implementation evidence.
 3. Extend the nearest valid components and bind active semantic variables.
 4. Represent structural differences with purposeful variants, not arbitrary content combinations.
 5. Preserve Main Component and Instance relationships, component-property intent, descriptions, and existing code mappings; do not detach an instance or introduce a local style or raw value merely to obtain visual parity.
-6. Inspect final screenshots and node structure, including bounds, Auto Layout, text resizing, clipping, overflow, variable bindings, component properties, and instance integrity.
 
-Do not claim completion from property inspection alone. Use fresh visual evidence required by `AGENTS.md`, and invoke independent Figma QA when that contract requires it.
+Follow the applicable Figma contracts for completion evidence and independent QA; do not claim visual completion from property inspection alone.
 
 ## Implement in code
 
@@ -119,7 +127,7 @@ Do not claim completion from property inspection alone. Use fresh visual evidenc
 3. Render required states from valid data shapes; keep Storybook fixtures independent from microCMS.
 4. Keep public props semantic; do not expose Figma layer names, breakpoint flags, theme variants, or purely visual switches as an API.
 5. For reusable component or design-system changes, add the smallest representative Story set that proves public states, long and missing content, applicable themes and widths, and keyboard behavior. For page-only changes, add or update Stories only when the current architecture or Issue requires them. Add interaction coverage when user input or state change is part of the contract.
-6. Compare the final rendered surface with the Issue-linked Figma target and verify both changed behavior and accessible semantics.
+6. When a Figma target is assigned for visual scope, compare the final rendered surface with that target and verify both changed behavior and accessible semantics. Otherwise validate the nonvisual or docs-only outcome against its applicable contract.
 
 Do not infer visual values, API boundaries, routes, or data fields when an upstream contract is unresolved.
 
@@ -138,6 +146,10 @@ Select and reuse validation exactly as defined by `docs/DEVELOPMENT.md`. Do not 
 For documentation-only work, inspect the diff, references, terminology, links, and cross-document consistency. For code or Figma work, run only risk-appropriate checks and fresh visual comparisons required by project governance. Re-run a successful check only when its input or environment has been invalidated.
 
 Do not call work complete while a required source is unresolved, a Blocker or Major discrepancy remains, the final changed state is uninspected, or required evidence is missing.
+
+## Maintenance dependencies
+
+Re-audit this skill when any of these sources change: product identity or design principles, Figma workflow, agent authority, component architecture or traceability, or accessibility policy. Keep this skill's heuristics and routing concise; do not copy those sources here. A source change may require updating the relevant reference or role contract instead of this skill.
 
 ## Report concisely
 

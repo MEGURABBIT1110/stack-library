@@ -82,7 +82,7 @@ Do not encode the creator's biography, personality labels, or private history in
 
 ### Specimen Label
 
-Use `Specimen Label` as the active MVP signature. Present each technical book as a catalogued specimen that can be identified, compared, and opened.
+Use `Specimen Label` as an optional, context-dependent heuristic when presenting a technical book as a catalogued specimen that can be identified, compared, and opened. It is not a formal product invariant. Do not force it, and never let it override the frozen Issue, current project documents, or an Issue-linked Figma target.
 
 Use:
 
