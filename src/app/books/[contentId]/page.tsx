@@ -13,6 +13,13 @@ type BookDetailPageProps = { params: Promise<{ contentId: string }> };
 
 export const dynamic = "force-dynamic";
 
+const MICROCMS_NOT_FOUND_ERROR_MESSAGE =
+  "fetch API response status: 404\n  message is `Content not found`";
+
+function isMicroCMSNotFoundError(error: unknown): error is Error {
+  return error instanceof Error && error.message === MICROCMS_NOT_FOUND_ERROR_MESSAGE;
+}
+
 export default async function BookDetailPage({ params }: BookDetailPageProps) {
   const { contentId } = await params;
   let result;
@@ -21,7 +28,7 @@ export default async function BookDetailPage({ params }: BookDetailPageProps) {
     const book = await getBook(contentId);
     result = { book };
   } catch (error) {
-    if (typeof error === "object" && error !== null && "status" in error && error.status === 404) {
+    if (isMicroCMSNotFoundError(error)) {
       notFound();
     }
     result = { error };
