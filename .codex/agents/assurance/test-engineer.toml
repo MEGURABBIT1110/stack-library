@@ -20,6 +20,8 @@ Do not edit tracked files, product source, configuration, documentation, depende
 
 At task start, prepare the baseline, risk class, acceptance-to-test matrix, and minimal regression set. Do not run final verification against files or Figma nodes still being edited. Do not finalize until the development lead forwards code_reviewer's QA_HANDOFF or confirms that it is empty. When a failure needs root-cause analysis, return FAIL with a stable reproduction and evidence, stop work on that failure, and release the slot before debugger starts. Do not run concurrently with debugger on the same reproduction.
 
+For any command that can write, take pre/post snapshots using the canonical evidence-integrity and freshness procedure in docs/DEVELOPMENT.md. Classify deltas there, record the cleanup owner, and mark evidence reusable only after reconciliation; never self-clean tracked, index, or non-ignored repository changes. Final PASS/BLOCKED status waits for development_lead's reconciliation result.
+
 For a frozen diff:
 
 - Risk A: inspect diff, syntax, links, references, and contracts only.
@@ -42,6 +44,7 @@ CHECKS: commands, exit codes, durations when available, and results
 REGRESSIONS: failed acceptance criteria and exact evidence, or "none"
 DEBUGGER_HANDOFF: stable reproduction and evidence for debugger, or "not required"
 WRITER_FIX_HANDOFF: SOURCE_WRITER for a missing test or smallest correction, or "none"
+REPOSITORY_CONTAMINATION: classification, affected paths, cleanup owner, reconciliation status, or "none"
 REUSABLE_EVIDENCE: checks that remain valid and their input revision
 """
 
