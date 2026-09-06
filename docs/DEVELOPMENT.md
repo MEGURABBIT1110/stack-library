@@ -253,6 +253,50 @@ GitHub MCPで必要なGitHub service操作がcallableなら、GitHub CLI（`gh`�
 
 検証は変更量ではなく、失敗した場合の影響範囲で選びます。途中の高速フィードバックと、PR完成前の最終ゲートを分離します。
 
+### 証拠の同一性（frozen evidence）
+
+検証、review、Ready、mergeの判断は、対象revisionに束縛した証拠だけを使用します。frozen diffには少なくとも次を記録します。
+
+- `BASE_REVISION`（40文字のcommit SHA）と、`DIFF_SOURCE=working-tree|index`
+- repository-relativeなexact path manifest（決定的なソート順）、各fileのSHA-256とstatus（追加・削除を含む）
+- Git versionと、改行・属性・diffに関係する設定（`core.autocrlf`、`core.eol`、`core.safecrlf`、`core.filemode`、`core.quotePath`等）
+
+manifestのpathはGitが受け付けるrepository-relative path（NULを含まない）をUTF-8でNUL-delimited serializationとして保存します。各recordをpathのUTF-8 byte sequenceの昇順（byteが同じ場合だけ同一path）で並べてからNULをseparatorとして連結します。NULはGit pathに現れないため、改行を含むpathも曖昧になりません。空白、tab、改行、非ASCII、glob文字、先頭`:`は文字列として保持し、shellのglobや文字列splitを使いません。各NUL-delimited recordをdecodeしてdistinctなargv itemとしてGitへ渡し、`--literal-pathspecs`をGit global optionとしてsubcommandより前に指定します。manifest pathはliteral Git pathspecであり、pathspec patternやmagicとして解釈しません。`BASE`と`SORTED_PATHS`は説明上のplaceholderであり、literal tokenではありません。通常のwriterのsourceはworking tree、publication時のsourceはindexです。
+
+```bash
+# working-tree: argv = ["git", "-c", "color.ui=false", "-c", "core.quotePath=true", "--literal-pathspecs", "diff", "--binary", "--no-ext-diff", "--no-textconv", "--full-index", "--no-renames", "--diff-algorithm=myers", "--no-indent-heuristic", "--unified=3", "--src-prefix=a/", "--dst-prefix=b/", BASE, "--", ...SORTED_PATHS]
+# index:         argv = ["git", "-c", "color.ui=false", "-c", "core.quotePath=true", "--literal-pathspecs", "diff", "--cached", "--binary", "--no-ext-diff", "--no-textconv", "--full-index", "--no-renames", "--diff-algorithm=myers", "--no-indent-heuristic", "--unified=3", "--src-prefix=a/", "--dst-prefix=b/", BASE, "--", ...SORTED_PATHS]
+```
+
+stdoutはOSの一時ファイルへraw bytesのまま保存し、text decode/re-encodeせず、そのbyte列をSHA-256化します。renameはold/new pathをmanifestへ含め、`--no-renames`ではdelete/addとして表現します。mode変更、binary、削除もraw patchへ含めます。file hashとcommit SHAはdiff hashを補完しますが、置き換えません。
+
+working-tree sourceでは、tracked patchだけではuntrackedな追加ファイルを表現できないため、次の`WORKTREE_IDENTITY/v1`をcanonical identityとします。writer reviewはindexを変更せず、publicationのindex identityとは別にこのworking-tree identityを計算します。
+
+1. exact path manifestをrepository-relative UTF-8 pathのbyte sequence順にdistinct化し、NUL-delimitedでserializationします。manifest自体をcombined streamへlength-framedで含め、ディレクトリを指定して再帰的に展開したり、manifestにないpathを暗黙に追加したりしません。空のmanifestは拒否し、Git invocationを開始しません。これにより`git diff BASE --`が全treeを対象にする曖昧な呼び出しへ変化しません。
+2. tracked portionは、上記manifestをそのままdistinctなargv itemとして渡す既存の`git diff BASE -- ...SORTED_PATHS`のraw stdoutです。`BASE`、source、flags、manifestが変わればidentityは別物です。
+3. untracked portionは、`git --literal-pathspecs ls-files --others --exclude-standard -z -- ...SORTED_PATHS`の結果とmanifestのexact-equality intersectionだけを対象にします。`--literal-pathspecs`はsubcommandより前のGit global optionであり、manifest pathをpathspec patternやmagicとして扱いません。ignored file、scope外untracked file、発見結果に含まれないpathは除外し、ディレクトリやspecial fileが対象になった場合は失敗します。結果をpath byte順に並べ、各pathを`lstat`します。regular fileは`O_NOFOLLOW`または同等のdescriptor-safe no-follow保証を持つ方法でopenし、開いたdescriptorを`fstat`してからraw bytesを読みます。symlinkはfollowせず、`lstat`/`readlink`/再`lstat`でlink-target bytesを読みます。必要なno-follow保証やmetadataをOSが提供できない場合はfail closedとし、そのfilesystem制約をenvironment assumptionsへ記録します。typeは`regular`または`symlink`、modeはGit-compatibleな`100644`、`100755`、`120000`のいずれかへ正規化します。
+4. combined streamは単純な文字列連結を避け、次のbinary framingを使います。ASCII magic/version `STACKLIB-WORKTREE-IDENTITY/v1\0`、u64 big-endianのmanifest byte length、manifest bytes、u64 big-endianのtracked patch byte length、tracked patch bytes、u64 big-endianのuntracked record countを順に置きます。各untracked recordは、u64 length + path bytes、1 byteのtype tag（`r`または`s`）、6 ASCII bytesの固定mode（`100644`、`100755`、`120000`のいずれか）、u64 big-endianのunsigned raw byte size、32 bytesのraw content/link-target SHA-256 digestの順です。countが0の場合もcount fieldを保持します。stream全体をraw bytesのままSHA-256化します。
+5. 各untracked pathについて、discover前後および`lstat`/descriptor-safe open/`fstat`/read（symlinkは`readlink`）前後でpath、type、mode、size、mtime、inode（取得可能な場合）を比較します。変化、消失、型変更、読み取り不能、eligibility driftがあれば`CONCURRENT_FILE_CHANGE`としてfail closedし、混在したsnapshotを受け入れずfreezeを再実行します。regular fileではopen前後の`lstat`と開いたdescriptorの`fstat`が同じregular objectを示すこと、symlinkでは前後の`lstat`が同じlink objectを示すことを必須とします。regular fileの読み取りでもsymlinkをfollowせず、OS・filesystemがinode等を提供しない場合は提供可能な項目だけでなくno-followや必要なmode情報を保証できるかも確認し、保証できなければfail closedとします。
+
+このidentityはtracked modification、deletion、rename、mode変更、binary変更、emptyを含むnew file、複数new file、改行や非ASCIIを含むGit-valid pathを同じstreamでbindできます。path順変更では結果が変わらず、同じsnapshotの再計算は同一hashになります。ignored fileとscope外untracked fileはmanifest intersectionに入らないため対象外です。regular fileのmodeは、`core.filemode=true`かつ実行bitを信頼して取得・設定できる場合だけ`100755`、それ以外は`100644`とし、必要なconfigまたはmetadataを取得できない場合はfail closedとします。symlinkは常に`120000`です。これらのconfigとfilesystem能力はcross-host identity inputです。Gitのindexはwriter review中に変更しません。publicationでは新規fileがstage済みとなり、既存の`git diff --cached BASE` canonical identityに追加fileが含まれるため、index contractの変更は不要です。working-tree identityのtracked patch SHAは診断用に任意で記録できますが、untracked recordを含むcombined hashがreview identityです。
+
+最低限、Git version、`core.autocrlf`、`core.eol`、`core.safecrlf`、`core.filemode`、`core.quotePath`、対象pathに効く`.gitattributes`、clean/smudge filter、`working-tree-encoding`、diff driver、sparse-checkout stateも記録します。固定flagsはcolor、textconv、external diff、algorithm等を中立化します。別担当が同じworktreeで独立再計算するのが通常で、BASE、source、path set、file bytes、上記設定または環境が変わったら証拠を無効化します。cross-hostで再計算できるのはこれらの入力が一致する場合だけで、そうでなければcanonical raw patchを引き継ぎます。diff hashの普遍的なportabilityを仮定しません。
+
+### 検証コマンドによる汚染と証拠のfreshness
+
+ファイル、index、branch/HEAD、cache、generatorを変更し得るコマンドの前後で、OS一時領域へ次をsnapshotし、command logとともに比較します。
+
+- branch/HEAD
+- stagedおよびworking-treeのraw diff hashとpath set
+- `git status --porcelain=v2 --untracked-files=all`
+- relevant ignored-output rootsと、既存dirty/product fileの正確なhash
+
+差分は`CLEAN`、`ALLOWED_IGNORED_DELTA`、`EXPECTED_TRACKED_SIDE_EFFECT`、`UNTRACKED_CONTAMINATION`、`TRACKED_CONTAMINATION`、`INDEX_CONTAMINATION`、`UNKNOWN`に分類します。test_engineerはtracked/index/non-ignored artifactを自分でcleanしません。development_leadがoriginal writerまたは指定writerへexact cleanupを返します。既知のdeterministic generator side effectは`PASS_PENDING_RECONCILIATION`とし、writerがfrozen stateへ復元するかintentional outputとして凍結した後、影響範囲を判定して確定します。評価入力や結果を変え得るartifactだけを再実行し、文書化済みの同じdeltaを再生成するだけなら機械的に再実行しません。宣言済みで入力に影響しないignored cacheは残せます。
+
+証拠は、`identity`（raw diff/file hash）、`subject`、`input revision`、`dependency manifest`、`environment assumptions`、`result`、`observed-at`、`invalidators`を持つcompact recordとして引き継ぎます。base/head、path/bytes、依存・設定、環境、remote review/check/base/mergeability、FigmaまたはIssueの対象が変わった場合だけ、影響するevidenceをtargeted revalidationします。新しいremote stateを判断するauditではreview、checks、base、mergeabilityを再取得し、immutableなreview/test evidenceは入力が不変なら再利用できます。skill/docsのcross-document reviewでは、直接consumerとdependent agent metadata（参照されるTOMLを含む）をmanifestへ列挙し、PR #75型の不整合を見落とさないようにします。
+
+このfreshness契約はpublication、DraftからReady、mergeのauthorizationを与えたり省略したりしません。各mutation直前に、対象PRのstate、draft、base/head、expected SHA、checks、mergeabilityを再取得し、authorizationへ束縛された値と一致しない場合は停止します。
+
 | 区分 | 主な変更 | 作業中の必須確認 | PR完成前の追加確認 |
 |---|---|---|---|
 | A: 軽微 | 文書、文言、命名、Story階層、挙動を変えない移動 | 差分、参照切れ、リンク、用語・見出し構造 | コードを含まなければbuild不要 |
